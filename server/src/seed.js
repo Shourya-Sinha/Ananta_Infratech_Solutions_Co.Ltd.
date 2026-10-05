@@ -21,7 +21,7 @@ export const defaultSite = {
     linkedin: 'https://www.linkedin.com',
     instagram: 'https://www.instagram.com',
     logo: '/assets/logo_bg_remove.png',
-    alternateLogo: '/assets/logo.jpeg'
+    alternateLogo: '/assets/logo_bg_remove.png'
   },
   home: {
     eyebrow: 'Independent engineering • Mumbai, India',

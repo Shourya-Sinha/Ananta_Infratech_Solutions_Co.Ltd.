@@ -6,10 +6,10 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import fs from 'fs/promises'
 import path from 'path'
-import multer from 'multer'
 import { fileURLToPath } from 'url'
 import { defaultSite } from './seed.js'
 import { Site, Project, Inquiry } from './models.js'
+import { imageUpload, storeImage, cloudinaryStatus, MAX_UPLOAD_BYTES } from './uploads.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
@@ -19,8 +19,11 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@anantainfratech.com'
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Ananta@2016'
 const dataPath = path.join(__dirname, '../data/cms.json')
 const uploadDir = path.join(__dirname, '../uploads')
-const upload = multer({ storage: multer.diskStorage({ destination: (_req, _file, cb) => { fs.mkdir(uploadDir, { recursive: true }).then(() => cb(null, uploadDir)).catch(cb) }, filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9._-]/g, '-')}`) }), limits: { fileSize: 7 * 1024 * 1024 }, fileFilter: (_req, file, cb) => cb(null, /^image\/(jpeg|jpg|png|webp|gif)$/.test(file.mimetype)) })
 let mongoReady = false
+
+// Brand assets that older CMS records still point at but that no longer exist in the build.
+const LEGACY_LOGOS = ['/assets/dlogo-removebg.png', '/assets/logo.png', '/assets/logo.jpeg', '/assets/logo.jpg', 'dlogo-removebg.png']
+const PRIMARY_LOGO = defaultSite.company.logo
 
 app.use(cors())
 app.use(express.json({ limit: '2mb' }))
@@ -34,11 +37,25 @@ async function writeLocal(content) {
   await fs.mkdir(path.dirname(dataPath), { recursive: true })
   await fs.writeFile(dataPath, JSON.stringify(content, null, 2))
 }
+// Keeps stored content pointing at brand files that actually ship with the site.
+function normaliseSite(content) {
+  if (!content || typeof content !== 'object') return { content: copy(defaultSite), changed: true }
+  const next = copy(content)
+  let changed = false
+  next.company = next.company || {}
+  const stale = (value) => !value || typeof value !== 'string' || LEGACY_LOGOS.includes(value.trim())
+  if (stale(next.company.logo)) { next.company.logo = PRIMARY_LOGO; changed = true }
+  if (stale(next.company.alternateLogo)) { next.company.alternateLogo = PRIMARY_LOGO; changed = true }
+  return { content: next, changed }
+}
+
 async function getSite() {
-  if (!mongoReady) return readLocal()
-  let doc = await Site.findOne({ key: 'primary' }).lean()
-  if (!doc) { doc = await Site.create({ key: 'primary', content: defaultSite }); return doc.content }
-  return doc.content
+  const stored = mongoReady
+    ? (await Site.findOne({ key: 'primary' }).lean())?.content || copy(defaultSite)
+    : await readLocal()
+  const { content, changed } = normaliseSite(stored)
+  if (changed) { try { await saveSite(content) } catch (error) { console.warn('Could not persist brand asset fix:', error.message) } }
+  return content
 }
 async function saveSite(content) {
   if (!mongoReady) return writeLocal(content)
@@ -67,9 +84,19 @@ app.put('/api/admin/site', protect, async (req, res, next) => {
     res.json({ ok: true, updatedAt: new Date().toISOString() })
   } catch (e) { next(e) }
 })
-app.post('/api/admin/upload', protect, upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).json({ message: 'Please upload a JPG, PNG, WEBP or GIF image under 7MB.' })
-  res.status(201).json({ url: `/uploads/${req.file.filename}`, name: req.file.originalname })
+app.post('/api/admin/upload', protect, (req, res, next) => {
+  imageUpload.single('file')(req, res, async (error) => {
+    if (error) return res.status(400).json({ message: error.code === 'LIMIT_FILE_SIZE' ? 'That image is larger than 10MB. Please choose a smaller file.' : 'That file could not be read. Please try another image.' })
+    if (!req.file) return res.status(400).json({ message: 'Please choose a JPG, PNG, WEBP, AVIF, SVG or GIF image under 10MB.' })
+    try {
+      const stored = await storeImage(req.file, uploadDir)
+      res.status(201).json({ ...stored, name: req.file.originalname })
+    } catch (e) { next(e) }
+  })
+})
+app.get('/api/admin/upload/status', protect, (_req, res) => {
+  const { enabled, signed, cloudName } = cloudinaryStatus()
+  res.json({ storage: enabled ? 'cloudinary' : 'local', cloudName: enabled ? cloudName : null, mode: enabled ? (signed ? 'signed' : 'unsigned') : null, maxBytes: MAX_UPLOAD_BYTES })
 })
 app.post('/api/contact', async (req, res, next) => {
   try {
