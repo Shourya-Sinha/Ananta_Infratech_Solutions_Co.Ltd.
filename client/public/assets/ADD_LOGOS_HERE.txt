@@ -1,7 +1,8 @@
 Brand asset drop-zone
 
-Place the supplied brand files here using these exact names:
-- dlogo-removebg.png  (primary transparent logo used by the navigation and footer)
-- logo.jpeg           (alternate logo retained for future use)
+Current brand files:
+- logo_bg_remove.png   (primary transparent logo used by the navigation and footer — served at /assets/logo_bg_remove.png)
+- ananta-signature-structure.jpg
 
-The React brand component already targets /assets/dlogo-removebg.png and has a typographic A fallback while the asset is absent.
+The React brand component targets site.company.logo from the CMS (default /assets/logo_bg_remove.png)
+and has a typographic "A" fallback while the asset is absent.
