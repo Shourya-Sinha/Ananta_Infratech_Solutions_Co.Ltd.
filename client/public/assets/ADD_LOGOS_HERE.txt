@@ -1,8 +1,11 @@
 Brand asset drop-zone
 
 Current brand files:
-- logo_bg_remove.png   (primary transparent logo used by the navigation and footer — served at /assets/logo_bg_remove.png)
+- logo_bg_remove.png   (primary transparent logo used by the navigation, footer, admin portal and favicon — served at /assets/logo_bg_remove.png)
 - ananta-signature-structure.jpg
 
-The React brand component targets site.company.logo from the CMS (default /assets/logo_bg_remove.png)
-and has a typographic "A" fallback while the asset is absent.
+The React brand component reads site.company.logo from the CMS (default /assets/logo_bg_remove.png),
+falls back to that bundled PNG if the CMS URL cannot load, and only then shows the typographic "A".
+
+You do not need to drop files here any more: use Admin -> Quick content -> Company profile and click the
+logo tile to upload an image straight from your computer (Cloudinary when configured, otherwise /uploads).
