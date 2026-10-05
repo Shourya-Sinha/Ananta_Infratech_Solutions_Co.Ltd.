@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowDown, ArrowUpRight, MoveDown } from 'lucide-react'
 import { useSite } from '../lib/site'
-import { Eyebrow, Marquee, ProjectCard, Reveal, SectionLead, TextLink } from '../components/Blocks'
+import { Eyebrow, Marquee, ProjectCard, Reveal, Rich, SectionLead, TextLink } from '../components/Blocks'
 
 export default function Home() {
   const { site } = useSite(); const h = site.home; const projects = site.projects.slice(0,3)
@@ -13,7 +13,7 @@ export default function Home() {
         <img className={h.heroVideo ? 'hero-poster' : ''} src={h.heroImage} alt="Construction site at dusk"/>
       </div><div className="hero-shade"></div><div className="grid-overlay"></div>
       <div className="hero-topline"><span>{h.eyebrow}</span><span>Scroll to explore <MoveDown size={15}/></span></div>
-      <div className="hero-copy"><motion.p initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{delay:.2}}>Ananta Infratech Solutions</motion.p><motion.h1 initial={{opacity:0,y:65}} animate={{opacity:1,y:0}} transition={{duration:1,delay:.1,ease:[.16,1,.3,1]}}>We make<br/><em>ambitious</em> places<br/>possible.</motion.h1><motion.div className="hero-bottom" initial={{opacity:0}} animate={{opacity:1}} transition={{delay:.75}}><p>{h.heroText}</p><Link to="/projects" className="hero-button">Explore our work <ArrowUpRight size={20}/></Link></motion.div></div>
+      <div className="hero-copy"><motion.p initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{delay:.2}}>Ananta Infratech Solutions</motion.p><motion.h1 initial={{opacity:0,y:65}} animate={{opacity:1,y:0}} transition={{duration:1,delay:.1,ease:[.16,1,.3,1]}}><Rich text={h.heroTitle || 'We make\n*ambitious* places\npossible.'}/></motion.h1><motion.div className="hero-bottom" initial={{opacity:0}} animate={{opacity:1}} transition={{delay:.75}}><p>{h.heroText}</p><Link to="/projects" className="hero-button">Explore our work <ArrowUpRight size={20}/></Link></motion.div></div>
       <a className="hero-scroll" href="#approach"><ArrowDown size={17}/><span>Scroll to discover</span></a>
     </section>
     <section id="approach" className="statement-section"><div className="statement-aside"><Eyebrow>{h.manifestoLabel}</Eyebrow><span>01 — 05</span></div><Reveal className="statement-content"><h2>{h.manifestoTitle}</h2><p>{h.manifestoText}</p><TextLink to="/about">Discover Ananta</TextLink></Reveal></section>

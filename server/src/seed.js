@@ -25,7 +25,7 @@ export const defaultSite = {
   },
   home: {
     eyebrow: 'Independent engineering • Mumbai, India',
-    heroTitle: 'We make ambitious places possible.',
+    heroTitle: 'We make\n*ambitious* places\npossible.',
     heroText: 'Ananta brings design intelligence, field discipline and accountable delivery to the places where people live, work and move.',
     heroImage: images.hero,
     heroVideo: 'https://videos.pexels.com/video-files/2763687/2763687-hd_1920_1080_25fps.mp4',

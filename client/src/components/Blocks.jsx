@@ -1,6 +1,12 @@
+import { Fragment } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowDownRight, ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
+
+export function Rich({ text = '' }) {
+  const lines = String(text).split('\n')
+  return lines.map((line, i) => <Fragment key={i}>{line.split(/\*([^*]+)\*/g).map((part, j) => j % 2 ? <em key={j}>{part}</em> : part)}{i < lines.length - 1 && <br/>}</Fragment>)
+}
 
 export const Reveal = ({ children, className = '', delay = 0 }) => <motion.div className={className} initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: .7, delay, ease: [0.16,1,0.3,1] }}>{children}</motion.div>
 export function Eyebrow({ children }) { return <p className="eyebrow"><i></i>{children}</p> }
