@@ -20,7 +20,7 @@ export const defaultSite = {
     email: 'hello@anantainfratech.com',
     linkedin: 'https://www.linkedin.com',
     instagram: 'https://www.instagram.com',
-    logo: '/assets/dlogo-removebg.png',
+    logo: '/assets/logo_bg_remove.png',
     alternateLogo: '/assets/logo.jpeg'
   },
   home: {
