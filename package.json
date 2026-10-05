@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run admin\"",
     "client": "npm run dev --prefix client",
     "server": "nodemon server/src/index.js",
     "build": "npm run build --prefix client",
-    "start": "NODE_ENV=production node server/src/index.js"
+    "start": "NODE_ENV=production node server/src/index.js",
+    "admin": "npm run admin --prefix client"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

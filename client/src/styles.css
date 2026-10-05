@@ -102,3 +102,8 @@ h1,h2,h3,p{margin-top:0}h1,h2,h3{font-weight:500;letter-spacing:-.055em;line-hei
 .section-chips button.active{background:var(--ink);border-color:var(--ink);color:#fff}
 @media (max-width:1240px){.admin-workspace.with-preview{grid-template-columns:1fr}.preview-pane{position:relative;top:0;height:72vh;order:-1}}
 @media (max-width:620px){.admin-actions{width:100%}.admin-actions .button{margin-left:auto}.preview-pane{height:60vh}.list-item-head{flex-wrap:wrap}.image-field-row{flex-wrap:wrap}.image-field-row input{min-width:160px}}
+
+/* ===== Section-follow live preview ===== */
+.focus-zone{display:flex;flex-direction:column;gap:15px}
+.preview-flash{outline:3px dashed #a9e226;outline-offset:-3px;scroll-margin-top:90px;animation:anantaFlash 2.2s ease forwards}
+@keyframes anantaFlash{0%,60%{outline-color:#a9e226}100%{outline-color:transparent}}

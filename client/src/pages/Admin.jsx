@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import {
   ArrowLeft, CheckCircle2, ChevronDown, ChevronUp, Code2, Eye, EyeOff, Home as HomeIcon,
   Image as ImageIcon, ImagePlus, LayoutDashboard, LogOut, Mail, Monitor, Newspaper, Palette,
   Plus, RefreshCw, RotateCcw, Save, Settings2, Smartphone, Tablet, Trash2, UploadCloud, UsersRound
 } from 'lucide-react'
 import Brand from '../components/Brand'
-import { useSite } from '../lib/site'
+import { portUrl, useSite } from '../lib/site'
 
+const ADMIN_MODE = import.meta.env.MODE === 'admin'
+const SITE_URL = import.meta.env.DEV && ADMIN_MODE ? portUrl(7000) : '/'
 const clone = v => JSON.parse(JSON.stringify(v))
 const get = (obj, path) => path.reduce((o, k) => o?.[k], obj)
 const slugify = s => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
@@ -22,6 +23,12 @@ const PAGE_SECTIONS = [
 ]
 
 /* ---------- shared editor controls ---------- */
+
+// Wraps a group of fields: focusing any field inside makes the live preview jump
+// to (and highlight) the section of the website those fields control.
+function FocusZone({ page, selector, locate, children }) {
+  return <div className="focus-zone" onFocusCapture={() => locate(page, selector)}>{children}</div>
+}
 
 function Field({ draft, update, label, path, type = 'text', rows = 3, wide = false, hint }) {
   const value = get(draft, path) ?? ''
@@ -124,21 +131,32 @@ function ListEditor({ title, hint, items = [], onChange, blank, fields, uploadIm
 
 /* ---------- live preview ---------- */
 
-function PreviewPane({ draft, page, setPage, device, setDevice }) {
+function PreviewPane({ draft, page, setPage, device, setDevice, apiRef }) {
   const frameRef = useRef(null)
   const stageRef = useRef(null)
   const [box, setBox] = useState({ w: 640, h: 720 })
+  const [src, setSrc] = useState(() => `${page}?preview=1`)
   const widths = { desktop: 1366, tablet: 834, mobile: 390 }
   const width = widths[device]
-  const send = useCallback(() => {
-    try { frameRef.current?.contentWindow?.postMessage({ type: 'ananta:site', site: draft }, '*') } catch { /* frame not ready */ }
-  }, [draft])
+  const post = useCallback(message => {
+    try { frameRef.current?.contentWindow?.postMessage(message, '*') } catch { /* frame not ready */ }
+  }, [])
+  const send = useCallback(() => post({ type: 'ananta:site', site: draft }), [post, draft])
   useEffect(() => { send() }, [send])
   useEffect(() => {
-    const onMessage = e => { if (e.data?.type === 'ananta:ready') send() }
+    apiRef.current = { locate: zone => post({ type: 'ananta:locate', ...zone }) }
+    return () => { apiRef.current = null }
+  }, [apiRef, post])
+  // Page changes navigate INSIDE the iframe (client-side) — no reload, no flicker.
+  const pageRef = useRef(page)
+  useEffect(() => {
+    if (pageRef.current !== page) { pageRef.current = page; post({ type: 'ananta:locate', page }) }
+  }, [page, post])
+  useEffect(() => {
+    const onMessage = e => { if (e.data?.type === 'ananta:ready') { send(); post({ type: 'ananta:locate', page: pageRef.current }) } }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
-  }, [send])
+  }, [send, post])
   useLayoutEffect(() => {
     const el = stageRef.current
     if (!el) return
@@ -161,141 +179,204 @@ function PreviewPane({ draft, page, setPage, device, setDevice }) {
         {[['desktop', Monitor], ['tablet', Tablet], ['mobile', Smartphone]].map(([id, Icon]) =>
           <button key={id} type="button" className={device === id ? 'active' : ''} onClick={() => setDevice(id)} aria-label={`${id} preview`}><Icon size={14}/></button>)}
       </span>
-      <button type="button" className="icon-button light" onClick={() => { const f = frameRef.current; if (f) f.src = `${page}?preview=1&t=${Date.now()}` }} aria-label="Reload preview"><RefreshCw size={13}/></button>
+      <button type="button" className="icon-button light" onClick={() => setSrc(`${page}?preview=1&t=${Date.now()}`)} aria-label="Reload preview"><RefreshCw size={13}/></button>
     </div>
     <div className="preview-stage" ref={stageRef}>
-      <iframe key={page} ref={frameRef} name="ananta-preview" title="Live site preview" src={`${page}?preview=1`} onLoad={send}
+      <iframe ref={frameRef} name="ananta-preview" title="Live site preview" src={src} onLoad={send}
         style={{ width, height: scale ? box.h / scale : box.h, transform: `scale(${scale})`, marginLeft: offset }}/>
     </div>
-    <p className="preview-note">Edits appear here instantly. Visitors only see them after you press “Publish changes”.</p>
+    <p className="preview-note">The preview follows the section you are editing. Visitors only see changes after you press “Publish changes”.</p>
   </aside>
 }
 
 /* ---------- section editors ---------- */
 
-function BrandEditor({ draft, update, uploadImage }) {
+function BrandEditor({ draft, update, uploadImage, locate }) {
   const shared = { draft, update, uploadImage }
   return <>
-    <div className="content-card">
-      <h2>Logo & brand marks</h2>
-      <p className="card-hint">Upload a new logo and watch the header and footer update instantly in the preview. A PNG with a transparent background works best.</p>
-      <div className="editor-grid">
-        <ImgField {...shared} label="Primary logo (header, footer & admin)" path={['company', 'logo']}/>
-        <ImgField {...shared} label="Alternate / square logo" path={['company', 'alternateLogo']}/>
+    <FocusZone page="/" selector=".site-header" locate={locate}>
+      <div className="content-card">
+        <h2>Logo & brand marks</h2>
+        <p className="card-hint">Upload a new logo and watch the header update instantly in the preview. A PNG with a transparent background works best.</p>
+        <div className="editor-grid">
+          <ImgField {...shared} label="Primary logo (header, footer & admin)" path={['company', 'logo']}/>
+          <ImgField {...shared} label="Alternate / square logo" path={['company', 'alternateLogo']}/>
+        </div>
       </div>
-    </div>
-    <div className="content-card">
-      <h2>Company profile</h2>
-      <div className="editor-grid">
-        <Field {...shared} label="Company name" path={['company', 'name']}/>
-        <Field {...shared} label="Short name" path={['company', 'shortName']}/>
-        <Field {...shared} label="Tagline" path={['company', 'tagline']}/>
-        <Field {...shared} label="Founded" path={['company', 'founded']}/>
-        <Field {...shared} label="Phone" path={['company', 'phone']}/>
-        <Field {...shared} label="Email" path={['company', 'email']}/>
-        <Field {...shared} label="LinkedIn URL" path={['company', 'linkedin']}/>
-        <Field {...shared} label="Instagram URL" path={['company', 'instagram']}/>
-        <Field {...shared} label="Address" path={['company', 'address']} type="textarea" rows={2}/>
+    </FocusZone>
+    <FocusZone page="/" selector=".site-footer" locate={locate}>
+      <div className="content-card">
+        <h2>Company profile</h2>
+        <p className="card-hint">Shown in the footer and across contact points — the preview jumps to the footer while you edit.</p>
+        <div className="editor-grid">
+          <Field {...shared} label="Company name" path={['company', 'name']}/>
+          <Field {...shared} label="Short name" path={['company', 'shortName']}/>
+          <Field {...shared} label="Tagline" path={['company', 'tagline']}/>
+          <Field {...shared} label="Founded" path={['company', 'founded']}/>
+          <Field {...shared} label="Phone" path={['company', 'phone']}/>
+          <Field {...shared} label="Email" path={['company', 'email']}/>
+          <Field {...shared} label="LinkedIn URL" path={['company', 'linkedin']}/>
+          <Field {...shared} label="Instagram URL" path={['company', 'instagram']}/>
+          <Field {...shared} label="Address" path={['company', 'address']} type="textarea" rows={2}/>
+        </div>
       </div>
-    </div>
+    </FocusZone>
   </>
 }
 
-function HomeEditor({ draft, update, uploadImage }) {
+function HomeEditor({ draft, update, uploadImage, locate }) {
   const shared = { draft, update, uploadImage }
   return <>
-    <div className="content-card">
-      <h2>Hero</h2>
-      <div className="editor-grid">
-        <Field {...shared} label="Eyebrow line" path={['home', 'eyebrow']}/>
-        <Field {...shared} label="Main title" path={['home', 'heroTitle']} type="textarea" rows={3} hint="New lines become line breaks. Wrap a word in *asterisks* to italicise it."/>
-        <Field {...shared} label="Intro paragraph" path={['home', 'heroText']} type="textarea"/>
-        <ImgField {...shared} label="Hero image (also the video poster)" path={['home', 'heroImage']}/>
-        <Field {...shared} label="Hero video URL (MP4, optional)" path={['home', 'heroVideo']} wide/>
+    <FocusZone page="/" selector=".home-hero" locate={locate}>
+      <div className="content-card">
+        <h2>Hero</h2>
+        <div className="editor-grid">
+          <Field {...shared} label="Eyebrow line" path={['home', 'eyebrow']}/>
+          <Field {...shared} label="Main title" path={['home', 'heroTitle']} type="textarea" rows={3} hint="New lines become line breaks. Wrap a word in *asterisks* to italicise it."/>
+          <Field {...shared} label="Intro paragraph" path={['home', 'heroText']} type="textarea"/>
+          <ImgField {...shared} label="Hero image (also the video poster)" path={['home', 'heroImage']}/>
+          <Field {...shared} label="Hero video URL (MP4, optional)" path={['home', 'heroVideo']} wide/>
+        </div>
       </div>
-    </div>
-    <div className="content-card">
-      <h2>Signature section & approach</h2>
-      <div className="editor-grid">
-        <ImgField {...shared} label="Signature full-width image" path={['home', 'signatureImage']}/>
-        <Field {...shared} label="Caption left" path={['home', 'signatureCaptionLeft']}/>
-        <Field {...shared} label="Caption right" path={['home', 'signatureCaptionRight']}/>
-        <Field {...shared} label="Approach eyebrow" path={['home', 'manifestoLabel']}/>
-        <Field {...shared} label="Approach title" path={['home', 'manifestoTitle']} wide/>
-        <Field {...shared} label="Approach text" path={['home', 'manifestoText']} type="textarea"/>
-        <Field {...shared} label="Belief quote" path={['home', 'beliefQuote']} type="textarea"/>
-        <ImgField {...shared} label="Capability band image" path={['home', 'capabilityImage']}/>
+    </FocusZone>
+    <FocusZone page="/" selector=".statement-section" locate={locate}>
+      <div className="content-card">
+        <h2>Approach statement</h2>
+        <div className="editor-grid">
+          <Field {...shared} label="Approach eyebrow" path={['home', 'manifestoLabel']}/>
+          <Field {...shared} label="Approach title" path={['home', 'manifestoTitle']} wide/>
+          <Field {...shared} label="Approach text" path={['home', 'manifestoText']} type="textarea"/>
+        </div>
       </div>
-    </div>
-    <ListEditor title="Statistics strip" hint="The four headline numbers on the home page." itemName="statistic"
-      items={draft.home.stats} onChange={v => update(['home', 'stats'], v)} labelKey="label"
-      blank={{ value: '0', label: 'New statistic' }}
-      fields={[{ key: 'value', label: 'Value (e.g. 10+)' }, { key: 'label', label: 'Label' }]}/>
+    </FocusZone>
+    <FocusZone page="/" selector=".stats-strip" locate={locate}>
+      <ListEditor title="Statistics strip" hint="The four headline numbers on the home page." itemName="statistic"
+        items={draft.home.stats} onChange={v => update(['home', 'stats'], v)} labelKey="label"
+        blank={{ value: '0', label: 'New statistic' }}
+        fields={[{ key: 'value', label: 'Value (e.g. 10+)' }, { key: 'label', label: 'Label' }]}/>
+    </FocusZone>
+    <FocusZone page="/" selector=".signature-image" locate={locate}>
+      <div className="content-card">
+        <h2>Signature image</h2>
+        <div className="editor-grid">
+          <ImgField {...shared} label="Signature full-width image" path={['home', 'signatureImage']}/>
+          <Field {...shared} label="Caption left" path={['home', 'signatureCaptionLeft']}/>
+          <Field {...shared} label="Caption right" path={['home', 'signatureCaptionRight']}/>
+        </div>
+      </div>
+    </FocusZone>
+    <FocusZone page="/" selector=".quote-section" locate={locate}>
+      <div className="content-card">
+        <h2>Quote & capability band</h2>
+        <div className="editor-grid">
+          <Field {...shared} label="Belief quote" path={['home', 'beliefQuote']} type="textarea"/>
+          <ImgField {...shared} label="Capability band image" path={['home', 'capabilityImage']}/>
+        </div>
+      </div>
+    </FocusZone>
   </>
 }
 
-function PagesEditor({ draft, update, uploadImage, section, setSection }) {
+function PagesEditor({ draft, update, uploadImage, section, setSection, locate }) {
   const shared = { draft, update, uploadImage }
   return <>
     <div className="section-chips">
       {PAGE_SECTIONS.map(([id, label]) => <button key={id} type="button" className={section === id ? 'active' : ''} onClick={() => setSection(id)}>{label}</button>)}
     </div>
     {section === 'about' && <>
-      <div className="content-card"><h2>About page</h2><div className="editor-grid">
-        <Field {...shared} label="Heading" path={['about', 'title']} wide/>
-        <Field {...shared} label="Introduction" path={['about', 'intro']} type="textarea"/>
-        <ImgField {...shared} label="Hero image" path={['about', 'image']}/>
-        <Field {...shared} label="Story title" path={['about', 'storyTitle']} wide/>
-        <Field {...shared} label="Story text" path={['about', 'storyText']} type="textarea"/>
-        <ImgField {...shared} label="People banner image" path={['about', 'peopleImage']}/>
-      </div></div>
-      <ListEditor title="Values" itemName="value" items={draft.about.values} onChange={v => update(['about', 'values'], v)}
-        blank={() => ({ number: String(draft.about.values.length + 1).padStart(2, '0'), title: 'New value', text: '' })}
-        fields={[{ key: 'number', label: 'Number (e.g. 01)' }, { key: 'title', label: 'Title' }, { key: 'text', label: 'Description', type: 'textarea' }]}/>
+      <FocusZone page="/about" selector=".intro-hero" locate={locate}>
+        <div className="content-card"><h2>About — introduction</h2><div className="editor-grid">
+          <Field {...shared} label="Heading" path={['about', 'title']} wide/>
+          <Field {...shared} label="Introduction" path={['about', 'intro']} type="textarea"/>
+          <ImgField {...shared} label="Hero image" path={['about', 'image']}/>
+        </div></div>
+      </FocusZone>
+      <FocusZone page="/about" selector=".about-story" locate={locate}>
+        <div className="content-card"><h2>About — our story</h2><div className="editor-grid">
+          <Field {...shared} label="Story title" path={['about', 'storyTitle']} wide/>
+          <Field {...shared} label="Story text" path={['about', 'storyText']} type="textarea"/>
+        </div></div>
+      </FocusZone>
+      <FocusZone page="/about" selector=".people-banner" locate={locate}>
+        <div className="content-card"><h2>About — people banner</h2><div className="editor-grid">
+          <ImgField {...shared} label="People banner image" path={['about', 'peopleImage']}/>
+        </div></div>
+      </FocusZone>
+      <FocusZone page="/about" selector=".value-section" locate={locate}>
+        <ListEditor title="Values" itemName="value" items={draft.about.values} onChange={v => update(['about', 'values'], v)}
+          blank={() => ({ number: String(draft.about.values.length + 1).padStart(2, '0'), title: 'New value', text: '' })}
+          fields={[{ key: 'number', label: 'Number (e.g. 01)' }, { key: 'title', label: 'Title' }, { key: 'text', label: 'Description', type: 'textarea' }]}/>
+      </FocusZone>
     </>}
     {section === 'capabilities' && <>
-      <div className="content-card"><h2>Capabilities page</h2><div className="editor-grid">
-        <Field {...shared} label="Heading" path={['capabilities', 'title']} wide/>
-        <Field {...shared} label="Introduction" path={['capabilities', 'intro']} type="textarea"/>
-      </div></div>
-      <ListEditor title="Services" itemName="service" items={draft.capabilities.services} onChange={v => update(['capabilities', 'services'], v)}
-        blank={() => ({ id: String(draft.capabilities.services.length + 1).padStart(2, '0'), title: 'New service', text: '', items: [] })}
-        fields={[{ key: 'id', label: 'Number (e.g. 05)' }, { key: 'title', label: 'Service name' }, { key: 'text', label: 'Description', type: 'textarea' }, { key: 'items', label: 'Bullet points', type: 'list', placeholder: 'e.g. Cost planning' }]}/>
+      <FocusZone page="/capabilities" selector=".intro-hero" locate={locate}>
+        <div className="content-card"><h2>Capabilities — introduction</h2><div className="editor-grid">
+          <Field {...shared} label="Heading" path={['capabilities', 'title']} wide/>
+          <Field {...shared} label="Introduction" path={['capabilities', 'intro']} type="textarea"/>
+        </div></div>
+      </FocusZone>
+      <FocusZone page="/capabilities" selector=".capabilities-list" locate={locate}>
+        <ListEditor title="Services" itemName="service" items={draft.capabilities.services} onChange={v => update(['capabilities', 'services'], v)}
+          blank={() => ({ id: String(draft.capabilities.services.length + 1).padStart(2, '0'), title: 'New service', text: '', items: [] })}
+          fields={[{ key: 'id', label: 'Number (e.g. 05)' }, { key: 'title', label: 'Service name' }, { key: 'text', label: 'Description', type: 'textarea' }, { key: 'items', label: 'Bullet points', type: 'list', placeholder: 'e.g. Cost planning' }]}/>
+      </FocusZone>
     </>}
     {section === 'sustainability' && <>
-      <div className="content-card"><h2>Sustainability page</h2><div className="editor-grid">
-        <Field {...shared} label="Heading" path={['sustainability', 'title']} wide/>
-        <Field {...shared} label="Introduction" path={['sustainability', 'intro']} type="textarea"/>
-        <ImgField {...shared} label="Primary image" path={['sustainability', 'image']}/>
-        <ImgField {...shared} label="Secondary image" path={['sustainability', 'secondaryImage']}/>
-      </div></div>
-      <ListEditor title="Commitments" itemName="commitment" items={draft.sustainability.commitments} onChange={v => update(['sustainability', 'commitments'], v)} labelKey="label"
-        blank={{ metric: '0%', label: 'New commitment' }}
-        fields={[{ key: 'metric', label: 'Metric (e.g. 30%)' }, { key: 'label', label: 'Description', type: 'textarea', rows: 2 }]}/>
+      <FocusZone page="/sustainability" selector=".intro-hero" locate={locate}>
+        <div className="content-card"><h2>Sustainability — introduction</h2><div className="editor-grid">
+          <Field {...shared} label="Heading" path={['sustainability', 'title']} wide/>
+          <Field {...shared} label="Introduction" path={['sustainability', 'intro']} type="textarea"/>
+          <ImgField {...shared} label="Primary image" path={['sustainability', 'image']}/>
+        </div></div>
+      </FocusZone>
+      <FocusZone page="/sustainability" selector=".sustain-image-text" locate={locate}>
+        <div className="content-card"><h2>Sustainability — image section</h2><div className="editor-grid">
+          <ImgField {...shared} label="Secondary image" path={['sustainability', 'secondaryImage']}/>
+        </div></div>
+      </FocusZone>
+      <FocusZone page="/sustainability" selector=".sustain-commitments" locate={locate}>
+        <ListEditor title="Commitments" itemName="commitment" items={draft.sustainability.commitments} onChange={v => update(['sustainability', 'commitments'], v)} labelKey="label"
+          blank={{ metric: '0%', label: 'New commitment' }}
+          fields={[{ key: 'metric', label: 'Metric (e.g. 30%)' }, { key: 'label', label: 'Description', type: 'textarea', rows: 2 }]}/>
+      </FocusZone>
     </>}
-    {section === 'contact' && <div className="content-card"><h2>Contact page</h2><div className="editor-grid">
-      <Field {...shared} label="Heading" path={['contact', 'title']} wide/>
-      <Field {...shared} label="Introduction" path={['contact', 'intro']} type="textarea"/>
-      <Field {...shared} label="Map embed URL" path={['contact', 'mapUrl']} wide hint="Use a Google Maps embed link, e.g. https://www.google.com/maps?q=Juhu,Mumbai&output=embed"/>
-    </div></div>}
+    {section === 'contact' && <>
+      <FocusZone page="/contact" selector=".contact-hero" locate={locate}>
+        <div className="content-card"><h2>Contact page</h2><div className="editor-grid">
+          <Field {...shared} label="Heading" path={['contact', 'title']} wide/>
+          <Field {...shared} label="Introduction" path={['contact', 'intro']} type="textarea"/>
+        </div></div>
+      </FocusZone>
+      <FocusZone page="/contact" selector=".map-section" locate={locate}>
+        <div className="content-card"><h2>Map</h2><div className="editor-grid">
+          <Field {...shared} label="Map embed URL" path={['contact', 'mapUrl']} wide hint="Use a Google Maps embed link, e.g. https://www.google.com/maps?q=Juhu,Mumbai&output=embed"/>
+        </div></div>
+      </FocusZone>
+    </>}
     {section === 'careers' && <>
-      <div className="content-card"><h2>Careers page</h2><div className="editor-grid">
-        <Field {...shared} label="Heading" path={['careers', 'title']} wide/>
-        <Field {...shared} label="Introduction" path={['careers', 'intro']} type="textarea"/>
-        <ImgField {...shared} label="Careers image" path={['careers', 'image']}/>
-      </div></div>
-      <ListEditor title="Open roles" itemName="role" items={draft.careers.roles} onChange={v => update(['careers', 'roles'], v)}
-        blank={{ title: 'New role', location: 'Mumbai', type: 'Full-time' }}
-        fields={[{ key: 'title', label: 'Role title' }, { key: 'location', label: 'Location' }, { key: 'type', label: 'Type (e.g. Full-time)' }]}/>
+      <FocusZone page="/careers" selector=".careers-hero" locate={locate}>
+        <div className="content-card"><h2>Careers page</h2><div className="editor-grid">
+          <Field {...shared} label="Heading" path={['careers', 'title']} wide/>
+          <Field {...shared} label="Introduction" path={['careers', 'intro']} type="textarea"/>
+          <ImgField {...shared} label="Careers image" path={['careers', 'image']}/>
+        </div></div>
+      </FocusZone>
+      <FocusZone page="/careers" selector=".roles-section" locate={locate}>
+        <ListEditor title="Open roles" itemName="role" items={draft.careers.roles} onChange={v => update(['careers', 'roles'], v)}
+          blank={{ title: 'New role', location: 'Mumbai', type: 'Full-time' }}
+          fields={[{ key: 'title', label: 'Role title' }, { key: 'location', label: 'Location' }, { key: 'type', label: 'Type (e.g. Full-time)' }]}/>
+      </FocusZone>
     </>}
   </>
 }
 
-function PortfolioEditor({ draft, update, uploadImage, setPreviewPage }) {
-  return <ListEditor title="Project portfolio" itemName="project"
+function PortfolioEditor({ draft, update, uploadImage, locate }) {
+  const [zone, setZone] = useState({ page: '/projects', selector: '.projects-grid' })
+  return <FocusZone page={zone.page} selector={zone.selector} locate={locate}>
+    <ListEditor title="Project portfolio" itemName="project"
     hint="Open a project to edit it — the preview jumps to its page so you can see every change live."
     items={draft.projects} onChange={v => update(['projects'], v)} uploadImage={uploadImage}
-    onOpen={item => { if (item?.id || item?._id) setPreviewPage(`/projects/${item.id || item._id}`) }}
+    onOpen={item => { if (item?.id || item?._id) { const next = { page: `/projects/${item.id || item._id}`, selector: null }; setZone(next); locate(next.page, next.selector) } }}
     blank={() => ({ id: `new-project-${Date.now()}`, title: 'New project', category: 'Commercial', location: 'Mumbai, India', year: String(new Date().getFullYear()), status: 'In progress', scope: 'Construction management', image: '/assets/ananta-signature-structure.jpg', summary: 'Add a concise project summary.', challenge: 'Describe the project challenge.', impact: 'Describe the result.' })}
     transform={(item, key) => { if (key === 'title' && !item._id) item.id = slugify(item.title) || item.id; return item }}
     fields={[
@@ -307,14 +388,17 @@ function PortfolioEditor({ draft, update, uploadImage, setPreviewPage }) {
       { key: 'challenge', label: 'The challenge', type: 'textarea' },
       { key: 'impact', label: 'The impact', type: 'textarea' }
     ]}/>
+  </FocusZone>
 }
 
-function InsightsEditor({ draft, update, uploadImage, setPreviewPage }) {
+function InsightsEditor({ draft, update, uploadImage, locate }) {
+  const [zone, setZone] = useState({ page: '/insights', selector: '.insight-feature' })
   return <>
+    <FocusZone page={zone.page} selector={zone.selector} locate={locate}>
     <ListEditor title="Insight articles" itemName="article"
       hint="Full articles shown on the Insights page. Each paragraph of the body is one line below."
       items={draft.insights} onChange={v => update(['insights'], v)} uploadImage={uploadImage}
-      onOpen={item => { if (item?.slug) setPreviewPage('/insights') }}
+      onOpen={(item, i) => { const next = { page: '/insights', selector: i === 0 ? '.insight-feature' : '.insight-list' }; setZone(next); locate(next.page, next.selector) }}
       blank={() => ({ slug: `new-insight-${Date.now()}`, date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\//g, '.'), type: 'Perspective', title: 'New insight', image: '', excerpt: '', author: 'Ananta Editorial', body: [''] })}
       transform={(item, key) => { if (key === 'title') item.slug = slugify(item.title) || item.slug; return item }}
       fields={[
@@ -324,14 +408,17 @@ function InsightsEditor({ draft, update, uploadImage, setPreviewPage }) {
         { key: 'excerpt', label: 'Excerpt', type: 'textarea', rows: 2 },
         { key: 'body', label: 'Body paragraphs', type: 'list', placeholder: 'Write a paragraph' }
       ]}/>
-    <ListEditor title="Home page news links" itemName="news link"
-      hint="The short list of headlines on the home page. Use the slug of an insight article so the link works."
-      items={draft.news} onChange={v => update(['news'], v)}
-      blank={{ slug: '', date: '', type: 'Perspective', title: 'New headline' }}
-      fields={[
-        { key: 'title', label: 'Headline', wide: true }, { key: 'type', label: 'Type' },
-        { key: 'date', label: 'Date' }, { key: 'slug', label: 'Insight slug to link to' }
-      ]}/>
+    </FocusZone>
+    <FocusZone page="/" selector=".home-news" locate={locate}>
+      <ListEditor title="Home page news links" itemName="news link"
+        hint="The short list of headlines on the home page — the preview jumps there while you edit. Use the slug of an insight article so the link works."
+        items={draft.news} onChange={v => update(['news'], v)}
+        blank={{ slug: '', date: '', type: 'Perspective', title: 'New headline' }}
+        fields={[
+          { key: 'title', label: 'Headline', wide: true }, { key: 'type', label: 'Type' },
+          { key: 'date', label: 'Date' }, { key: 'slug', label: 'Insight slug to link to' }
+        ]}/>
+    </FocusZone>
   </>
 }
 
@@ -414,12 +501,24 @@ export default function Admin() {
   const [showPreview, setShowPreview] = useState(true)
   const [previewPage, setPreviewPage] = useState('/')
   const [device, setDevice] = useState('desktop')
+  const previewApi = useRef(null)
+  const lastZone = useRef('')
+
+  // Point the live preview at the page + section a field controls.
+  const locatePreview = (page, selector) => {
+    const key = `${page}|${selector || ''}`
+    if (lastZone.current === key) return
+    lastZone.current = key
+    if (page) setPreviewPage(page)
+    previewApi.current?.locate({ page, selector })
+  }
+  const choosePreviewPage = page => { lastZone.current = ''; setPreviewPage(page) }
 
   useEffect(() => { if (site && !draft) setDraft(clone(site)) }, [site, draft])
   useEffect(() => { if (token && tab === 'inquiries') loadInquiries() }, [token, tab]) // eslint-disable-line
   useEffect(() => {
     const map = { brand: '/', home: '/', cms: '/', portfolio: '/projects', insights: '/insights', pages: `/${pageSection}` }
-    if (map[tab]) setPreviewPage(map[tab])
+    if (map[tab]) { lastZone.current = ''; setPreviewPage(map[tab]) }
   }, [tab, pageSection])
 
   const api = async (url, options = {}) => {
@@ -464,7 +563,7 @@ export default function Admin() {
   }
 
   if (!token) return <main className="admin-login">
-    <Link className="admin-back" to="/"><ArrowLeft size={16}/> Back to website</Link>
+    <a className="admin-back" href={SITE_URL}><ArrowLeft size={16}/> Back to website</a>
     <div className="admin-login-card">
       <Brand/>
       <p className="eyebrow"><i/>Secure client portal</p>
@@ -482,14 +581,14 @@ export default function Admin() {
 
   const editing = EDIT_TABS.includes(tab)
   const dirty = draft && site && JSON.stringify(draft) !== JSON.stringify(site)
-  const shared = { draft, update, uploadImage }
+  const shared = { draft, update, uploadImage, locate: locatePreview }
 
   return <main className="admin-shell">
     <aside className="admin-sidebar">
       <Brand inverse/>
       <nav>{MENU.map(([id, label, Icon]) => <button key={id} onClick={() => setTab(id)} className={tab === id ? 'active' : ''}><Icon size={18}/>{label}{id === 'inquiries' && inquiries.length > 0 ? <small>{inquiries.length}</small> : null}</button>)}</nav>
       <div>
-        <Link to="/" target="_blank">View website ↗</Link>
+        <a href={SITE_URL} target="_blank" rel="noreferrer">View website ↗</a>
         <button onClick={() => { localStorage.removeItem('ananta-token'); setToken(null) }}><LogOut size={17}/> Sign out</button>
       </div>
     </aside>
@@ -511,12 +610,12 @@ export default function Admin() {
             {tab === 'brand' && <BrandEditor {...shared}/>}
             {tab === 'home' && <HomeEditor {...shared}/>}
             {tab === 'pages' && <PagesEditor {...shared} section={pageSection} setSection={setPageSection}/>}
-            {tab === 'portfolio' && <PortfolioEditor {...shared} setPreviewPage={setPreviewPage}/>}
-            {tab === 'insights' && <InsightsEditor {...shared} setPreviewPage={setPreviewPage}/>}
+            {tab === 'portfolio' && <PortfolioEditor {...shared}/>}
+            {tab === 'insights' && <InsightsEditor {...shared}/>}
             {tab === 'cms' && <EverythingEditor draft={draft} setDraft={setDraft}/>}
             {tab === 'inquiries' && <InquiryList inquiries={inquiries} reload={loadInquiries}/>}
           </div>
-          {editing && showPreview && <PreviewPane draft={draft} page={previewPage} setPage={setPreviewPage} device={device} setDevice={setDevice}/>}
+          {editing && showPreview && <PreviewPane draft={draft} page={previewPage} setPage={choosePreviewPage} device={device} setDevice={setDevice} apiRef={previewApi}/>}
         </div>}
     </section>
   </main>

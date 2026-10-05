@@ -16,9 +16,11 @@ npm install --prefix client
 npm run dev
 ```
 
-- Website: `http://localhost:5173`
-- API: `http://localhost:5050`
-- Admin portal: `http://localhost:5173/admin`
+- Website: `http://localhost:7000`
+- Admin panel: `http://localhost:7001` (with a real-time live preview of the site beside every editor)
+- API: `http://localhost:5050` (proxied through both apps)
+
+In production (`npm run build && npm start`) a single server serves the site with the admin panel under `/admin`.
 
 Demo portal access is `admin@anantainfratech.com` / `Ananta@2016`. **Change this and `JWT_SECRET` through environment variables before deploying.** Copy `.env.example` to `.env` to configure deployment settings.
 
