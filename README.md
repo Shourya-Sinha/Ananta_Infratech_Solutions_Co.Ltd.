@@ -37,7 +37,8 @@ The protected `/admin` portal provides:
 
 1. Quick editing for business, home hero and contact details.
 2. Image upload (the returned URL is copied for use in content).
-3. An **Everything editor** for all page copy, navigation content, services, statistics, projects, roles, image/video URLs and links.
-4. A unified view of project and career enquiries.
+3. A visual **Portfolio editor** for adding, editing and removing projects without touching code.
+4. An **Everything editor** for all page copy, navigation content, services, statistics, projects, roles, insights/articles, image/video URLs and links.
+5. A unified view of project and career enquiries.
 
 Click **Publish changes** to update the public site. With MongoDB connected, content and enquiries are stored in MongoDB. Without it, they persist to `server/data/cms.json` in development.
