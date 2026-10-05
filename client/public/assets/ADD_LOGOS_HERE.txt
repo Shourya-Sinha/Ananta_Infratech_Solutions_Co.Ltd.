@@ -1,0 +1,7 @@
+Brand asset drop-zone
+
+Place the supplied brand files here using these exact names:
+- dlogo-removebg.png  (primary transparent logo used by the navigation and footer)
+- logo.jpeg           (alternate logo retained for future use)
+
+The React brand component already targets /assets/dlogo-removebg.png and has a typographic A fallback while the asset is absent.

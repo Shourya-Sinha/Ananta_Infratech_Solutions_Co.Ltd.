@@ -1,0 +1,6 @@
+import { Link } from 'react-router-dom'
+import { ArrowUpRight } from 'lucide-react'
+import { useSite } from '../lib/site'
+import { Eyebrow, Reveal } from '../components/Blocks'
+
+export default function Insights(){const {site}=useSite();const [feature,...stories]=site.insights||[];if(!feature)return <main className="not-found"><p className="eyebrow"><i/>Insights</p><h1>New ideas<br/><em>are on their way.</em></h1><Link className="button" to="/">Return home</Link></main>;return <main><section className="insights-hero"><Eyebrow>Insights</Eyebrow><h1>Ideas with their<br/><em>feet on the ground.</em></h1><p>Notes from our people, projects and the changing world of construction.</p></section><Link to={`/insights/${feature.slug}`} className="insight-feature"><img src={feature.image} alt=""/><div><span>Featured {feature.type} · {feature.date}</span><h2>{feature.title}</h2><p>{feature.excerpt}</p><span className="insight-read">Read perspective <ArrowUpRight size={17}/></span></div></Link><section className="insight-list">{stories.map((story,i)=><Reveal className="insight-row" key={story.slug} delay={i*.03}><span>{story.date}</span><span>{story.type}</span><Link to={`/insights/${story.slug}`}><h3>{story.title}</h3></Link><Link to={`/insights/${story.slug}`} aria-label={`Read ${story.title}`}><ArrowUpRight size={21}/></Link></Reveal>)}</section></main>}

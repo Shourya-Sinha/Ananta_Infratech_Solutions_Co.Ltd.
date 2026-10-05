@@ -1,0 +1,5 @@
+import { useMemo, useState } from 'react'
+import { useSite } from '../lib/site'
+import { Eyebrow, ProjectCard, Reveal } from '../components/Blocks'
+
+export default function Projects(){ const {site}=useSite(); const [filter,setFilter]=useState('All'); const categories=useMemo(()=>['All',...new Set(site.projects.map(p=>p.category))],[site.projects]); const list=filter==='All'?site.projects:site.projects.filter(p=>p.category===filter);return <main><section className="projects-hero"><Eyebrow>Our work</Eyebrow><h1>Work that<br/><em>moves things forward.</em></h1><p>We work across the places that shape everyday life—from ambitious commercial campuses to considered homes and essential infrastructure.</p></section><section className="projects-content"><div className="filter-bar" role="tablist">{categories.map(c=><button role="tab" aria-selected={filter===c} onClick={()=>setFilter(c)} key={c}>{c}<small>{c==='All'?site.projects.length:site.projects.filter(p=>p.category===c).length}</small></button>)}</div><div className="projects-grid">{list.map((p,i)=><Reveal key={p.id||p._id} delay={(i%3)*.06}><ProjectCard project={p}/></Reveal>)}</div></section></main> }
