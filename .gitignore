@@ -8,3 +8,6 @@ server/data/*.json
 server/uploads/*
 !server/uploads/.gitkeep
 client/dist/
+
+# render smoke-test bundle
+client/.smoke/
