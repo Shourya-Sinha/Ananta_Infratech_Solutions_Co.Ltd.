@@ -889,16 +889,43 @@ export const jobs = [
 ]
 
 export const register = {
+  /**
+   * Applications switch.
+   *
+   * `enabled: false` keeps the whole registration section on the website but
+   * closed: every link is labelled "Coming soon", the page explains what is
+   * being built, and the API refuses submissions so nobody is left expecting a
+   * reply that cannot come yet. Set it to true from Admin → Careers &
+   * registration when the portal is ready to accept applications.
+   */
+  enabled: false,
+  status: 'Coming soon',
   eyebrow: 'Contractor & worker registration',
   title: 'Register your interest with Ananta.',
   intro:
-    'We are building a verified network of contractors, suppliers and skilled workers across our project regions. Register today and you will be contacted first when applications open — there is no fee, no intermediary and no obligation.',
+    'We are building a verified network of contractors, suppliers and skilled workers across our project regions. Registration opens shortly — here is exactly what is coming, and how to reach the team in the meantime.',
   image: img.team,
   launch: {
-    status: 'Launching soon',
+    status: 'Coming soon',
     headline: 'Our registration portal opens shortly.',
-    note: 'The full registration portal — with document upload, licence verification and automatic prequalification scoring — is in final build. Until then, register your interest below and our procurement and HR teams will contact you directly as opening dates are confirmed.',
+    note: 'The full registration portal — with document upload, licence verification and automatic prequalification scoring — is in final build. Applications are not open yet: nothing you send today would be processed. Use the contact routes below and our procurement and HR teams will reach you first when opening dates are confirmed.',
     date: 'Registration opens in phases from Q1 2027'
+  },
+  comingSoon: {
+    headline: 'Two registration tracks are being built.',
+    text: 'When the portal opens, contractors and workers will register on separate tracks, each with its own verification and its own team looking after it. Both are described below so you know exactly what to prepare.',
+    whatsComing: [
+      { title: 'Document upload', text: 'Licences, GST, PAN, insurance and financial statements uploaded and stored against your profile.' },
+      { title: 'Licence & registration checks', text: 'Automated validation of GST, EPF, ESIC and BOCW registration numbers as you type them.' },
+      { title: 'Prequalification scoring', text: 'Transparent scoring against published criteria, with the weighting shown to you at the end.' },
+      { title: 'Worker verification & training', text: 'Trade verification, certification support and free training placement for site workers.' },
+      { title: 'Applications tracking', text: 'Track your registration status by reference number, exactly as our other submissions work today.' },
+      { title: 'Direct notifications', text: 'Email and SMS updates when a package matches your trade, scale and region.' }
+    ],
+    meanwhile: [
+      { label: 'Contractors & suppliers', text: 'For subcontract packages, plant hire and material supply.', email: 'tenders@anantainfratech.com', phone: '+91 98200 42016' },
+      { label: 'Workers & technicians', text: 'For site work, equipment operation and technical trades.', email: 'careers@anantainfratech.com', phone: '+91 98200 42016' }
+    ]
   },
   trustPoints: [
     { label: 'No fee, ever', text: 'We never charge for registration, prequalification or tender participation. Report any request for payment immediately.' },
@@ -1025,7 +1052,7 @@ export const nav = [
     children: [
       { label: 'Life at Ananta', to: '/careers', description: 'Culture, benefits and open roles' },
       { label: 'Open roles', to: '/careers#open-roles', description: 'Current staff and engineering vacancies' },
-      { label: 'Contractor & worker registration', to: '/register', description: 'Launching soon — register your interest' },
+      { label: 'Contractor & worker registration', to: '/register', description: 'Coming soon — see what is being built' },
       { label: 'Tenders & e-procurement', to: '/tenders', description: 'Packages, criteria and process' }
     ]
   }

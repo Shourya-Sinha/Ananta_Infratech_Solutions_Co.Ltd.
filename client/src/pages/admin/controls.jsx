@@ -54,6 +54,31 @@ export function TextArea({ label, value, onChange, hint, rows = 3, mono = false,
   )
 }
 
+/**
+ * Boolean switch used for feature gates — currently the registration toggle,
+ * which turns the whole contractor/worker section between "coming soon" and a
+ * live application form.
+ */
+export function ToggleInput({ label, value, onChange, hint, onLabel = 'On', offLabel = 'Off' }) {
+  const checked = value === true
+  return (
+    <div className="field field-toggle">
+      <span className="field-label">{label}</span>
+      {hint ? <span className="field-hint">{hint}</span> : null}
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        className={`toggle-switch ${checked ? 'is-on' : ''}`}
+        onClick={() => onChange(!checked)}
+      >
+        <span className="toggle-track"><span className="toggle-knob" /></span>
+        <b>{checked ? onLabel : offLabel}</b>
+      </button>
+    </div>
+  )
+}
+
 export function SelectInput({ label, value, onChange, options = [], hint }) {
   return (
     <label className="field">
@@ -293,6 +318,8 @@ export function FieldControl({ field, value, onChange, uploadImage, depth = 0 })
       return <TextInput label={field.label} hint={field.hint} type="number" min={0} max={100} value={value} onChange={onChange} />
     case 'select':
       return <SelectInput label={field.label} hint={field.hint} value={value} onChange={onChange} options={field.options || []} />
+    case 'toggle':
+      return <ToggleInput label={field.label} hint={field.hint} value={value} onChange={onChange} onLabel={field.onLabel} offLabel={field.offLabel} />
     case 'image':
       return <ImageField label={field.label} hint={field.hint} value={value} onChange={onChange} uploadImage={uploadImage} />
     case 'list':

@@ -577,3 +577,44 @@
   .link-editor-row, .link-editor-fields { grid-template-columns: 1fr; }
   .repeater-body { grid-template-columns: 1fr; }
 }
+
+/* ------------------------------------------------------- toggles (feature gates) */
+
+.field-toggle { grid-column: 1 / -1; }
+.toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  justify-self: start;
+  padding: 8px 14px 8px 10px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  border-radius: 999px;
+  transition: border-color 0.25s, background 0.25s;
+}
+.toggle-switch:hover { border-color: var(--line-strong); }
+.toggle-switch.is-on { border-color: rgba(47, 122, 79, 0.45); background: rgba(47, 122, 79, 0.08); }
+.toggle-switch.is-on .toggle-track { background: var(--success); }
+.toggle-switch.is-on .toggle-knob { transform: translateX(16px); }
+.toggle-switch b { font-size: 12.4px; font-weight: 600; }
+.toggle-switch.is-on b { color: var(--success); }
+.toggle-track {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--sand);
+  transition: background 0.25s;
+}
+.toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s var(--ease);
+}

@@ -114,6 +114,29 @@ for (const [route, pattern, Component] of routes) {
   }
 }
 
+// The registration section has two states. The published document decides which
+// one visitors see, so both are rendered here rather than trusting the toggle.
+for (const [label, content] of [
+  ['registration · closed (coming soon)', site],
+  ['registration · open (form live)', { ...site, register: { ...site.register, enabled: true } }]
+]) {
+  checked += 1
+  try {
+    const html = renderToString(
+      <MemoryRouter initialEntries={['/register']}>
+        <SiteProvider initialSite={content}>
+          <ToastProvider>
+            <ErrorBoundary><Routes><Route path="/register" element={<Register />} /></Routes></ErrorBoundary>
+          </ToastProvider>
+        </SiteProvider>
+      </MemoryRouter>
+    )
+    if (!html || html.length < 2000) failures.push(`${label} — suspiciously small output (${html.length} bytes)`)
+  } catch (error) {
+    failures.push(`${label} — ${error.message}`)
+  }
+}
+
 // Every CMS editor is rendered against the real document, so a mistyped schema
 // path or a control that cannot read its slice of content fails loudly here.
 for (const section of adminSections) {

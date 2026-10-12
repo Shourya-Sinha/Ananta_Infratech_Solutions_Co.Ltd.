@@ -61,17 +61,26 @@ back to the JSON store if not.)
 
 ## Contractor and worker registration
 
-Registration is **applications-launching-soon** with a live interest list, so nothing is lost before the full
-portal opens:
+The registration section is built and shipped **switched off**. Nothing has been removed — both tracks, all their
+copy, the launch messaging and the FAQ stay on the website — but the page presents itself honestly as **"Coming soon"**
+until you are ready to accept applications:
 
-- `/register` presents **two separate tracks** — contractors/suppliers and workers/technicians — each with its own
-  steps, requirements, benefits and form.
-- A submission is acknowledged with a reference (`ANC-…` contractor, `ANW-…` worker) and stored in the CMS inbox,
-  where it can be filtered by track and status, annotated with internal notes and exported to CSV.
-- `/track` lets an applicant look up any submission (contract enquiry, job application, tender enquiry, document
-  request or registration) by reference number or email address.
+- Every registration link (utility bar, mega menu, careers, tenders, equipment, FAQ, contact, 404) is labelled
+  "Coming soon" from one source of truth.
+- `/register` shows what is being built for each track, the opening phases, what to prepare, and who to contact in the
+  meantime — with no form collecting applications nobody can process yet.
+- `POST /api/register` is refused server-side with a clear message while the switch is off, so no one is left expecting
+  a reply.
 
-Copy, requirements, trades and launch dates for both tracks are editable in **Admin → Careers & registration**.
+**To open applications**, go to **Admin → Careers & registration → Contractor & worker registration** and turn on
+*Accept registration applications*. The same page becomes the live route: two tracks (contractors/suppliers and
+workers/technicians), each with its own steps, requirements and form, deep-linkable as `/register?track=worker` and
+`/register?track=contractor`. Submissions are acknowledged with a reference (`ANC-…` contractor, `ANW-…` worker) and
+land in the CMS inbox, where they can be filtered by track and status, annotated and exported to CSV. `/track` lets an
+applicant check any submission by reference or email.
+
+Closing it again is the same toggle in reverse, and the API stops accepting submissions immediately. For contractors
+and suppliers the interim contact is `tenders@anantainfratech.com`; for workers and technicians, `careers@anantainfratech.com`.
 
 ## Editing the website
 

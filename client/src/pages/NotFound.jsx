@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, Compass, Search } from 'lucide-react'
-import { useContent } from '../lib/site'
+import { useContent, useRegistration } from '../lib/site'
 import { Seo } from '../lib/seo'
 
 const POPULAR = [
@@ -16,6 +16,7 @@ const POPULAR = [
 
 export default function NotFound() {
   const site = useContent()
+  const registration = useRegistration()
   const projects = (site.projects || []).slice(0, 3)
 
   return (
@@ -36,7 +37,11 @@ export default function NotFound() {
         </div>
 
         <div className="not-found-links">
-          {POPULAR.map((item) => <Link key={item.to} to={item.to}>{item.label}</Link>)}
+          {POPULAR.map((item) => (
+            <Link key={item.to} to={item.to}>
+              {item.to === '/register' && !registration.open ? `${item.label} · ${registration.label}` : item.label}
+            </Link>
+          ))}
         </div>
 
         {projects.length ? (

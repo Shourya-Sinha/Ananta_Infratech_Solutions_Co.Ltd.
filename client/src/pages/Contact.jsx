@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { ArrowUpRight, Clock, Mail, MapPin, MessageSquare, Phone } from 'lucide-react'
-import { useContent } from '../lib/site'
+import { useContent, useRegistration } from '../lib/site'
 import { Seo, organisationSchema } from '../lib/seo'
 import { CtaSlab, Eyebrow, PageHero, Reveal, SectionLead, Tag, TextLink } from '../components/Blocks'
 import { ContactForm } from '../components/Forms'
 
 export default function Contact() {
   const site = useContent()
+  const registration = useRegistration()
   const contact = site.contact || {}
   const company = site.company || {}
   const offices = site.offices || []
@@ -157,7 +158,9 @@ export default function Contact() {
           {[
             { title: 'For a new project', text: 'Tell us the location, approximate area, intended use and where you are in design. Even a rough brief gets a useful first response.', to: '/contact?department=new-business', label: 'New business' },
             { title: 'For procurement', text: 'Name the package, the value band and the region. We will tell you which of our projects the package relates to.', to: '/tenders', label: 'Tender enquiries' },
-            { title: 'For jobs & site work', text: 'Staff applications go to our talent team. Site workers, technicians and contractors should use the registration route.', to: '/register', label: 'Registration' }
+            { title: 'For jobs & site work', text: registration.open
+              ? 'Staff applications go to our talent team. Site workers, technicians and contractors should use the registration route.'
+              : 'Staff applications go to our talent team. Contractor and worker registration is coming soon — write to us and we will route you to the right team.', to: '/register', label: registration.open ? 'Registration' : `Registration${registration.suffix}` }
           ].map((item, index) => (
             <Reveal className="card" key={item.title} delay={index * 0.05}>
               <span className="card-number">{String(index + 1).padStart(2, '0')}</span>
@@ -191,7 +194,7 @@ export default function Contact() {
         text="Staff vacancies are on our careers page. Site workers, technicians, contractors and suppliers should register their interest instead."
         image={site.careers?.image}
         primary={{ to: '/careers', label: 'See open roles' }}
-        secondary={{ to: '/register', label: 'Contractor & worker registration' }}
+        secondary={{ to: '/register', label: `Contractor & worker registration${registration.suffix}` }}
       />
     </main>
   )

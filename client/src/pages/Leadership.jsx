@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, Quote } from 'lucide-react'
-import { useContent } from '../lib/site'
+import { useContent, useRegistration } from '../lib/site'
 import { Seo, breadcrumbSchema } from '../lib/seo'
 import {
   CtaSlab, Eyebrow, PageHero, Reveal, SectionLead, StatStrip, TeamCard, TextLink
@@ -8,6 +8,7 @@ import {
 
 export default function Leadership() {
   const site = useContent()
+  const registration = useRegistration()
   const intro = site.leadershipIntro || {}
   const base = site.meta?.siteUrl || ''
 
@@ -129,7 +130,7 @@ export default function Leadership() {
         text="Engineers, planners, quantity surveyors, safety officers and site leaders — we are hiring across all our project regions."
         image={site.teamIntro?.image}
         primary={{ to: '/careers', label: 'See open roles' }}
-        secondary={{ to: '/register', label: 'Register as a worker' }}
+        secondary={{ to: '/register', label: `Register as a worker${registration.suffix}` }}
       />
     </main>
   )

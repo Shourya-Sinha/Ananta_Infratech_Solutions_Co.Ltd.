@@ -1,12 +1,13 @@
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, ArrowUpRight, Check, Clock, IndianRupee, MapPin } from 'lucide-react'
-import { useContent } from '../lib/site'
+import { useContent, useRegistration } from '../lib/site'
 import { Seo, breadcrumbSchema } from '../lib/seo'
 import { CtaSlab, Eyebrow, FactGrid, PageHero, Reveal, SectionLead, Tag } from '../components/Blocks'
 import { CareerForm } from '../components/Forms'
 
 export default function JobDetail() {
   const site = useContent()
+  const registration = useRegistration()
   const { id } = useParams()
   const jobs = site.jobs || []
   const job = jobs.find((item) => item.id === id)
@@ -160,7 +161,7 @@ export default function JobDetail() {
             <p style={{ fontSize: 12.8, color: 'var(--muted)', margin: 0 }}>
               Skilled workers, contractors and suppliers should use our registration route instead.
             </p>
-            <Link className="button button-sm button-ghost" to="/register">Registration <ArrowUpRight size={14} /></Link>
+            <Link className="button button-sm button-ghost" to="/register">{registration.open ? 'Registration' : registration.label} <ArrowUpRight size={14} /></Link>
           </div>
         </aside>
       </section>
@@ -190,7 +191,7 @@ export default function JobDetail() {
         text="We keep speculative applications on file and revisit them when a matching role opens. Send us what you are good at."
         image={site.careers?.image}
         primary={{ to: '/careers#application', label: 'Send a speculative application' }}
-        secondary={{ to: '/register', label: 'Worker registration' }}
+        secondary={{ to: '/register', label: `Worker registration${registration.suffix}` }}
       />
     </main>
   )

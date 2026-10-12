@@ -2,8 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
-  ArrowDownRight, ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronLeft, ChevronRight,
-  Minus, Plus, Search, X
+  ArrowDownRight,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Minus,
+  Plus,
+  Search,
+  X
 } from 'lucide-react'
 
 /* ------------------------------------------------------------------ motion */
@@ -32,6 +42,21 @@ export function Eyebrow({ children, inverse = false, className = '' }) {
 
 export function Tag({ children, tone = '', className = '' }) {
   return <span className={`tag ${tone} ${className}`.trim()}>{children}</span>
+}
+
+/**
+ * Small status pill used wherever a feature is visible but not yet open.
+ * `open` flips it to a positive "Open now" badge so the same markup serves both
+ * states of the CMS registration toggle.
+ */
+export function ComingSoonTag({ open = false, label = 'Coming soon', className = '', tone }) {
+  const resolved = tone || (open ? 'tag-success' : 'tag-warning')
+  return (
+    <span className={`coming-soon-tag tag ${resolved} ${className}`.trim()}>
+      <Clock size={11} />
+      {open ? 'Open now' : label}
+    </span>
+  )
 }
 
 export function TextLink({ to, href, children, light = false, className = '' }) {

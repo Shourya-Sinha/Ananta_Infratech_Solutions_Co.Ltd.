@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, Check, ShieldCheck } from 'lucide-react'
-import { useContent } from '../lib/site'
+import { useContent, useRegistration } from '../lib/site'
 import { Seo, breadcrumbSchema } from '../lib/seo'
 import { CtaSlab, Eyebrow, PageHero, ProgressBar, Reveal, SectionLead, Stepper, Tag, TextLink } from '../components/Blocks'
 import { TenderForm } from '../components/Forms'
 
 export default function Tenders() {
   const site = useContent()
+  const registration = useRegistration()
   const tenders = site.tenders || {}
   const base = site.meta?.siteUrl || ''
   const company = site.company || {}
@@ -35,7 +36,7 @@ export default function Tenders() {
           { value: '0', label: 'fees to register or bid' }
         ]}
         actions={<>
-          <Link className="button button-acid" to="/register">Register your company <ArrowUpRight size={16} /></Link>
+          <Link className="button button-acid" to="/register">Register your company{registration.suffix} <ArrowUpRight size={16} /></Link>
           <a className="button button-light" href={`mailto:${company.tendersEmail}`}>Email the procurement team</a>
         </>}
       />
@@ -87,7 +88,7 @@ export default function Tenders() {
                     <td>{item.type}</td>
                     <td>{item.scale}</td>
                     <td><Tag tone={item.status === 'Always open' ? 'tag-success' : 'tag-info'}>{item.status}</Tag></td>
-                    <td><Link className="text-button" to="/register">Register <ArrowUpRight size={13} /></Link></td>
+                    <td><Link className="text-button" to="/register">{registration.open ? 'Register' : registration.label} <ArrowUpRight size={13} /></Link></td>
                   </tr>
                 ))}
               </tbody>
@@ -197,7 +198,7 @@ export default function Tenders() {
         title={<>Register once.<br />Be considered for <em>every package</em> that fits.</>}
         text="Contractor and supplier registration is launching shortly. Register your interest now and our procurement team will contact you directly as registration opens."
         image={tenders.image}
-        primary={{ to: '/register', label: 'Register your company' }}
+        primary={{ to: '/register', label: `Register your company${registration.suffix}` }}
         secondary={{ to: '/faq', label: 'Read the FAQs' }}
       />
     </main>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ArrowUpRight, Briefcase, HardHat, MapPin, Search } from 'lucide-react'
-import { useContent } from '../lib/site'
+import { useContent, useRegistration } from '../lib/site'
 import { Seo, breadcrumbSchema } from '../lib/seo'
 import {
   CtaSlab, EmptyState, Eyebrow, PageHero, Reveal, SectionLead, StatStrip, Stepper, Tag, TextLink
@@ -12,6 +12,7 @@ const APPLICATION_ANCHOR = 'application'
 
 export default function Careers() {
   const site = useContent()
+  const registration = useRegistration()
   const careers = site.careers || {}
   const register = site.register || {}
   const jobs = site.jobs || []
@@ -82,7 +83,7 @@ export default function Careers() {
         stats={careers.heroStats}
         actions={<>
           <a className="button button-acid" href="#open-roles">See {jobs.length} open roles <ArrowUpRight size={16} /></a>
-          <Link className="button button-light" to="/register">Worker &amp; contractor registration</Link>
+          <Link className="button button-light" to="/register">Worker &amp; contractor registration{registration.suffix}</Link>
         </>}
       />
 
@@ -123,7 +124,7 @@ export default function Careers() {
             <p style={{ fontSize: 13 }}>
               Contractors, suppliers and skilled workers should use our dedicated registration route instead.
             </p>
-            <Link className="button button-sm" to="/register">Contractor &amp; worker registration <ArrowUpRight size={14} /></Link>
+            <Link className="button button-sm" to="/register">Contractor &amp; worker registration{registration.suffix} <ArrowUpRight size={14} /></Link>
           </div>
         </div>
 
@@ -187,7 +188,7 @@ export default function Careers() {
             eyebrow={register.eyebrow}
             title={<>Site workers, technicians,<br />contractors and <em>suppliers.</em></>}
             copy={register.intro}
-            action={<TextLink light to="/register">Open the registration page</TextLink>}
+            action={<TextLink light to="/register">{registration.open ? 'Open the registration page' : `See what is coming${registration.suffix}`}</TextLink>}
             dark
           />
           <div className="register-switch" style={{ marginBottom: 0 }}>
@@ -199,7 +200,7 @@ export default function Careers() {
                 {(register.contractor?.types || []).slice(0, 4).map((item) => <span className="tag tag-inverse" key={item}>{item}</span>)}
               </div>
               <Link className="register-track-cta" to="/register" style={{ color: 'var(--acid)' }}>
-                Register your company <ArrowUpRight size={15} />
+                {registration.open ? 'Register your company' : `${registration.label} — see what is being built`} <ArrowUpRight size={15} />
               </Link>
             </div>
             <div className="register-track" style={{ background: 'var(--ink-2)', borderColor: 'var(--line-inverse)' }}>
@@ -213,7 +214,7 @@ export default function Careers() {
                 <span className="tag tag-inverse">Supervision</span>
               </div>
               <Link className="register-track-cta" to="/register" style={{ color: 'var(--acid)' }}>
-                Register your interest <ArrowUpRight size={15} />
+                {registration.open ? 'Register your interest' : `${registration.label} — see what is being built`} <ArrowUpRight size={15} />
               </Link>
             </div>
           </div>
@@ -328,7 +329,7 @@ export default function Careers() {
         text="If you want to understand the role, the site or the team before submitting anything, write to our talent team and ask."
         image={careers.image}
         primary={{ to: '/contact', label: 'Ask a question' }}
-        secondary={{ to: '/register', label: 'Contractor & worker registration' }}
+        secondary={{ to: '/register', label: `Contractor & worker registration${registration.suffix}` }}
       />
     </main>
   )

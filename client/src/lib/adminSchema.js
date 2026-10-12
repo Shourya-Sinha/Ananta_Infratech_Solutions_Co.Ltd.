@@ -497,15 +497,35 @@ export const adminSections = [
     id: 'register',
     group: 'Careers & registration',
     title: 'Contractor & worker registration',
-    description: 'The registration landing page, the two tracks, their requirements and the launch messaging.',
+    description: 'The registration section on the website, both tracks, and whether applications are open. The section stays on the site either way — this is the switch that decides if the form is live or the page shows "coming soon".',
     root: ['register'],
     fields: [
+      {
+        key: 'enabled',
+        label: 'Accept registration applications',
+        type: 'toggle',
+        onLabel: 'Applications open — the form is live',
+        offLabel: 'Coming soon — the form is disabled',
+        hint: 'Off keeps every page, both tracks and the copy in place, labels every registration link “Coming soon”, and refuses submissions on the server so nobody is left expecting a reply. Turn it on when the portal is ready.'
+      },
+      t('status', 'Status label', 'Shown on every registration link and badge while applications are closed.'),
       t('eyebrow', 'Eyebrow'), t('title', 'Page heading'), ta('intro', 'Introduction'), img('image', 'Page hero image', imageHint),
       { key: 'launch', label: 'Launch messaging', type: 'group', fields: [
-        t('status', 'Status label', 'e.g. Launching soon'),
+        t('status', 'Status label in the banner'),
         t('headline', 'Headline'),
         ta('note', 'Explanatory note'),
         t('date', 'Opening date message'),
+      ] },
+      { key: 'comingSoon', label: '“Coming soon” panel', type: 'group', fields: [
+        t('headline', 'Heading'),
+        ta('text', 'Introduction'),
+        rep('whatsComing', 'What is being built', [t('title', 'Feature'), ta('text', 'Description')], 'title'),
+        rep('meanwhile', 'Who to contact meanwhile', [
+          t('label', 'Track'),
+          ta('text', 'Who this line is for'),
+          t('email', 'Email'),
+          t('phone', 'Phone'),
+        ], 'label'),
       ] },
       rep('trustPoints', 'Trust points', [t('label', 'Label'), ta('text', 'Description')], 'label'),
       { key: 'contractor', label: 'Contractor track', type: 'group', fields: [

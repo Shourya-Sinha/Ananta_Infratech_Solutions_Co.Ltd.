@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, Search } from 'lucide-react'
-import { useContent } from '../lib/site'
+import { useContent, useRegistration } from '../lib/site'
 import { Seo, breadcrumbSchema } from '../lib/seo'
 import { CtaSlab, Eyebrow, PageHero, SectionLead, StatStrip } from '../components/Blocks'
 import { TrackForm } from '../components/Forms'
 
 export default function Track() {
   const site = useContent()
+  const registration = useRegistration()
   const base = site.meta?.siteUrl || ''
 
   return (
@@ -78,7 +79,9 @@ export default function Track() {
           <div className="grid-3">
             {[
               { title: 'Open roles', text: 'Current staff and engineering vacancies across all our project regions.', to: '/careers#open-roles' },
-              { title: 'Contractor & worker registration', text: 'Register your interest as a contractor, supplier, technician or skilled worker.', to: '/register' },
+              { title: 'Contractor & worker registration', text: registration.open
+                ? 'Register your interest as a contractor, supplier, technician or skilled worker.'
+                : 'Coming soon — see what is being built for contractors, suppliers, technicians and skilled workers.', to: '/register' },
               { title: 'Contact the right team', text: 'Direct lines for recruitment, procurement, vendor onboarding and new business.', to: '/contact' }
             ].map((item) => (
               <div className="card card-flat" key={item.title}>

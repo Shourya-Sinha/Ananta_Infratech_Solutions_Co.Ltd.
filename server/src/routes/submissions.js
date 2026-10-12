@@ -1,6 +1,7 @@
 import express from 'express'
 import crypto from 'crypto'
 import { repo } from '../lib/store.js'
+import { getPublished } from './site.js'
 import { notify, rateLimit } from '../lib/notify.js'
 import { toCsv } from '../lib/content.js'
 
@@ -120,6 +121,18 @@ const CONTRACTOR_KINDS = new Set(['contractor', 'supplier', 'vendor', 'consultan
 
 router.post('/register', rateLimit({ key: 'register', max: 6 }), async (req, res, next) => {
   try {
+    /**
+     * The registration section can be switched off from the CMS while the full
+     * portal is still being built. When it is off, refuse submissions outright
+     * rather than accepting applications nobody can act on yet.
+     */
+    const site = await getPublished()
+    if (site?.register && site.register.enabled === false) {
+      const status = site.register.status || 'Coming soon'
+      return res.status(403).json({
+        message: `Registration is not open yet — ${status.toLowerCase()}. Our contractor and worker portal opens shortly; until then please write to tenders@anantainfratech.com (contractors) or careers@anantainfratech.com (workers) and the team will contact you when applications open.`
+      })
+    }
     const type = CONTRACTOR_KINDS.has(text(req.body?.type, 40)) ? 'contractor' : 'worker'
     const base = {
       type,

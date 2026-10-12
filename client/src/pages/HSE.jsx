@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, ShieldCheck } from 'lucide-react'
-import { useContent } from '../lib/site'
+import { useContent, useRegistration } from '../lib/site'
 import { Seo, breadcrumbSchema } from '../lib/seo'
 import {
   Accordion, CtaSlab, Eyebrow, LogoStrip, PageHero, Reveal, SectionLead, StatStrip, TextLink
@@ -8,6 +8,7 @@ import {
 
 export default function HSE() {
   const site = useContent()
+  const registration = useRegistration()
   const hse = site.hse || {}
   const base = site.meta?.siteUrl || ''
 
@@ -135,7 +136,7 @@ export default function HSE() {
         title={<>Safety is the one thing<br />we will not <em>negotiate.</em></>}
         text="If you are a trade partner, contractor or worker who shares that standard, we want to hear from you."
         image={hse.image}
-        primary={{ to: '/register', label: 'Register your interest' }}
+        primary={{ to: '/register', label: `Register your interest${registration.suffix}` }}
         secondary={{ to: '/tenders', label: 'Supply or tender with us' }}
       />
     </main>

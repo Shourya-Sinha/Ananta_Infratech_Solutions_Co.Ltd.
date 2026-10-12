@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, Wrench } from 'lucide-react'
-import { useContent } from '../lib/site'
+import { useContent, useRegistration } from '../lib/site'
 import { Seo, breadcrumbSchema } from '../lib/seo'
 import { CtaSlab, Eyebrow, PageHero, Reveal, SectionLead, StatStrip, TextLink } from '../components/Blocks'
 
 export default function Equipment() {
   const site = useContent()
+  const registration = useRegistration()
   const plant = site.equipment || {}
   const base = site.meta?.siteUrl || ''
 
@@ -26,7 +27,7 @@ export default function Equipment() {
         trail={[{ label: 'Plant & equipment', to: '/equipment' }]}
         stats={plant.stats}
         actions={<>
-          <Link className="button button-acid" to="/register">Offer plant for hire <ArrowUpRight size={16} /></Link>
+          <Link className="button button-acid" to="/register">Offer plant for hire{registration.suffix} <ArrowUpRight size={16} /></Link>
           <Link className="button button-light" to="/downloads">Download the fleet schedule</Link>
         </>}
       />
@@ -113,7 +114,7 @@ export default function Equipment() {
               is inspected, permitted and insured before it enters any Ananta site.
             </p>
             <div className="button-row" style={{ marginTop: '1.5rem' }}>
-              <Link className="button" to="/register">Register as a plant supplier <ArrowUpRight size={16} /></Link>
+              <Link className="button" to="/register">Register as a plant supplier{registration.suffix} <ArrowUpRight size={16} /></Link>
               <Link className="button button-ghost" to="/tenders">See current packages</Link>
             </div>
           </Reveal>
@@ -129,7 +130,7 @@ export default function Equipment() {
         title={<>Have plant to <em>hire</em>?<br />Register with us.</>}
         text="Certified plant with trained operators, current statutory records and insurance — we prequalify suppliers before the first mobilisation."
         image={plant.image}
-        primary={{ to: '/register', label: 'Register as a supplier' }}
+        primary={{ to: '/register', label: `Register as a supplier${registration.suffix}` }}
         secondary={{ to: '/tenders', label: 'Tender & procurement' }}
       />
     </main>

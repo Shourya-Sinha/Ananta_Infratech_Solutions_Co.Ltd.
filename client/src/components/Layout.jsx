@@ -5,7 +5,7 @@ import {
   ArrowRight, ArrowUp, ArrowUpRight, CheckCircle2, ChevronDown, Cookie, Eye, Mail, Menu, Phone, X
 } from 'lucide-react'
 import Brand from './Brand'
-import { useContent, useRouteFocus, useSite } from '../lib/site'
+import { useContent, useRegistration, useRouteFocus, useSite } from '../lib/site'
 import { postJson } from '../lib/api'
 
 /* ============================================================== scroll fx */
@@ -78,7 +78,7 @@ export function PreviewBanner() {
 
 /* ================================================================= header */
 
-function UtilityBar({ company }) {
+function UtilityBar({ company, registration }) {
   return (
     <div className="utility-bar">
       <div className="shell">
@@ -91,7 +91,7 @@ function UtilityBar({ company }) {
           <span aria-hidden>·</span>
           <Link to="/downloads">Downloads</Link>
           <span aria-hidden>·</span>
-          <Link to="/register">Contractor &amp; worker registration</Link>
+          <Link to="/register">Contractor &amp; worker registration{registration.open ? '' : <em className="utility-flag">{registration.label}</em>}</Link>
         </span>
       </div>
     </div>
@@ -118,7 +118,10 @@ function MegaMenu({ group, onClose }) {
         <div className="mega-links">
           {group.children.map((item) => (
             <Link key={item.to + item.label} to={item.to} onClick={onClose}>
-              <b>{item.label}</b>
+              <b>
+                {item.label}
+                {item.to === '/register' && !registration.open ? <em className="mega-flag">{registration.label}</em> : null}
+              </b>
               {item.description ? <small>{item.description}</small> : null}
             </Link>
           ))}
@@ -130,6 +133,7 @@ function MegaMenu({ group, onClose }) {
 
 export function Header() {
   const { site } = useSite()
+  const registration = useRegistration()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openGroup, setOpenGroup] = useState(null)
   const [solid, setSolid] = useState(false)
@@ -178,7 +182,7 @@ export function Header() {
     <>
       <header className={`site-header ${solid ? 'is-solid' : ''} ${mobileOpen ? 'is-menu-open' : ''}`}>
         <div className="header-utility">
-          <UtilityBar company={company} />
+          <UtilityBar company={company} registration={registration} />
         </div>
 
         <div className="header-main">
@@ -282,7 +286,7 @@ export function Header() {
               </div>
               <p style={{ margin: 0 }}>{company.address}</p>
               <div style={{ display: 'flex', gap: '1.2rem', flexWrap: 'wrap' }}>
-                <Link to="/register">Register interest</Link>
+                <Link to="/register">Register interest{registration.open ? '' : ` (${registration.label})`}</Link>
                 <Link to="/tenders">Tenders</Link>
                 <Link to="/admin">Client portal</Link>
               </div>

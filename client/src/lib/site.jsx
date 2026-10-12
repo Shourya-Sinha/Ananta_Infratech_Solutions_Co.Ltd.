@@ -77,3 +77,26 @@ export function useRouteFocus(pathname, hash) {
     window.scrollTo({ top: 0, behavior: 'auto' })
   }, [pathname, hash])
 }
+
+/**
+ * Registration gate.
+ *
+ * The contractor and worker registration section ships switched off while the
+ * portal is being built. Every link, badge and CTA reads its state from here, so
+ * opening it is a single CMS toggle rather than a code change — and the site
+ * never claims a form is live when it is not.
+ */
+export function useRegistration() {
+  const site = useContent()
+  const config = site.register || {}
+  const open = config.enabled === true
+  const label = config.status || config.launch?.status || 'Coming soon'
+  return {
+    open,
+    closed: !open,
+    label,
+    config,
+    /** Appends the status to a call-to-action label: "Register … (Coming soon)". */
+    suffix: open ? '' : ` · ${label}`
+  }
+}

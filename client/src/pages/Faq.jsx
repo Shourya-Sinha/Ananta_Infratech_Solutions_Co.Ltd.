@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { ArrowUpRight, HelpCircle, Search } from 'lucide-react'
-import { useContent } from '../lib/site'
+import { useContent, useRegistration } from '../lib/site'
 import { Seo, breadcrumbSchema } from '../lib/seo'
 import { Accordion, CtaSlab, EmptyState, Eyebrow, PageHero, SectionLead, TextLink } from '../components/Blocks'
 
@@ -9,6 +9,7 @@ const slug = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
 export default function Faq() {
   const site = useContent()
+  const registration = useRegistration()
   const faq = site.faq || {}
   const categories = faq.categories || []
   const base = site.meta?.siteUrl || ''
@@ -57,7 +58,7 @@ export default function Faq() {
         ]}
         actions={<>
           <Link className="button button-acid" to="/contact">Ask us something else <ArrowUpRight size={16} /></Link>
-          <Link className="button button-light" to="/register">Registration questions</Link>
+          <Link className="button button-light" to="/register">Registration questions{registration.suffix}</Link>
         </>}
       />
 
@@ -104,7 +105,7 @@ export default function Faq() {
               </a>
             ))}
             <hr className="divider" style={{ margin: '0.8rem 0' }} />
-            <Link className="text-button" to="/register">Registration FAQs <ArrowUpRight size={13} /></Link>
+            <Link className="text-button" to="/register">Registration FAQs{registration.suffix} <ArrowUpRight size={13} /></Link>
           </nav>
 
           <div>
@@ -137,7 +138,7 @@ export default function Faq() {
             {[
               { title: 'Services & capability', text: 'What we actually do, discipline by discipline, with deliverables listed.', to: '/services' },
               { title: 'How we deliver', text: 'Our five-stage method from first conversation to asset performance.', to: '/services/construction-management' },
-              { title: 'Contractor registration', text: 'How to register as a contractor, supplier or skilled worker.', to: '/register' }
+              { title: 'Contractor registration', text: 'How contractors, suppliers and skilled workers will register when the portal opens.', to: '/register' }
             ].map((item, index) => (
               <div className="card" key={item.title}>
                 <span className="card-number">{String(index + 1).padStart(2, '0')}</span>
