@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap');
 
 @tailwind base;
@@ -3489,3 +3490,28 @@ em {
         transform: rotate(360deg)
     }
 }
+=======
+/* ==========================================================================
+   Ananta Infratech Solutions — stylesheet entry point
+   Modular sources live in ./styles and are bundled by Vite.
+   ========================================================================== */
+/* Self-hosted typography — the variable files ship with the repository, so the
+   site renders with its intended typefaces with no external font request. */
+@import '@fontsource/manrope/latin-400.css';
+@import '@fontsource/manrope/latin-500.css';
+@import '@fontsource/manrope/latin-600.css';
+@import '@fontsource/manrope/latin-700.css';
+@import '@fontsource/manrope/latin-800.css';
+@import '@fontsource/playfair-display/latin-500.css';
+@import '@fontsource/playfair-display/latin-600.css';
+@import '@fontsource/playfair-display/latin-500-italic.css';
+@import '@fontsource/playfair-display/latin-600-italic.css';
+@import '@fontsource/dm-mono/latin-400.css';
+@import '@fontsource/dm-mono/latin-500.css';
+@import './styles/base.css';
+@import './styles/layout.css';
+@import './styles/components.css';
+@import './styles/pages.css';
+@import './styles/admin.css';
+@import './styles/responsive.css';
+>>>>>>> 627feeec503d6b8d41aa536f5d3a9847c1793ec1
