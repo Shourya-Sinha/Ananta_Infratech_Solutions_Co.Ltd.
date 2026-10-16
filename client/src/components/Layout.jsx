@@ -28,7 +28,7 @@ export function Footer() {
   return <footer className="site-footer">
     <div className="footer-top"><p className="eyebrow">Ready when you are</p><h2>Let’s make a <em>lasting</em><br/>difference.</h2><Link to="/contact" className="circle-link" aria-label="Contact Ananta"><ArrowUpRight size={29}/></Link></div>
     <div className="footer-grid"><div><Brand inverse/><p className="footer-tagline">{c.tagline}</p></div><div><span>Explore</span><Link to="/about">About us</Link><Link to="/capabilities">Capabilities</Link><Link to="/projects">Projects</Link><Link to="/sustainability">Sustainability</Link></div><div><span>Connect</span><a href={`mailto:${c.email || ''}`}>{c.email || 'hello@anantainfratech.com'}</a><a href={`tel:${(c.phone || '').replace(/\s/g,'')}`}>{c.phone || '+91 22 4968 2016'}</a><p>{c.address || 'Juhu, Mumbai, Maharashtra'}</p></div><div><span>Follow</span><a target="_blank" rel="noreferrer" href={c.linkedin || '#'}><span className="social-glyph">in</span> LinkedIn</a><a target="_blank" rel="noreferrer" href={c.instagram || '#'}><span className="social-glyph">◎</span> Instagram</a><Link to="/admin">Client portal</Link></div></div>
-    <div className="footer-bottom"><span>© {new Date().getFullYear()} Ananta Infratech Solutions</span><span>Building the future, connecting the dots.</span><a href="#top">Back to top ↑</a></div>
+    <div className="footer-bottom"><span>© {new Date().getFullYear()} Ananta Infratech Solutions</span><span>BUILDING THE FUTUR, CONNECTING THE DOTS.</span><a href="#top">Back to top ↑</a></div>
   </footer>
 }
 export function PageLoader(){ return <div className="page-loader"><div className="loader-mark">A</div><p>Building clarity</p></div> }

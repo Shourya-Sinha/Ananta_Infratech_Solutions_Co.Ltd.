@@ -10,16 +10,17 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
-    "vite": "latest",
+    "ananta-infratech-digital": "file:..",
+    "framer-motion": "latest",
+    "lucide-react": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "latest",
-    "lucide-react": "latest",
-    "framer-motion": "latest"
+    "vite": "latest"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.10",
+    "autoprefixer": "^10.4.20",
     "postcss": "^8.4.40",
-    "autoprefixer": "^10.4.20"
+    "tailwindcss": "^3.4.10"
   }
 }
