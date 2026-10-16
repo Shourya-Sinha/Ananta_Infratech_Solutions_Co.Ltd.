@@ -5,7 +5,7 @@ import { rateLimit } from '../lib/notify.js'
 
 const router = express.Router()
 export const JWT_SECRET = () => process.env.JWT_SECRET || 'change-this-before-production'
-const ADMIN_EMAIL = () => (process.env.ADMIN_EMAIL || 'admin@anantainfratech.com').toLowerCase()
+const ADMIN_EMAIL = () => (process.env.ADMIN_EMAIL || 'support@anantainfratechsolutions.com').toLowerCase()
 
 export function protect(req, res, next) {
   const token = req.headers.authorization?.replace('Bearer ', '')

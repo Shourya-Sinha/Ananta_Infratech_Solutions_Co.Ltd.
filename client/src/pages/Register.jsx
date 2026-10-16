@@ -57,8 +57,8 @@ export default function Register() {
 
   const faqs = [
     { question: 'When exactly does registration open?', answer: `${config.launch?.date || 'Registration opens in phases'}. Contractor and supplier registration opens first, followed by worker registration. Applications are not being accepted yet — this page will switch to a live registration form when the portal opens.` },
-    { question: 'Can I register today?', answer: 'Not yet. The registration portal is in final build, so no application would be processed if you sent one. Email tenders@anantainfratech.com (contractors and suppliers) or careers@anantainfratech.com (workers and technicians) and the team will come back to you with the opening dates and what to prepare.' },
-    { question: 'Does it cost anything to register?', answer: 'No. Registration, prequalification and tender participation will all be free, and we never work through agents who charge candidates or contractors a fee. If anyone asks you for money to register or to be placed on an Ananta project, report it to integrity@anantainfratech.com.' },
+    { question: 'Can I register today?', answer: 'Not yet. The registration portal is in final build, so no application would be processed if you sent one. Email support@anantainfratechsolutions.com (contractors and suppliers) or support@anantainfratechsolutions.com (workers and technicians) and the team will come back to you with the opening dates and what to prepare.' },
+    { question: 'Does it cost anything to register?', answer: 'No. Registration, prequalification and tender participation will all be free, and we never work through agents who charge candidates or contractors a fee. If anyone asks you for money to register or to be placed on an Ananta project, report it to support@anantainfratechsolutions.com.' },
     { question: 'What documents will I need when registration opens?', answer: 'For contractors and suppliers: PAN, GST registration, applicable trade licences, BOCW/PF/ESIC registration if you employ labour, workmen compensation insurance, audited financials for three years and three comparable project references. Workers do not need documents to register — we verify trade experience and certification with you directly.' },
     { question: 'Do I need a contact inside Ananta to be considered?', answer: 'No. Registration will be the only entry point, evaluation criteria are published on our tenders page, and every prequalified partner receives the same documents and the same written clarifications.' },
     { question: 'I am a worker without formal certification. Can I still register?', answer: 'Yes. Many of our best tradespeople learned on site rather than in a classroom. We verify experience with you, and where certification is missing we offer free training and certification through our skill centre — with a stipend during training.' }
@@ -423,7 +423,7 @@ export default function Register() {
             <p style={{ margin: '0.3rem 0 0', fontSize: 13 }}>
               Ananta does not work through agents who charge workers or contractors for registration, verification or placement —
               and the portal will be free when it opens. If somebody asks you for money in our name, tell us immediately at{' '}
-              <a href="mailto:integrity@anantainfratech.com" style={{ textDecoration: 'underline' }}>integrity@anantainfratech.com</a>.
+              <a href="mailto:support@anantainfratechsolutions.com" style={{ textDecoration: 'underline' }}>support@anantainfratechsolutions.com</a>.
             </p>
           </div>
         </div>

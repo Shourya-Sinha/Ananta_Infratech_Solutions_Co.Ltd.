@@ -60,6 +60,7 @@ export const adminSections = [
       t('yearsLabel', 'Years label', 'Shown next to images, e.g. “Since 2016”.'),
       t('employees', 'Team size label'),
       ta('address', 'Registered address'),
+      list('addressLines', 'Address lines', 'Shown in compact locations such as the header and contact details.'),
       t('phone', 'Main phone'),
       t('phoneAlt', 'Alternate phone'),
       t('whatsapp', 'WhatsApp number', 'Digits only with country code, e.g. 919820042016.'),
@@ -134,6 +135,8 @@ export const adminSections = [
     root: ['footer'],
     fields: [
       ta('blurb', 'Footer introduction'),
+      { key: 'cta', label: 'Footer call to action', type: 'group', fields: [t('eyebrow', 'Eyebrow'), t('title', 'Heading'), t('linkLabel', 'Contact link label')] },
+      { key: 'contact', label: 'Footer contact details', type: 'group', fields: [t('label', 'Heading'), t('email', 'Email'), t('phone', 'Phone'), ta('address', 'Address')] },
       links('legalLinks', 'Legal & compliance links', 'Shown along the bottom bar.'),
       t('credit', 'Credit line'),
       rep('columns', 'Link columns', [
@@ -207,6 +210,11 @@ export const adminSections = [
         rep('points', 'Key points', [t('title', 'Point'), ta('text', 'Detail')], 'title'),
       ] },
       { key: 'servicesSection', label: 'Services section heading', type: 'group', fields: [t('eyebrow', 'Eyebrow'), t('title', 'Heading'), ta('text', 'Description')] },
+      { key: 'digitalSection', label: 'Digital services showcase', type: 'group', fields: [
+        t('eyebrow', 'Eyebrow'), t('title', 'Heading'), ta('text', 'Description'),
+        list('serviceSlugs', 'Services shown on home page', 'Add the exact service URL slugs to control which service cards appear in this showcase.'),
+      ] },
+
       rep('stats', 'Statistics', [t('value', 'Value'), t('label', 'Label'), ta('detail', 'Detail')], 'label'),
       { key: 'capabilityBand', label: 'Capability band', type: 'group', fields: [
         t('eyebrow', 'Eyebrow'), t('title', 'Heading'), ta('text', 'Paragraph'), img('image', 'Image', imageHint), list('bullets', 'Bullet points'),
@@ -297,6 +305,7 @@ export const adminSections = [
       rep('services', 'Service pages', [
         t('slug', 'URL slug', 'Changing this changes the page address. Keep it lowercase and hyphenated.'),
         t('number', 'Number'),
+        t('category', 'Service category', 'Use digital for technology services; construction services can leave this blank.'),
         t('title', 'Full title'),
         t('short', 'Short name', 'Used in menus and sidebars.'),
         t('tagline', 'Tagline'),

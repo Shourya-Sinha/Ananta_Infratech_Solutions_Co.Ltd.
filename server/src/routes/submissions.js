@@ -130,7 +130,7 @@ router.post('/register', rateLimit({ key: 'register', max: 6 }), async (req, res
     if (site?.register && site.register.enabled === false) {
       const status = site.register.status || 'Coming soon'
       return res.status(403).json({
-        message: `Registration is not open yet — ${status.toLowerCase()}. Our contractor and worker portal opens shortly; until then please write to tenders@anantainfratech.com (contractors) or careers@anantainfratech.com (workers) and the team will contact you when applications open.`
+        message: `Registration is not open yet — ${status.toLowerCase()}. Our contractor and worker portal opens shortly; until then please write to support@anantainfratechsolutions.com (contractors) or support@anantainfratechsolutions.com (workers) and the team will contact you when applications open.`
       })
     }
     const type = CONTRACTOR_KINDS.has(text(req.body?.type, 40)) ? 'contractor' : 'worker'

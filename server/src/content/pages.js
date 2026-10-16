@@ -35,6 +35,14 @@ export const home = {
       text: 'Preconstruction to handover under a single appointment — so decisions get made once, by people who live with the consequences.',
       image: img.sectorInfrastructure,
       caption: 'Commercial · Infrastructure · Healthcare · Hospitality'
+    },
+    {
+      eyebrow: 'Digital products, built around people',
+      title: 'Technology that moves your business forward.',
+      text: 'From websites and custom CMS platforms to mobile apps, client chat and digital growth, we create useful technology shaped around real teams and customers.',
+      image: img.drawings,
+      video: '',
+      caption: 'Web · Android · iOS · CMS · SEO · Cloud'
     }
   ],
   heroStats: [
@@ -53,8 +61,8 @@ export const home = {
   ],
   aboutTeaser: {
     eyebrow: 'Who we are',
-    title: 'An owner-minded construction company, built on accountability.',
-    text: 'Ananta Infratech Solutions was founded in 2016 as a hands-on contracting practice. Nine years later we are an integrated delivery platform across eight Indian states — but we still answer for the work the same way: personally, on site, in writing.',
+    title: 'Built on the ground. Connected to what’s next.',
+    text: 'Ananta Infratech Solutions brings construction, infrastructure and digital technology together. We deliver real-world projects and build useful digital products with the same focus on clear ownership, practical thinking and dependable outcomes.',
     image: img.aboutStory,
     points: [
       { title: 'Own the outcome', text: 'One accountable team from feasibility to defects liability.' },
@@ -63,9 +71,15 @@ export const home = {
     ]
   },
   servicesSection: {
-    eyebrow: 'What we do',
-    title: 'Eight disciplines. One delivery engine.',
-    text: 'We self-deliver civil works and lead every other discipline as a single integrated team — fewer hand-offs, faster decisions, one point of accountability.'
+    eyebrow: 'Construction + technology',
+    title: 'Construction, technology. One accountable partner.',
+    text: 'We deliver the spaces, infrastructure and digital products people rely on—with practical teams, clear communication and one point of accountability.'
+  },
+  digitalSection: {
+    eyebrow: 'Technology, made useful',
+    title: 'Built for the real world. Designed for what’s next.',
+    text: 'Alongside construction and infrastructure, Ananta delivers practical digital products—from custom CMS platforms and websites to Android and iOS apps, client chat and connected business systems.',
+    serviceSlugs: ['digital-products', 'web-development', 'mobile-app-development', 'client-chat-solutions', 'enterprise-it-solutions', 'content-management', 'seo-growth', 'ui-ux-design', 'cloud-devops', 'cybersecurity']
   },
   stats: [
     { value: '1.9M', label: 'sq. ft. delivered', detail: 'Across 60 completed projects since 2016.' },
@@ -538,7 +552,7 @@ export const tenders = {
     { name: 'Materials & bulk supply', type: 'Supply', scale: 'Per schedule', status: 'Always open' },
     { name: 'Professional services', type: 'Consultancy', scale: 'Per assignment', status: 'By invitation' }
   ],
-  note: 'Tender enquiries, RFP clarifications and bid submission queries: tenders@anantainfratech.com · +91 22 4968 2031'
+  note: 'Tender enquiries, RFP clarifications and bid submission queries: support@anantainfratechsolutions.com · +91 22 4968 2031'
 }
 
 export const downloads = {
@@ -649,7 +663,7 @@ export const careers = {
     { title: 'Skill certification centre', text: 'Free certification for masons, bar benders, shuttering carpenters and electricians, with placement support across our projects.', duration: '6–12 weeks' },
     { title: 'Professional membership support', text: 'Sponsored membership and exam support for ICE, IEI, RICS and NEBOSH qualifications.', duration: 'As required' }
   ],
-  contact: { name: 'Talent team', email: 'careers@anantainfratech.com', phone: '+91 22 4968 2020', note: 'Applications are reviewed within five working days. If you have not heard back in two weeks, write to us — we will tell you where your application stands.' }
+  contact: { name: 'Talent team', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2020', note: 'Applications are reviewed within five working days. If you have not heard back in two weeks, write to us — we will tell you where your application stands.' }
 }
 
 export const jobs = [
@@ -923,8 +937,8 @@ export const register = {
       { title: 'Direct notifications', text: 'Email and SMS updates when a package matches your trade, scale and region.' }
     ],
     meanwhile: [
-      { label: 'Contractors & suppliers', text: 'For subcontract packages, plant hire and material supply.', email: 'tenders@anantainfratech.com', phone: '+91 98200 42016' },
-      { label: 'Workers & technicians', text: 'For site work, equipment operation and technical trades.', email: 'careers@anantainfratech.com', phone: '+91 98200 42016' }
+      { label: 'Contractors & suppliers', text: 'For subcontract packages, plant hire and material supply.', email: 'support@anantainfratechsolutions.com', phone: '+91 98200 42016' },
+      { label: 'Workers & technicians', text: 'For site work, equipment operation and technical trades.', email: 'support@anantainfratechsolutions.com', phone: '+91 98200 42016' }
     ]
   },
   trustPoints: [

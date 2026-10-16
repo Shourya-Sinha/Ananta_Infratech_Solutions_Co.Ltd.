@@ -643,3 +643,6 @@
   transition: background 0.25s, color 0.25s;
 }
 .delete-button:hover { background: var(--danger); color: var(--white); border-color: var(--danger); }
+.footer-contact-details { display: grid; gap: .1rem; margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,.13); }
+.footer-contact-details > span { margin-bottom: .45rem; color: var(--white); font-size: 11px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+.footer-contact-details p { line-height: 1.55; }

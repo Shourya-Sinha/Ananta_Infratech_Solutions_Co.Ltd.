@@ -350,10 +350,10 @@ export function Footer() {
       <div className="shell">
         <div className="footer-cta">
           <div>
-            <p className="eyebrow eyebrow-light"><i />Ready when you are</p>
-            <h2>Let’s make a <em>lasting</em> difference.</h2>
+            <p className="eyebrow eyebrow-light"><i />{footer.cta?.eyebrow || 'Ready when you are'}</p>
+            <h2>{footer.cta?.title || 'Let’s make a lasting difference.'}</h2>
           </div>
-          <Link to="/contact" className="circle-link" aria-label="Contact Ananta"><ArrowUpRight size={28} /></Link>
+          <Link to="/contact" className="circle-link" aria-label={footer.cta?.linkLabel || 'Contact Ananta'}><ArrowUpRight size={28} /></Link>
         </div>
 
         <div className="footer-grid">
@@ -375,11 +375,17 @@ export function Footer() {
           ))}
 
           <div>
-            <span>Stay in touch</span>
+            <span>{footer.newsletter?.title || 'Stay in touch'}</span>
             <div className="footer-newsletter">
               <p style={{ fontSize: 13, color: 'var(--muted-inverse)', marginBottom: 4 }}>{footer.newsletter?.text}</p>
               <NewsletterForm />
               <small>{footer.newsletter?.note}</small>
+            </div>
+            <div className="footer-contact-details">
+              <span>{footer.contact?.label || 'Contact'}</span>
+              <a href={`mailto:${footer.contact?.email || company.email}`}>{footer.contact?.email || company.email}</a>
+              <a href={`tel:${(footer.contact?.phone || company.phone || '').replaceAll(' ', '')}`}>{footer.contact?.phone || company.phone}</a>
+              <p>{footer.contact?.address || company.address}</p>
             </div>
             {socials.length ? (
               <div className="social-row">

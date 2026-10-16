@@ -63,7 +63,12 @@ export default function ServiceDetail() {
         <div style={{ marginTop: '1.6rem' }}>
           <FactGrid
             dark
-            facts={[
+            facts={service.category === 'digital' ? [
+              { label: 'Capability', value: service.short },
+              { label: 'Approach', value: 'Discovery, design, build and support' },
+              { label: 'Platforms', value: 'Web · Android · iOS · Cloud' },
+              { label: 'Engagement', value: 'Project delivery or ongoing partnership' }
+            ] : [
               { label: 'Discipline', value: service.short },
               { label: 'Delivery', value: 'In-house teams + vetted specialists' },
               { label: 'Coverage', value: 'Mumbai · Pune · Noida · Bengaluru' },

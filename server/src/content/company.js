@@ -5,11 +5,11 @@ import { img } from './images.js'
  * Everything in this object is editable from the admin portal.
  */
 export const meta = {
-  siteUrl: 'https://www.anantainfratech.com',
+  siteUrl: 'https://anantainfratechsolutions.com',
   titleTemplate: '%s | Ananta Infratech Solutions',
-  defaultTitle: 'Ananta Infratech Solutions — Construction, Infrastructure & Engineering',
+  defaultTitle: 'Ananta Infratech Solutions — Construction, Infrastructure & Digital Technology',
   description:
-    'Ananta Infratech Solutions is an integrated construction, infrastructure and engineering partner delivering commercial, residential, industrial, healthcare and hospitality projects across India since 2016.',
+    'Ananta Infratech Solutions brings construction, infrastructure and digital technology together—delivering projects, custom software, websites, CMS platforms and mobile apps across India.',
   keywords: [
     'construction company India',
     'general contractor Mumbai',
@@ -18,7 +18,12 @@ export const meta = {
     'commercial construction',
     'industrial construction',
     'preconstruction services',
-    'construction management'
+    'construction management',
+    'custom software development India',
+    'CMS development',
+    'web development company',
+    'Android and iOS app development',
+    'SEO and digital transformation'
   ],
   ogImage: img.hero,
   twitterHandle: '@anantainfra',
@@ -38,10 +43,10 @@ export const company = {
   phone: '+91 22 4968 2016',
   phoneAlt: '+91 98200 42016',
   whatsapp: '919820042016',
-  email: 'hello@anantainfratech.com',
-  careersEmail: 'careers@anantainfratech.com',
-  tendersEmail: 'tenders@anantainfratech.com',
-  vendorEmail: 'vendors@anantainfratech.com',
+  email: 'support@anantainfratechsolutions.com',
+  careersEmail: 'support@anantainfratechsolutions.com',
+  tendersEmail: 'support@anantainfratechsolutions.com',
+  vendorEmail: 'support@anantainfratechsolutions.com',
   hrPhone: '+91 22 4968 2020',
   workingHours: 'Monday to Saturday · 09:30 – 18:30 IST',
   linkedin: 'https://www.linkedin.com/company/ananta-infratech-solutions',
@@ -51,7 +56,7 @@ export const company = {
   twitter: 'https://x.com/anantainfra',
   logo: '/assets/logo_bg_remove.png',
   alternateLogo: '/assets/logo_bg_remove.png',
-  bio: 'An independent, owner-minded construction and engineering company headquartered in Mumbai, working across eight states with a delivery team of more than 480 engineers, planners, supervisors and trade partners.',
+  bio: 'An independent, owner-minded construction, engineering and technology company headquartered in Mumbai, working across eight states with a delivery team of more than 480 engineers, planners, supervisors and trade partners.',
   registrations: [
     { label: 'Registered entity', value: 'Ananta Infratech Solutions Pvt. Ltd.' },
     { label: 'Corporate office', value: 'Juhu, Mumbai — Maharashtra' },
@@ -75,7 +80,7 @@ export const offices = [
     address: 'Ananta House, Juhu Tara Road, Juhu, Mumbai, Maharashtra 400049',
     city: 'Mumbai',
     phone: '+91 22 4968 2016',
-    email: 'hello@anantainfratech.com',
+    email: 'support@anantainfratechsolutions.com',
     hours: 'Mon – Sat · 09:30 – 18:30 IST',
     mapUrl: 'https://www.google.com/maps?q=Juhu,Mumbai&output=embed',
     image: img.hero
@@ -87,7 +92,7 @@ export const offices = [
     address: 'Tower B, Sector 62, Noida, Gautam Buddha Nagar, Uttar Pradesh 201301',
     city: 'Noida',
     phone: '+91 120 496 2016',
-    email: 'ncr@anantainfratech.com',
+    email: 'support@anantainfratechsolutions.com',
     hours: 'Mon – Sat · 09:30 – 18:30 IST',
     mapUrl: 'https://www.google.com/maps?q=Sector+62+Noida&output=embed',
     image: img.sectorCommercial
@@ -99,7 +104,7 @@ export const offices = [
     address: 'Baner Road, Pune, Maharashtra 411045',
     city: 'Pune',
     phone: '+91 20 4968 2016',
-    email: 'pune@anantainfratech.com',
+    email: 'support@anantainfratechsolutions.com',
     hours: 'Mon – Sat · 09:00 – 18:00 IST',
     mapUrl: 'https://www.google.com/maps?q=Baner+Pune&output=embed',
     image: img.sectorIndustrial
@@ -111,7 +116,7 @@ export const offices = [
     address: 'Outer Ring Road, Bengaluru, Karnataka 560103',
     city: 'Bengaluru',
     phone: '+91 80 4968 2016',
-    email: 'bengaluru@anantainfratech.com',
+    email: 'support@anantainfratechsolutions.com',
     hours: 'Mon – Sat · 09:00 – 18:00 IST',
     mapUrl: 'https://www.google.com/maps?q=Outer+Ring+Road+Bengaluru&output=embed',
     image: img.sectorHealthcare
@@ -125,18 +130,29 @@ export const contact = {
   responseNote: 'Every enquiry is acknowledged within 24 working hours and routed to a named project lead.',
   mapUrl: 'https://www.google.com/maps?q=Juhu,Mumbai&output=embed',
   departments: [
-    { id: 'new-business', label: 'New business & proposals', email: 'hello@anantainfratech.com', phone: '+91 22 4968 2016', note: 'New projects, joint ventures and developer partnerships.' },
-    { id: 'careers', label: 'Careers & recruitment', email: 'careers@anantainfratech.com', phone: '+91 22 4968 2020', note: 'Engineering, planning, HSE, survey and site leadership roles.' },
-    { id: 'tenders', label: 'Tenders & procurement', email: 'tenders@anantainfratech.com', phone: '+91 22 4968 2031', note: 'Tender invitations, RFP clarifications and prequalification.' },
-    { id: 'vendors', label: 'Vendor & subcontractor onboarding', email: 'vendors@anantainfratech.com', phone: '+91 22 4968 2044', note: 'Contractor, supplier and specialist trade registration.' },
-    { id: 'media', label: 'Media & communications', email: 'media@anantainfratech.com', phone: '+91 22 4968 2016', note: 'Press, brand assets and speaking engagements.' },
-    { id: 'accounts', label: 'Accounts & compliance', email: 'accounts@anantainfratech.com', phone: '+91 22 4968 2050', note: 'Invoices, GST documentation and vendor payments.' }
+    { id: 'new-business', label: 'New business & proposals', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2016', note: 'New projects, joint ventures and developer partnerships.' },
+    { id: 'careers', label: 'Careers & recruitment', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2020', note: 'Engineering, planning, HSE, survey and site leadership roles.' },
+    { id: 'tenders', label: 'Tenders & procurement', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2031', note: 'Tender invitations, RFP clarifications and prequalification.' },
+    { id: 'vendors', label: 'Vendor & subcontractor onboarding', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2044', note: 'Contractor, supplier and specialist trade registration.' },
+    { id: 'media', label: 'Media & communications', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2016', note: 'Press, brand assets and speaking engagements.' },
+    { id: 'accounts', label: 'Accounts & compliance', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2050', note: 'Invoices, GST documentation and vendor payments.' }
   ]
 }
 
 export const footer = {
   blurb:
-    'An integrated construction and engineering partner for owners, developers, institutions and industry — from first feasibility conversation to asset handover.',
+    'An integrated construction, engineering and digital technology partner — from physical infrastructure to digital products.',
+  cta: {
+    eyebrow: 'Ready when you are',
+    title: 'Let’s make a lasting difference.',
+    linkLabel: 'Contact Ananta'
+  },
+  contact: {
+    label: 'Contact',
+    email: 'support@anantainfratechsolutions.com',
+    phone: '+91 22 4968 2016',
+    address: 'Juhu, Mumbai, Maharashtra, India'
+  },
   columns: [
     {
       title: 'Company',
@@ -199,7 +215,7 @@ export const policies = [
       { heading: 'Information we collect', body: ['We collect the details you choose to submit through our enquiry, careers, contractor registration and vendor registration forms. This typically includes your name, organisation, email address, telephone number, project information and any document you upload.', 'Our servers also record standard technical information such as browser type, device category and pages visited, used solely to keep the website secure and to understand which information is useful.'] },
       { heading: 'How we use it', body: ['Enquiry and registration data is used to respond to you, to evaluate commercial and employment fit, to meet statutory vendor and labour compliance obligations, and to maintain records of our decisions.', 'We do not sell personal information. We do not use your data for automated decision making.'] },
       { heading: 'Sharing and retention', body: ['Information is accessible only to the Ananta team members who need it for the purpose above. Where a third-party service provider processes data on our behalf — for example document storage or transactional email — they are bound by contract to protect it.', 'Enquiry records are retained for up to 36 months unless a project or statutory obligation requires longer. Contractor and vendor registration records are retained while the registration is active plus the statutory audit period.'] },
-      { heading: 'Your rights', body: ['You may request a copy of the information we hold about you, ask for corrections, or ask us to delete records that we are not obliged to retain. Write to privacy@anantainfratech.com and we will respond within 30 days.'] }
+      { heading: 'Your rights', body: ['You may request a copy of the information we hold about you, ask for corrections, or ask us to delete records that we are not obliged to retain. Write to support@anantainfratechsolutions.com and we will respond within 30 days.'] }
     ]
   },
   {
@@ -235,7 +251,7 @@ export const policies = [
       { heading: 'Prohibited conduct', body: ['No employee, agent or trade partner may offer, promise, authorise or accept any financial or other advantage intended to improperly influence a business, regulatory or public decision connected with our work.'] },
       { heading: 'Gifts and hospitality', body: ['Modest, customary hospitality is permitted only where it is transparent, recorded and cannot be construed as an inducement. Cash and cash equivalents may never be given or accepted.'] },
       { heading: 'Third parties', body: ['We apply due diligence to subcontractors, agents and consultants, and we require contractual commitments to the same standards.'] },
-      { heading: 'Reporting', body: ['Concerns may be raised confidentially with our compliance officer at integrity@anantainfratech.com. Every report is investigated and the reporter is protected from retaliation.'] }
+      { heading: 'Reporting', body: ['Concerns may be raised confidentially with our compliance officer at support@anantainfratechsolutions.com. Every report is investigated and the reporter is protected from retaliation.'] }
     ]
   },
   {
@@ -245,7 +261,7 @@ export const policies = [
     intro: 'A protected route for employees, trade partners and members of the public to report wrongdoing connected with our operations.',
     sections: [
       { heading: 'What you can report', body: ['Safety violations, bribery, falsified quality records, unlawful labour practices, environmental harm, harassment or any conduct that breaches our code of conduct.'] },
-      { heading: 'How to report', body: ['Write to integrity@anantainfratech.com or call the confidential integrity line on +91 22 4968 2099. Anonymous reports are accepted and are investigated on their merits.'] },
+      { heading: 'How to report', body: ['Write to support@anantainfratechsolutions.com or call the confidential integrity line on +91 22 4968 2099. Anonymous reports are accepted and are investigated on their merits.'] },
       { heading: 'Protection', body: ['No one who reports a concern in good faith will suffer detrimental treatment. Retaliation is itself a disciplinary offence.'] },
       { heading: 'Handling', body: ['Reports are logged by the compliance officer, escalated to the audit committee where warranted, and closed with a documented outcome within 60 days.'] }
     ]
