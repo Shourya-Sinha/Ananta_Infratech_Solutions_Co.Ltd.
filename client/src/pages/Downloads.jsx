@@ -88,7 +88,7 @@ export default function Downloads() {
                 <p style={{ fontSize: 12.8, color: 'var(--muted)', margin: 0 }}>
                   Insurance certificates, audited financials, single-project references or drawing sets can be requested by email.
                 </p>
-                <a className="button button-sm button-ghost" href="mailto:tenders@anantainfratech.com">Email the team <Download size={14} /></a>
+                <a className="button button-sm button-ghost" href="mailto:support@anantainfratechsolutions.com">Email the team <Download size={14} /></a>
               </div>
             </aside>
           </div>

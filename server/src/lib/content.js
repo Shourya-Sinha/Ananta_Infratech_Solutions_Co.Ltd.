@@ -1,6 +1,6 @@
 import { defaultSite } from '../seed.js'
 
-export const CONTENT_VERSION = 2
+export const CONTENT_VERSION = 3
 
 const LEGACY_LOGOS = ['/assets/dlogo-removebg.png', '/assets/logo.png', '/assets/logo.jpeg', '/assets/logo.jpg', 'dlogo-removebg.png', '']
 const PRIMARY_LOGO = defaultSite.company.logo
@@ -29,7 +29,45 @@ export function mergeWithDefaults(stored, defaults = defaultSite) {
 
 /** Repairs brand and image references that would otherwise 404. */
 export function normaliseContent(content) {
-  const next = mergeWithDefaults(content)
+  const previousVersion = Number(content?.contentVersion || 0)
+  const migrated = clone(content || {})
+
+  // One-time additive migration for previously saved CMS content. Existing
+  // construction copy and admin edits stay intact; newly introduced digital
+  // services and the digital hero slide are added only when missing.
+  if (previousVersion < 3) {
+    const digitalServices = defaultSite.services.filter((service) => Number(service.number) >= 9)
+    const savedServices = Array.isArray(migrated.services) ? migrated.services : []
+    const presentSlugs = new Set(savedServices.map((service) => service.slug))
+    migrated.services = [...savedServices, ...digitalServices.filter((service) => !presentSlugs.has(service.slug))]
+
+    if (Array.isArray(migrated.home?.slides) && !migrated.home.slides.some((slide) => /digital products/i.test(slide.eyebrow || ''))) {
+      const digitalSlide = defaultSite.home.slides.find((slide) => /digital products/i.test(slide.eyebrow || ''))
+      if (digitalSlide) migrated.home.slides = [...migrated.home.slides, clone(digitalSlide)]
+    }
+
+    if (migrated.servicesIntro) {
+      migrated.servicesIntro.eyebrow = defaultSite.servicesIntro.eyebrow
+      migrated.servicesIntro.title = defaultSite.servicesIntro.title
+      migrated.servicesIntro.intro = defaultSite.servicesIntro.intro
+      migrated.servicesIntro.stats = clone(defaultSite.servicesIntro.stats)
+    }
+    if (migrated.home?.servicesSection?.title === 'Eight disciplines. One delivery engine.') {
+      migrated.home.servicesSection = clone(defaultSite.home.servicesSection)
+    }
+
+    // Re-point legacy company-domain addresses and canonical URLs to the new
+    // official contact/domain during the same backwards-compatible migration.
+    const updateBrandContacts = (value) => {
+      if (Array.isArray(value)) return value.map(updateBrandContacts)
+      if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, updateBrandContacts(item)]))
+      if (typeof value !== 'string') return value
+      return value.replace(/[\w.+-]+@anantainfratech\.com/g, 'support@anantainfratechsolutions.com').replace('https://www.anantainfratech.com', 'https://anantainfratechsolutions.com')
+    }
+    Object.assign(migrated, updateBrandContacts(migrated))
+  }
+
+  const next = mergeWithDefaults(migrated)
   const stale = (value) => typeof value !== 'string' || LEGACY_LOGOS.includes(value.trim())
   next.company = next.company || {}
   if (stale(next.company.logo)) next.company.logo = PRIMARY_LOGO

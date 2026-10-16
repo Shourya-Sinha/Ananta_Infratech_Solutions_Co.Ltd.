@@ -5,15 +5,15 @@ import { img } from './images.js'
  */
 
 export const servicesIntro = {
-  eyebrow: 'What we do',
-  title: 'One integrated partner. Every critical discipline.',
+  eyebrow: 'Construction + technology',
+  title: 'One partner for the built world and the digital one.',
   intro:
-    'From the earliest feasibility conversation to asset handover, our specialist teams work as one connected delivery engine — so decisions are made once, by people who will live with the consequences.',
+    'From construction and infrastructure to custom software, websites and mobile apps, our teams turn ambitious ideas into dependable real-world outcomes.',
   image: img.drawings,
   stats: [
-    { value: '08', label: 'delivery disciplines in-house' },
-    { value: '11', label: 'average trade packages coordinated per project' },
-    { value: '94%', label: 'of packages awarded to prequalified partners' }
+    { value: '02', label: 'connected capability areas' },
+    { value: '18', label: 'construction and digital services' },
+    { value: '01', label: 'integrated partner from brief to delivery' }
   ]
 }
 
@@ -345,6 +345,192 @@ export const services = [
     ],
     sectors: ['residential', 'commercial', 'healthcare', 'hospitality'],
     relatedProjects: ['juhu-residences', 'ganga-medical-centre', 'capasite-house']
+  }
+,
+  {
+    slug: 'digital-products', number: '09', category: 'digital', title: 'Digital products & custom software', short: 'Digital products',
+    tagline: 'From product strategy to launch, we design and build custom software that makes complex work feel simple.', summary: 'From product strategy to launch, we design and build custom software that makes complex work feel simple.', image: img.drawings,
+    description: [
+      'From product strategy to launch, we design and build custom software that makes complex work feel simple.',
+      'We work collaboratively from discovery through delivery, making scope, timelines and trade-offs clear. The solution is shaped around your users and business rather than forcing your process into an off-the-shelf template.',
+      'From launch onward, we can help with iteration, monitoring and support so your digital product continues to serve your customers as needs evolve.'
+    ],
+    capabilities: ['Product discovery and technical architecture', 'Custom web applications and portals', 'CMS and headless content platforms', 'API design and system integrations', 'Cloud deployment and ongoing support'], deliverables: [
+      { title: 'Product roadmap', text: 'A prioritised plan aligned to user needs, business outcomes and a realistic delivery sequence.' },
+      { title: 'Working solution', text: 'A tested, production-ready digital product with clear handover documentation.' },
+      { title: 'Technical handover', text: 'Architecture notes, deployment guidance and knowledge transfer for your team.' },
+      { title: 'Ongoing support', text: 'Options for maintenance, improvements and support after launch.' }
+    ], stats: [], faqs: [
+      { question: 'Can you work with our existing systems?', answer: 'Yes. We can assess your current tools and design integrations or a phased migration around them.' },
+      { question: 'How do you start a project?', answer: 'We begin with a discovery conversation to understand the users, goals, constraints and best-fit scope before proposing a delivery plan.' }
+    ], sectors: []
+  },
+  {
+    slug: 'web-development', number: '10', category: 'digital', title: 'Web development & e-commerce', short: 'Web development',
+    tagline: 'Fast, accessible websites and web applications engineered around your customers, content and business goals.', summary: 'Fast, accessible websites and web applications engineered around your customers, content and business goals.', image: img.drawings,
+    description: [
+      'Fast, accessible websites and web applications engineered around your customers, content and business goals.',
+      'We work collaboratively from discovery through delivery, making scope, timelines and trade-offs clear. The solution is shaped around your users and business rather than forcing your process into an off-the-shelf template.',
+      'From launch onward, we can help with iteration, monitoring and support so your digital product continues to serve your customers as needs evolve.'
+    ],
+    capabilities: ['Corporate and marketing websites', 'Responsive web applications', 'E-commerce and payment integration', 'Search, performance and accessibility', 'CMS implementation and migration'], deliverables: [
+      { title: 'Product roadmap', text: 'A prioritised plan aligned to user needs, business outcomes and a realistic delivery sequence.' },
+      { title: 'Working solution', text: 'A tested, production-ready digital product with clear handover documentation.' },
+      { title: 'Technical handover', text: 'Architecture notes, deployment guidance and knowledge transfer for your team.' },
+      { title: 'Ongoing support', text: 'Options for maintenance, improvements and support after launch.' }
+    ], stats: [], faqs: [
+      { question: 'Can you work with our existing systems?', answer: 'Yes. We can assess your current tools and design integrations or a phased migration around them.' },
+      { question: 'How do you start a project?', answer: 'We begin with a discovery conversation to understand the users, goals, constraints and best-fit scope before proposing a delivery plan.' }
+    ], sectors: []
+  },
+  {
+    slug: 'mobile-app-development', number: '11', category: 'digital', title: 'Android & iOS app development', short: 'Mobile apps',
+    tagline: 'Native-feeling mobile experiences for Android and iOS, built with React Native or Expo and Flutter to fit the product.', summary: 'Native-feeling mobile experiences for Android and iOS, built with React Native or Expo and Flutter to fit the product.', image: img.drawings,
+    description: [
+      'Native-feeling mobile experiences for Android and iOS, built with React Native or Expo and Flutter to fit the product.',
+      'We work collaboratively from discovery through delivery, making scope, timelines and trade-offs clear. The solution is shaped around your users and business rather than forcing your process into an off-the-shelf template.',
+      'From launch onward, we can help with iteration, monitoring and support so your digital product continues to serve your customers as needs evolve.'
+    ],
+    capabilities: ['Android app development', 'iOS app development', 'React Native and Expo applications', 'Flutter cross-platform applications', 'App Store and Play Store release support'], deliverables: [
+      { title: 'Product roadmap', text: 'A prioritised plan aligned to user needs, business outcomes and a realistic delivery sequence.' },
+      { title: 'Working solution', text: 'A tested, production-ready digital product with clear handover documentation.' },
+      { title: 'Technical handover', text: 'Architecture notes, deployment guidance and knowledge transfer for your team.' },
+      { title: 'Ongoing support', text: 'Options for maintenance, improvements and support after launch.' }
+    ], stats: [], faqs: [
+      { question: 'Can you work with our existing systems?', answer: 'Yes. We can assess your current tools and design integrations or a phased migration around them.' },
+      { question: 'How do you start a project?', answer: 'We begin with a discovery conversation to understand the users, goals, constraints and best-fit scope before proposing a delivery plan.' }
+    ], sectors: []
+  },
+  {
+    slug: 'client-chat-solutions', number: '12', category: 'digital', title: 'Messaging & client communication', short: 'Chat solutions',
+    tagline: 'Secure, purpose-built chat experiences that connect your customers, teams and support operations.', summary: 'Secure, purpose-built chat experiences that connect your customers, teams and support operations.', image: img.drawings,
+    description: [
+      'Secure, purpose-built chat experiences that connect your customers, teams and support operations.',
+      'We work collaboratively from discovery through delivery, making scope, timelines and trade-offs clear. The solution is shaped around your users and business rather than forcing your process into an off-the-shelf template.',
+      'From launch onward, we can help with iteration, monitoring and support so your digital product continues to serve your customers as needs evolve.'
+    ],
+    capabilities: ['In-app client and support chat', 'Real-time messaging and notifications', 'Conversation dashboards for teams', 'File sharing and message history', 'Integration with your existing systems'], deliverables: [
+      { title: 'Product roadmap', text: 'A prioritised plan aligned to user needs, business outcomes and a realistic delivery sequence.' },
+      { title: 'Working solution', text: 'A tested, production-ready digital product with clear handover documentation.' },
+      { title: 'Technical handover', text: 'Architecture notes, deployment guidance and knowledge transfer for your team.' },
+      { title: 'Ongoing support', text: 'Options for maintenance, improvements and support after launch.' }
+    ], stats: [], faqs: [
+      { question: 'Can you work with our existing systems?', answer: 'Yes. We can assess your current tools and design integrations or a phased migration around them.' },
+      { question: 'How do you start a project?', answer: 'We begin with a discovery conversation to understand the users, goals, constraints and best-fit scope before proposing a delivery plan.' }
+    ], sectors: []
+  },
+  {
+    slug: 'enterprise-it-solutions', number: '13', category: 'digital', title: 'IT consulting & digital transformation', short: 'IT solutions',
+    tagline: 'Practical technology consulting and dependable implementation for organisations ready to modernise how they work.', summary: 'Practical technology consulting and dependable implementation for organisations ready to modernise how they work.', image: img.drawings,
+    description: [
+      'Practical technology consulting and dependable implementation for organisations ready to modernise how they work.',
+      'We work collaboratively from discovery through delivery, making scope, timelines and trade-offs clear. The solution is shaped around your users and business rather than forcing your process into an off-the-shelf template.',
+      'From launch onward, we can help with iteration, monitoring and support so your digital product continues to serve your customers as needs evolve.'
+    ],
+    capabilities: ['Technology strategy and solution design', 'Workflow automation and integrations', 'Cloud setup and application modernisation', 'Quality assurance and security reviews', 'Maintenance, monitoring and support'], deliverables: [
+      { title: 'Product roadmap', text: 'A prioritised plan aligned to user needs, business outcomes and a realistic delivery sequence.' },
+      { title: 'Working solution', text: 'A tested, production-ready digital product with clear handover documentation.' },
+      { title: 'Technical handover', text: 'Architecture notes, deployment guidance and knowledge transfer for your team.' },
+      { title: 'Ongoing support', text: 'Options for maintenance, improvements and support after launch.' }
+    ], stats: [], faqs: [
+      { question: 'Can you work with our existing systems?', answer: 'Yes. We can assess your current tools and design integrations or a phased migration around them.' },
+      { question: 'How do you start a project?', answer: 'We begin with a discovery conversation to understand the users, goals, constraints and best-fit scope before proposing a delivery plan.' }
+    ], sectors: []
+  },
+  {
+    slug: 'content-management', number: '14', category: 'digital', title: 'Content management & strategy', short: 'Content & CMS', tagline: 'Organise your content, empower your team and keep every digital touchpoint accurate, useful and on-brand.', summary: 'Organise your content, empower your team and keep every digital touchpoint accurate, useful and on-brand.', image: img.drawings,
+    description: [
+      'Organise your content, empower your team and keep every digital touchpoint accurate, useful and on-brand.',
+      'Our approach is collaborative and measurable: we agree on the audience, constraints and desired outcome first, then shape a practical plan with clear priorities and ownership.',
+      'We can work alongside your in-house team or provide an end-to-end service, with straightforward handover and ongoing support options.'
+    ],
+    capabilities: ['CMS selection and implementation', 'Content modelling and migration', 'Editorial workflows and permissions', 'Headless and traditional CMS', 'Training and content governance'],
+    deliverables: [
+      { title: 'Discovery & recommendations', text: 'A clear assessment of your current position, opportunities and recommended priorities.' },
+      { title: 'Delivery plan', text: 'A sequenced plan with scope, owners, measures and realistic milestones.' },
+      { title: 'Implementation', text: 'Practical changes delivered with review points and transparent progress.' },
+      { title: 'Measurement & handover', text: 'Documented outcomes, reporting and next-step guidance for your team.' }
+    ],
+    stats: [], faqs: [
+      { question: 'Can this be combined with your website or app work?', answer: 'Yes. These capabilities can be delivered independently or as part of a joined-up website, product or digital transformation engagement.' },
+      { question: 'Do you support our team after delivery?', answer: 'Yes. We can agree ongoing guidance, optimisation or maintenance based on your team and priorities.' }
+    ], sectors: []
+  },
+  {
+    slug: 'seo-growth', number: '15', category: 'digital', title: 'SEO & organic growth', short: 'SEO & growth', tagline: 'Improve discoverability with a sustainable search strategy grounded in technical health, useful content and measurable progress.', summary: 'Improve discoverability with a sustainable search strategy grounded in technical health, useful content and measurable progress.', image: img.drawings,
+    description: [
+      'Improve discoverability with a sustainable search strategy grounded in technical health, useful content and measurable progress.',
+      'Our approach is collaborative and measurable: we agree on the audience, constraints and desired outcome first, then shape a practical plan with clear priorities and ownership.',
+      'We can work alongside your in-house team or provide an end-to-end service, with straightforward handover and ongoing support options.'
+    ],
+    capabilities: ['Technical SEO audits and fixes', 'Keyword and content strategy', 'On-page optimisation', 'Local and multi-location SEO', 'Analytics, reporting and iteration'],
+    deliverables: [
+      { title: 'Discovery & recommendations', text: 'A clear assessment of your current position, opportunities and recommended priorities.' },
+      { title: 'Delivery plan', text: 'A sequenced plan with scope, owners, measures and realistic milestones.' },
+      { title: 'Implementation', text: 'Practical changes delivered with review points and transparent progress.' },
+      { title: 'Measurement & handover', text: 'Documented outcomes, reporting and next-step guidance for your team.' }
+    ],
+    stats: [], faqs: [
+      { question: 'Can this be combined with your website or app work?', answer: 'Yes. These capabilities can be delivered independently or as part of a joined-up website, product or digital transformation engagement.' },
+      { question: 'Do you support our team after delivery?', answer: 'Yes. We can agree ongoing guidance, optimisation or maintenance based on your team and priorities.' }
+    ], sectors: []
+  },
+  {
+    slug: 'ui-ux-design', number: '16', category: 'digital', title: 'UI/UX & product design', short: 'UI/UX design', tagline: 'Turn customer needs into clear, accessible digital experiences through research, interface design and iterative prototyping.', summary: 'Turn customer needs into clear, accessible digital experiences through research, interface design and iterative prototyping.', image: img.drawings,
+    description: [
+      'Turn customer needs into clear, accessible digital experiences through research, interface design and iterative prototyping.',
+      'Our approach is collaborative and measurable: we agree on the audience, constraints and desired outcome first, then shape a practical plan with clear priorities and ownership.',
+      'We can work alongside your in-house team or provide an end-to-end service, with straightforward handover and ongoing support options.'
+    ],
+    capabilities: ['User research and journey mapping', 'Wireframes and interactive prototypes', 'Visual design systems', 'Responsive and accessible interfaces', 'Usability testing and design iteration'],
+    deliverables: [
+      { title: 'Discovery & recommendations', text: 'A clear assessment of your current position, opportunities and recommended priorities.' },
+      { title: 'Delivery plan', text: 'A sequenced plan with scope, owners, measures and realistic milestones.' },
+      { title: 'Implementation', text: 'Practical changes delivered with review points and transparent progress.' },
+      { title: 'Measurement & handover', text: 'Documented outcomes, reporting and next-step guidance for your team.' }
+    ],
+    stats: [], faqs: [
+      { question: 'Can this be combined with your website or app work?', answer: 'Yes. These capabilities can be delivered independently or as part of a joined-up website, product or digital transformation engagement.' },
+      { question: 'Do you support our team after delivery?', answer: 'Yes. We can agree ongoing guidance, optimisation or maintenance based on your team and priorities.' }
+    ], sectors: []
+  },
+  {
+    slug: 'cloud-devops', number: '17', category: 'digital', title: 'Cloud, DevOps & integrations', short: 'Cloud & DevOps', tagline: 'Build a reliable foundation for your digital products with thoughtful cloud architecture, automation and system integrations.', summary: 'Build a reliable foundation for your digital products with thoughtful cloud architecture, automation and system integrations.', image: img.drawings,
+    description: [
+      'Build a reliable foundation for your digital products with thoughtful cloud architecture, automation and system integrations.',
+      'Our approach is collaborative and measurable: we agree on the audience, constraints and desired outcome first, then shape a practical plan with clear priorities and ownership.',
+      'We can work alongside your in-house team or provide an end-to-end service, with straightforward handover and ongoing support options.'
+    ],
+    capabilities: ['Cloud architecture and migration planning', 'CI/CD and release automation', 'API and third-party integrations', 'Monitoring, reliability and backups', 'Infrastructure documentation and handover'],
+    deliverables: [
+      { title: 'Discovery & recommendations', text: 'A clear assessment of your current position, opportunities and recommended priorities.' },
+      { title: 'Delivery plan', text: 'A sequenced plan with scope, owners, measures and realistic milestones.' },
+      { title: 'Implementation', text: 'Practical changes delivered with review points and transparent progress.' },
+      { title: 'Measurement & handover', text: 'Documented outcomes, reporting and next-step guidance for your team.' }
+    ],
+    stats: [], faqs: [
+      { question: 'Can this be combined with your website or app work?', answer: 'Yes. These capabilities can be delivered independently or as part of a joined-up website, product or digital transformation engagement.' },
+      { question: 'Do you support our team after delivery?', answer: 'Yes. We can agree ongoing guidance, optimisation or maintenance based on your team and priorities.' }
+    ], sectors: []
+  },
+  {
+    slug: 'cybersecurity', number: '18', category: 'digital', title: 'Security & quality assurance', short: 'Security & QA', tagline: 'Reduce avoidable risk with practical application security reviews, testing and quality assurance built into delivery.', summary: 'Reduce avoidable risk with practical application security reviews, testing and quality assurance built into delivery.', image: img.drawings,
+    description: [
+      'Reduce avoidable risk with practical application security reviews, testing and quality assurance built into delivery.',
+      'Our approach is collaborative and measurable: we agree on the audience, constraints and desired outcome first, then shape a practical plan with clear priorities and ownership.',
+      'We can work alongside your in-house team or provide an end-to-end service, with straightforward handover and ongoing support options.'
+    ],
+    capabilities: ['Application security review', 'Functional and regression testing', 'Performance and compatibility testing', 'Secure development practices', 'Release readiness and defect tracking'],
+    deliverables: [
+      { title: 'Discovery & recommendations', text: 'A clear assessment of your current position, opportunities and recommended priorities.' },
+      { title: 'Delivery plan', text: 'A sequenced plan with scope, owners, measures and realistic milestones.' },
+      { title: 'Implementation', text: 'Practical changes delivered with review points and transparent progress.' },
+      { title: 'Measurement & handover', text: 'Documented outcomes, reporting and next-step guidance for your team.' }
+    ],
+    stats: [], faqs: [
+      { question: 'Can this be combined with your website or app work?', answer: 'Yes. These capabilities can be delivered independently or as part of a joined-up website, product or digital transformation engagement.' },
+      { question: 'Do you support our team after delivery?', answer: 'Yes. We can agree ongoing guidance, optimisation or maintenance based on your team and priorities.' }
+    ], sectors: []
   }
 ]
 

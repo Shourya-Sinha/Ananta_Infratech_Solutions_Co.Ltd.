@@ -37,28 +37,36 @@ export default function Services() {
       <section className="shell section">
         <SectionLead
           number="01 — 03"
-          eyebrow="Eight disciplines"
-          title={<>Everything from first<br />advice to final <em>handover.</em></>}
-          copy="We self-deliver civil and structural works with our own crews and plant, and lead every other discipline as a single integrated team."
+          eyebrow="Built environment + digital"
+          title={<>Grounded in delivery.<br />Ready for <em>what’s next.</em></>}
+          copy="From construction and infrastructure to custom software, CMS platforms, websites, mobile apps and client communication tools—we bring practical teams together around your outcome."
         />
-        <div className="services-list">
-          {(site.services || []).map((service) => (
-            <Reveal className="service-row" key={service.slug}>
-              <div className="service-count">{service.number}</div>
-              <div>
-                <h2><Link to={`/services/${service.slug}`}>{service.title}</Link></h2>
-                <p>{service.summary}</p>
-              </div>
-              <ul>
-                {service.capabilities.slice(0, 4).map((item) => <li key={item}><Check size={13} />{item}</li>)}
-              </ul>
-              <ArrowUpRight className="service-arrow" size={20} />
-            </Reveal>
-          ))}
-        </div>
+        {[
+          { title: 'Construction & infrastructure', note: 'Spaces, assets and infrastructure delivered with practical field expertise.', items: (site.services || []).filter((service) => service.category !== 'digital') },
+          { title: 'Digital & IT solutions', note: 'Digital products, platforms and services designed around people and business goals.', items: (site.services || []).filter((service) => service.category === 'digital') }
+        ].map((group) => group.items.length ? (
+          <div className="service-group" key={group.title}>
+            <div className="service-group-heading"><div><span>{group.items.length} capabilities</span><h2>{group.title}</h2></div><p>{group.note}</p></div>
+            <div className="services-list">
+              {group.items.map((service) => (
+                <Reveal className="service-row" key={service.slug}>
+                  <div className="service-count">{service.number}</div>
+                  <div>
+                    <h2><Link to={`/services/${service.slug}`}>{service.title}</Link></h2>
+                    <p>{service.summary}</p>
+                  </div>
+                  <ul>
+                    {service.capabilities.slice(0, 4).map((item) => <li key={item}><Check size={13} />{item}</li>)}
+                  </ul>
+                  <ArrowUpRight className="service-arrow" size={20} />
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        ) : null)}
       </section>
 
-      <Marquee text="PRECONSTRUCTION · CIVIL · MEP · FIT-OUT" />
+      <Marquee text="CONSTRUCTION · INFRASTRUCTURE · SOFTWARE · WEB · MOBILE · DIGITAL GROWTH" />
 
       {/* Delivery model */}
       <section className="section-tight" style={{ background: 'var(--sand-2)' }}>

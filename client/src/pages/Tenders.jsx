@@ -56,7 +56,7 @@ export default function Tenders() {
             <b>We never charge for registration, prequalification or tender participation.</b>
             <p style={{ margin: '0.3rem 0 0', fontSize: 13 }}>
               If anyone asks you for a fee, deposit or inducement to be considered for Ananta work, report it immediately to{' '}
-              <a href="mailto:integrity@anantainfratech.com" style={{ textDecoration: 'underline' }}>integrity@anantainfratech.com</a>. Reports are confidential and protected.
+              <a href="mailto:support@anantainfratechsolutions.com" style={{ textDecoration: 'underline' }}>support@anantainfratechsolutions.com</a>. Reports are confidential and protected.
             </p>
           </div>
         </div>
@@ -185,7 +185,7 @@ export default function Tenders() {
                 <h3>Integrity line</h3>
                 <p style={{ fontSize: 13, color: 'var(--muted)', margin: 0 }}>
                   Report any request for a fee or inducement confidentially:<br />
-                  <b style={{ color: 'var(--ink)' }}>integrity@anantainfratech.com</b>
+                  <b style={{ color: 'var(--ink)' }}>support@anantainfratechsolutions.com</b>
                 </p>
               </div>
             </aside>

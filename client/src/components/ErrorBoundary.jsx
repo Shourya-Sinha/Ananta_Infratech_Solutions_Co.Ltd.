@@ -30,7 +30,7 @@ export default class ErrorBoundary extends Component {
         <h1>That section<br /><em>did not load.</em></h1>
         <p>
           The rest of the site is fine — this part hit an unexpected error. Reloading usually fixes it.
-          If it keeps happening, tell us at hello@anantainfratech.com.
+          If it keeps happening, tell us at support@anantainfratechsolutions.com.
         </p>
         <div className="not-found-actions">
           <button className="button button-acid" onClick={() => window.location.reload()}>

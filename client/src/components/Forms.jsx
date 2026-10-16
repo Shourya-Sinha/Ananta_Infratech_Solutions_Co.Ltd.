@@ -302,7 +302,7 @@ export function RegisterForm({ type, config, sources = [] }) {
 
       <SubmitButton busy={busy} label={isContractor ? 'Register my company' : 'Register my interest'} busyLabel="Submitting…" />
       <FormStatus message={message} error={error} reference={reference} />
-      {!message ? <p className="field-hint form-full" style={{ marginTop: 4 }}>There is no fee to register, ever. If anyone asks you for payment to register or be placed, report it to integrity@anantainfratech.com immediately.</p> : null}
+      {!message ? <p className="field-hint form-full" style={{ marginTop: 4 }}>There is no fee to register, ever. If anyone asks you for payment to register or be placed, report it to support@anantainfratechsolutions.com immediately.</p> : null}
     </form>
   )
 }

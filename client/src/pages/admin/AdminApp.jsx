@@ -62,7 +62,7 @@ function Login({ onSignedIn }) {
         <form className="form-grid" onSubmit={submit}>
           <label className="form-full">
             Email
-            <input required type="email" autoComplete="username" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} placeholder="admin@anantainfratech.com" />
+            <input required type="email" autoComplete="username" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} placeholder="support@anantainfratechsolutions.com" />
           </label>
           <label className="form-full">
             Password

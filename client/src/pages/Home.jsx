@@ -25,6 +25,7 @@ function HeroSlider({ slides = [], stats = [] }) {
 
   if (!slides.length) return null
   const slide = slides[index]
+  const digitalSlide = /digital products/i.test(slide.eyebrow || '')
 
   return (
     <section className="hero">
@@ -64,7 +65,7 @@ function HeroSlider({ slides = [], stats = [] }) {
             {slide.text}
           </motion.p>
           <div className="hero-actions">
-            <Link to="/projects" className="button button-acid">Explore our work <ArrowUpRight size={17} /></Link>
+            <Link to={digitalSlide ? '/services' : '/projects'} className="button button-acid">{digitalSlide ? 'Explore digital services' : 'Explore our work'} <ArrowUpRight size={17} /></Link>
             <Link to="/contact" className="button button-light">Start a conversation</Link>
           </div>
         </div>
@@ -177,7 +178,7 @@ export default function Home() {
           eyebrow={home.servicesSection?.eyebrow || 'What we do'}
           title={home.servicesSection?.title}
           copy={home.servicesSection?.text}
-          action={<TextLink to="/services">All eight disciplines</TextLink>}
+          action={<TextLink to="/services">All services</TextLink>}
         />
         <div className="services-preview">
           {services.slice(0, 6).map((service) => <ServiceTile key={service.slug} service={service} />)}
@@ -188,6 +189,29 @@ export default function Home() {
               {service.short} <ArrowUpRight size={14} />
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* Digital solutions */}
+      <section className="digital-showcase section-tight">
+        <div className="shell">
+          <SectionLead
+            number="03 — 06"
+            eyebrow={home.digitalSection?.eyebrow || 'Technology, made useful'}
+            title={home.digitalSection?.title || <>Built for the real world.<br /><em>Designed for what’s next.</em></>}
+            copy={home.digitalSection?.text || 'Alongside construction and infrastructure, Ananta delivers practical digital products—from custom CMS platforms and websites to Android and iOS apps, client chat and connected business systems.'}
+            action={<TextLink to="/services">Explore digital services</TextLink>}
+          />
+          <div className="digital-showcase-grid">
+            {services.filter((service) => (home.digitalSection?.serviceSlugs || ['digital-products', 'web-development', 'mobile-app-development', 'client-chat-solutions', 'enterprise-it-solutions', 'content-management', 'seo-growth', 'ui-ux-design', 'cloud-devops', 'cybersecurity']).includes(service.slug)).map((service, index) => (
+              <Reveal className="digital-card" key={service.slug} delay={index * 0.06}>
+                <span className="digital-card-index">0{index + 1} / DIGITAL</span>
+                <h3>{service.short}</h3>
+                <p>{service.summary}</p>
+                <Link to={`/services/${service.slug}`} aria-label={`Explore ${service.title}`}>Explore <ArrowUpRight size={15} /></Link>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 

@@ -85,7 +85,7 @@ export default function Newsroom() {
                 respond within one working day.
               </p>
               <div className="button-row" style={{ marginTop: '1.5rem' }}>
-                <a className="button" href="mailto:media@anantainfratech.com">Contact communications <Mail size={16} /></a>
+                <a className="button" href="mailto:support@anantainfratechsolutions.com">Contact communications <Mail size={16} /></a>
                 <Link className="button button-ghost" to="/downloads">Request brand assets</Link>
               </div>
             </Reveal>

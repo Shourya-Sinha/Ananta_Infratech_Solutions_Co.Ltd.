@@ -67,7 +67,7 @@ export default function NotFound() {
 
         <p style={{ marginTop: '2.4rem', color: 'var(--muted-inverse)' }}>
           <Search size={13} style={{ verticalAlign: '-2px', marginRight: 6 }} />
-          Looking for something specific? Write to <a href="mailto:hello@anantainfratech.com" style={{ color: 'var(--acid)' }}>hello@anantainfratech.com</a>
+          Looking for something specific? Write to <a href="mailto:support@anantainfratechsolutions.com" style={{ color: 'var(--acid)' }}>support@anantainfratechsolutions.com</a>
         </p>
       </main>
     </>

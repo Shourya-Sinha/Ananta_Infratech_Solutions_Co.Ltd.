@@ -26,7 +26,7 @@ npm run dev
 - API: `http://localhost:5050`
 - Admin portal: `http://localhost:5173/admin`
 
-Demo portal access is `admin@anantainfratech.com` / `Ananta@2016`. **Change this and `JWT_SECRET` through
+Demo portal access is `admin@anantainfratechsolutions.com` / `Ananta@2016`. **Change this and `JWT_SECRET` through
 environment variables before deploying.** Copy `.env.example` to `.env` to configure deployment settings.
 
 Production build and run:
@@ -80,7 +80,7 @@ land in the CMS inbox, where they can be filtered by track and status, annotated
 applicant check any submission by reference or email.
 
 Closing it again is the same toggle in reverse, and the API stops accepting submissions immediately. For contractors
-and suppliers the interim contact is `tenders@anantainfratech.com`; for workers and technicians, `careers@anantainfratech.com`.
+and suppliers the interim contact is `tenders@anantainfratechsolutions.com`; for workers and technicians, `careers@anantainfratechsolutions.com`.
 
 ## Editing the website
 

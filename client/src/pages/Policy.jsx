@@ -51,10 +51,10 @@ export default function Policy() {
             <hr className="divider" />
             <Eyebrow>Questions</Eyebrow>
             <p style={{ fontSize: 12.8, color: 'var(--muted)', margin: 0 }}>
-              For privacy requests write to <b>privacy@anantainfratech.com</b>. For integrity and conduct concerns write
-              to <b>integrity@anantainfratech.com</b>.
+              For privacy requests write to <b>support@anantainfratechsolutions.com</b>. For integrity and conduct concerns write
+              to <b>support@anantainfratechsolutions.com</b>.
             </p>
-            <a className="button button-sm button-ghost" href="mailto:privacy@anantainfratech.com">Email us <Mail size={14} /></a>
+            <a className="button button-sm button-ghost" href="mailto:support@anantainfratechsolutions.com">Email us <Mail size={14} /></a>
           </div>
 
           <div className="sidebar-card" style={{ marginTop: '1.2rem' }}>
@@ -82,7 +82,7 @@ export default function Policy() {
               <h3>Exercising a right under this policy</h3>
               <p>Write to us with your request and we will respond within 30 days, as required by our own policy.</p>
             </div>
-            <a className="button" href="mailto:privacy@anantainfratech.com">Make a request <ArrowUpRight size={16} /></a>
+            <a className="button" href="mailto:support@anantainfratechsolutions.com">Make a request <ArrowUpRight size={16} /></a>
           </div>
         </div>
       </section>
