@@ -62,7 +62,7 @@ export default function Sectors() {
           <div className="accordion">
             {(site.sectors || []).map((sector) => (
               <div className="accordion-item" key={sector.slug}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1.4fr)', gap: 'clamp(1rem, 3vw, 3rem)', padding: 'clamp(1.2rem, 2.4vw, 1.9rem) 0', alignItems: 'start' }}>
+                <div className="sector-detail-row">
                   <div>
                     <div className="project-meta" style={{ margin: '0 0 0.5rem' }}>
                       <span>{sector.projectCount} projects</span>

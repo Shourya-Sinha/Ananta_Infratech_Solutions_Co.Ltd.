@@ -218,8 +218,8 @@ small { font-size: 0.82em; }
 .tag-info { border-color: rgba(53, 97, 138, 0.4); color: var(--info); background: rgba(53, 97, 138, 0.08); }
 .tag-inverse { border-color: var(--line-inverse); color: var(--white); }
 
-.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: clamp(1.5rem, 3vw, 3rem); }
-.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: clamp(1.25rem, 2.5vw, 2.25rem); }
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: clamp(1.5rem, 3vw, 3rem); }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: clamp(1.25rem, 2.5vw, 2.25rem); }
 .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: clamp(1rem, 2vw, 1.75rem); }
 
 .stack-sm > * + * { margin-top: 0.65rem; }
