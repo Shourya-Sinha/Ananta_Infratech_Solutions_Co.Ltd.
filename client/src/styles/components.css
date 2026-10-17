@@ -777,7 +777,7 @@ tbody tr:hover { background: rgba(213, 223, 86, 0.06); }
 
 .media-split {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   align-items: center;
   gap: clamp(1.6rem, 4vw, 4rem);
 }
@@ -815,7 +815,7 @@ tbody tr:hover { background: rgba(213, 223, 86, 0.06); }
 
 /* -------------------------------------------------------- cert / badges */
 
-.badge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.badge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
 .badge-grid > div { background: var(--white); padding: clamp(1.1rem, 2.2vw, 1.7rem); display: grid; gap: 0.4rem; }
 .badge-grid b { font-size: 14.4px; }
 .badge-grid span { font: 500 10.4px var(--mono); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
@@ -921,7 +921,7 @@ tbody tr:hover { background: rgba(213, 223, 86, 0.06); }
 
 /* --------------------------------------------------------- process steps */
 
-.process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
 
 .process-card {
   background: var(--paper);

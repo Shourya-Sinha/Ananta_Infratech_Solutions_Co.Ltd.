@@ -23,5 +23,11 @@
     "concurrently": "^8.2.2",
     "nodemon": "^3.1.4"
   },
+  "nodemonConfig": {
+    "watch": ["server/src"],
+    "ext": "js,json",
+    "ignore": ["server/data/*", "server/uploads/*", "client/*"],
+    "delay": "250"
+  },
   "type": "module"
 }

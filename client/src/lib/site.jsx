@@ -21,22 +21,37 @@ export function SiteProvider({ children, initialSite = null }) {
   const load = useCallback(async () => {
     setLoading(true)
     setError(null)
-    try {
-      const token = readToken()
-      const usePreview = preview && token
-      const response = await fetch(usePreview ? '/api/site?preview=1' : '/api/site', {
-        headers: usePreview ? { Authorization: `Bearer ${token}` } : undefined
-      })
-      if (!response.ok) throw new Error('Content service unavailable')
-      const data = await response.json()
-      setSite(data)
-      setPreview(Boolean(data.__preview))
-    } catch (err) {
-      console.error(err)
-      setError(err.message || 'Content could not be loaded')
-    } finally {
-      setLoading(false)
+
+    const token = readToken()
+    const usePreview = preview && token
+
+    // Retry with backoff before declaring an error: the dev server answers
+    // instantly while the API can take a few seconds to come up, so a first
+    // request that lands before the API is listening used to strand the
+    // whole page on the error screen. A short retry chain makes that class
+    // of failure invisible — the loader simply stays up a moment longer.
+    const delays = [500, 1000, 2000, 3500, 5500]
+    let lastError = null
+    for (let attempt = 0; attempt <= delays.length; attempt += 1) {
+      try {
+        const response = await fetch(usePreview ? '/api/site?preview=1' : '/api/site', {
+          headers: usePreview ? { Authorization: `Bearer ${token}` } : undefined
+        })
+        if (!response.ok) throw new Error('Content service unavailable')
+        const data = await response.json()
+        setSite(data)
+        setPreview(Boolean(data.__preview))
+        setLoading(false)
+        return
+      } catch (err) {
+        lastError = err
+        if (attempt < delays.length) await new Promise((resolve) => setTimeout(resolve, delays[attempt]))
+      }
     }
+
+    console.error(lastError)
+    setError(lastError?.message || 'Content could not be loaded')
+    setLoading(false)
   }, [preview])
 
   // `initialSite` lets tests and server rendering mount the tree with content

@@ -2,6 +2,15 @@
    Responsive refinements — mobile first fallbacks for the layouts above
    ========================================================================== */
 
+/* Dynamic viewport units where supported: mobile browser chrome that shows
+   and hides no longer makes full-screen sections jump or overflow. */
+@supports (height: 1dvh) {
+  #root, .page-shell { min-height: 100dvh; }
+  .page-loader, .connection-error { min-height: 100dvh; }
+  .hero { min-height: min(92dvh, 860px); }
+  .not-found { min-height: 88dvh; }
+}
+
 /* Very wide screens: keep line lengths sane */
 @media (min-width: 1800px) {
   :root { --max: 1680px; }
@@ -20,6 +29,14 @@
   .desktop-nav { display: none; }
   .menu-toggle { display: grid; }
   .header-contact { display: none; }
+
+  /* With the desktop nav gone the header only carries the brand + menu
+     button, so it can be shorter; the secondary utility links are already
+     in the mobile menu and footer, so only phone/email stay in the bar. */
+  :root { --header-h: 100px; }
+  .utility-bar .shell { justify-content: flex-start; }
+  .utility-bar .shell > .utility-bar-links:last-child { display: none; }
+
   .article-body, .policy-layout, .faq-layout, .job-detail-grid, .with-sidebar { grid-template-columns: 1fr; }
   .article-aside, .faq-nav, .sidebar-card { position: static; }
   .contact-grid, .roles-section, .about-story { grid-template-columns: 1fr; }
@@ -28,6 +45,21 @@
 
 @media (max-width: 900px) {
   :root { --header-h: 68px; }
+
+  /* On phones the utility strip can never fit next to the main header row:
+     inside the fixed-height header it squeezed the logo row to nothing.
+     Phone/email live in the mobile menu and footer, so hide the strip and
+     let the brand row own the full header height. */
+  .site-header .header-utility { display: none; }
+  .brand-image { height: 36px; }
+
+  /* Footer: brand and newsletter stack full-width, link columns pair up.
+     (Without this the 3/5-column desktop footer crushed into ~100px columns.) */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 1.9rem 1.6rem; }
+  .footer-grid > div:first-child,
+  .footer-grid > div:last-child { grid-column: 1 / -1; }
+
+  .sector-detail-row { grid-template-columns: 1fr; }
 
   .statement-section, .quote-section { grid-template-columns: 1fr; gap: 1.5rem; }
   .section-lead { grid-template-columns: 1fr; gap: 1rem; }
@@ -39,7 +71,7 @@
   .value-row p { grid-column: 2; }
   .value-row svg { display: none; }
   .service-row { grid-template-columns: 44px minmax(0, 1fr); }
-  .service-row ul { grid-column: 2; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); display: grid; }
+  .service-row ul { grid-column: 2; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); display: grid; }
   .service-arrow { display: none; }
   .news-row, .press-row, .award-row { grid-template-columns: minmax(0, 1fr); gap: 0.4rem; }
   .news-row svg, .press-row svg { display: none; }
@@ -56,8 +88,16 @@
 
 @media (max-width: 680px) {
   body { font-size: 15px; }
-  .utility-bar .shell { height: auto; padding-block: 8px; flex-direction: column; align-items: flex-start; gap: 4px; }
-  .utility-bar-links { gap: 0.9rem; flex-wrap: wrap; }
+
+  /* Inputs below 16px trigger an auto-zoom on iPhone on every field focus,
+     which makes every form feel broken. 16px keeps the layout still. */
+  input[type='text'], input[type='email'], input[type='tel'], input[type='url'],
+  input[type='number'], input[type='search'], input[type='password'], input[type='date'],
+  textarea, select, .footer-newsletter input, .search-field input { font-size: 16px; }
+
+  /* Long, unbreakable contact values must wrap rather than widen the layout */
+  a[href^='mailto:'], .footer-grid a, .footer-grid p, .contact-card a { overflow-wrap: anywhere; }
+
   .hero { min-height: 88vh; }
   .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
   .stats-strip > div { border-right: 0; border-bottom: 1px solid var(--line); }
@@ -80,8 +120,17 @@
 }
 
 @media (max-width: 460px) {
-  .hero-stats { grid-template-columns: 1fr 1fr; }
+  /* Footer columns each get the full row on small phones */
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-grid > div:nth-child(4) { grid-column: span 1; }
+
+  /* Reduce the fixed minimums of the fluid display sizes so long words
+     ("Infrastructure") can't overflow a 320px viewport. */
+  h1 { font-size: clamp(1.95rem, 11vw, 2.7rem); }
+  .page-hero h1, .detail-hero h1, .article-header h1, .not-found h1 { font-size: clamp(1.95rem, 10.5vw, 2.6rem); }
   .hero-copy h1 { font-size: clamp(2.1rem, 10vw, 3rem); }
+
+  .hero-stats { grid-template-columns: 1fr 1fr; }
   .button { width: 100%; justify-content: center; }
   .button-row .button { width: auto; }
   .circle-link { width: 58px; height: 58px; }
@@ -101,4 +150,5 @@
   .project-arrow { opacity: 1; transform: none; }
   .value-row:hover, .service-row:hover, .news-row:hover, .role-row:hover, .award-row:hover, .press-row:hover { padding-left: 0; }
   .mega-links a:hover { transform: none; }
+  .footer-grid a:hover { transform: none; }
 }

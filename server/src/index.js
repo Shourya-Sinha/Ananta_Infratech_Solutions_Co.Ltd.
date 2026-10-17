@@ -33,6 +33,20 @@ app.use((req, res, next) => {
   next()
 })
 
+// The database connection runs in parallel with the HTTP listener coming up,
+// so an early request is held briefly (max 8s) instead of being refused with
+// ECONNREFUSED while MongoDB's connect/timeout window plays out. `databaseReady`
+// is resolved once the storage backend has been chosen (see `boot` below); the
+// store itself defaults to the durable local store, so a timeout here still
+// leaves the API able to answer.
+let markDatabaseReady
+const databaseReady = new Promise((resolve) => { markDatabaseReady = resolve })
+app.use('/api', async (req, _res, next) => {
+  if (req.path === '/health') return next() // health probes must never queue
+  await Promise.race([databaseReady, new Promise((resolve) => setTimeout(resolve, 8000))])
+  return next()
+})
+
 app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
@@ -65,7 +79,7 @@ app.use((error, _req, res, _next) => {
   res.status(500).json({ message: 'Something went wrong on our side. Please try again in a moment.' })
 })
 
-async function boot() {
+async function connectDatabase() {
   if (process.env.MONGODB_URI) {
     try {
       await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 5000 })
@@ -80,11 +94,22 @@ async function boot() {
     console.log('• MONGODB_URI not set — using the durable local store at server/data/cms.json')
   }
 
+  // Make sure a first-run site has something to serve.
+  try { await getPublished() } catch (error) { console.warn('Could not prepare initial content:', error.message) }
+}
+
+async function boot() {
   await fs.mkdir(path.join(__dirname, '../data'), { recursive: true })
   await fs.mkdir(path.join(__dirname, '../uploads'), { recursive: true })
 
-  // Make sure a first-run site has something to serve.
-  try { await getPublished() } catch (error) { console.warn('Could not prepare initial content:', error.message) }
+  // Connect the database in parallel with opening the port: the listener
+  // comes up immediately so the Vite dev proxy no longer gets ECONNREFUSED
+  // during boot, and the readiness gate above holds `/api` requests until
+  // the storage backend is settled (local by default, MongoDB if it connects).
+  // Held requests are queued by the gate — that delay is invisible next to
+  // the old behaviour (a failed page load), and it empties the moment
+  // `connectDatabase` settles.
+  void connectDatabase().finally(markDatabaseReady)
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`▲ Ananta API listening on http://0.0.0.0:${PORT}`)
