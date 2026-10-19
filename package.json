@@ -8,7 +8,8 @@
     "server": "nodemon server/src/index.js",
     "build": "npm run build --prefix client",
     "start": "NODE_ENV=production node server/src/index.js",
-    "smoke": "npm run smoke --prefix client"
+    "smoke": "npm run smoke --prefix client",
+    "mail:check": "node server/scripts/mail-check.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

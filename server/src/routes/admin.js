@@ -6,7 +6,8 @@ import { fileURLToPath } from 'url'
 import { repo } from '../lib/store.js'
 import { clone, normaliseContent, validateContent, sanitise, toCsv, CONTENT_VERSION } from '../lib/content.js'
 import { imageUpload, storeImage, cloudinaryStatus, MAX_UPLOAD_BYTES } from '../uploads.js'
-import { notify, notificationStatus, mailStatus, sendTestEmail } from '../lib/notify.js'
+import { notify, notificationStatus, mailStatus, sendTestEmail, diagnoseMail, mailQueueStatus, deliverPayload } from '../lib/notify.js'
+import { flushOutbox, retryAllNow } from '../lib/outbox.js'
 import { getPublished } from './site.js'
 import { EXPORT_COLUMNS } from './submissions.js'
 import { defaultSite } from '../seed.js'
@@ -352,13 +353,43 @@ router.post('/admin/notify/test', async (req, res, next) => {
     const recipient = String(req.body?.email || '').trim()
     const email = await sendTestEmail(recipient || undefined)
     const webhook = await notify({ type: 'test', name: 'Ananta admin', email: recipient || null, message: 'Notification webhook test from the admin portal.' })
-    res.json({ email, webhook: webhook.webhook, mail: mailStatus(), status: notificationStatus() })
+    res.json({
+      email,
+      webhook: webhook.webhook,
+      diagnostics: email.diagnostics,
+      mail: mailStatus(),
+      status: notificationStatus(),
+      outbox: await mailQueueStatus()
+    })
+  } catch (error) { next(error) }
+})
+
+/**
+ * Step-by-step connection check: configuration, DNS, TCP, TLS, sign-in and
+ * sender address. This is the screen that answers "why did no email arrive?".
+ */
+router.post('/admin/notify/diagnose', async (req, res, next) => {
+  try {
+    const recipient = String(req.body?.email || '').trim()
+    const report = await diagnoseMail({ sendTest: Boolean(req.body?.send), recipient: recipient || undefined })
+    res.json({ ...report, mail: mailStatus(), outbox: await mailQueueStatus() })
   } catch (error) { next(error) }
 })
 
 /** Health of the outbound email channel, shown in the admin dashboard. */
-router.get('/admin/notify/status', (_req, res) => {
-  res.json({ mail: mailStatus(), status: notificationStatus() })
+router.get('/admin/notify/status', async (_req, res, next) => {
+  try {
+    res.json({ mail: mailStatus(), status: notificationStatus(), outbox: await mailQueueStatus() })
+  } catch (error) { next(error) }
+})
+
+/** Re-sends every enquiry still waiting in the outbox. */
+router.post('/admin/notify/outbox/retry', async (_req, res, next) => {
+  try {
+    await retryAllNow()
+    const report = await flushOutbox({ deliver: deliverPayload, limit: 25, force: true })
+    res.json({ report, outbox: await mailQueueStatus(), mail: mailStatus() })
+  } catch (error) { next(error) }
 })
 
 function countBy(rows) {

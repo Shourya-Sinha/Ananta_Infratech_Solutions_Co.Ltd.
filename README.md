@@ -96,15 +96,52 @@ Configuration is environment-only (see `.env.example`):
 
 | Variable | Purpose |
 | --- | --- |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_SECURE` | Mail server. Zoho: `smtp.zoho.in:465`. Google Workspace: `smtp.gmail.com:465` with an App Password. |
-| `SMTP_USER` / `SMTP_PASS` | The mailbox that authenticates, normally `support@anantainfratechsolutions.com`. |
-| `MAIL_FROM` | From header. Must normally match the authenticated mailbox. |
+| `MAIL_PROVIDER` | Optional preset that fills in the server, port and encryption: `godaddy`, `titan`, `microsoft365`, `gmail`, `zoho`, `zoho-in`, `zoho-eu`, `hostinger`, `namecheap`, `brevo`, `sendgrid`, `mailgun`, `resend`, `ses`. |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_SECURE` | Mail server, when not using a preset. |
+| `SMTP_USER` / `SMTP_PASS` | The mailbox that authenticates, normally `support@anantainfratechsolutions.com`. Common alternative names (`SMTP_PASSWORD`, `MAIL_PASS`, `EMAIL_PASSWORD`…) are also accepted. |
+| `MAIL_FROM` | From header. It must normally match the authenticated mailbox. |
 | `MAIL_TO` | Where enquiries land (comma-separated for more than one inbox). Defaults to the support inbox. |
 | `MAIL_ACK` | `true` sends the person who wrote in a short acknowledgement with their reference. |
+| `MAIL_DETECT` | `true` (default) works out the mail host from the `SMTP_USER` domain's MX records when no provider or host is set. |
+| `MAIL_VERIFY_ON_BOOT` | `true` (default) logs a DNS/TCP/TLS/sign-in self-check at startup. |
+| `SMTP_DEBUG` | Verbose SMTP conversation in the server log, for support only. |
 
-Open **Admin → Email delivery** to see the live status, send a real test email, and read the exact configuration notes
-for Zoho, Google, Microsoft 365 and Hostinger. The test uses the same code path as a real enquiry, so if the test
-arrives, enquiries will too.
+### GoDaddy mailbox (this domain)
+
+Mail for `anantainfratechsolutions.com` is hosted by GoDaddy (MX `smtp.secureserver.net` / `mailstore1.secureserver.net`),
+so the outgoing server is **`smtpout.secureserver.net`, port `465`, SSL**. Three values are enough:
+
+```bash
+MAIL_PROVIDER=godaddy
+SMTP_USER=support@anantainfratechsolutions.com
+SMTP_PASS="the mailbox password"
+```
+
+Quote the password if it contains `#`, spaces or other shell characters. Run `npm run mail:check -- --send` to prove the
+whole path before relying on it.
+
+Checks worth doing once in the GoDaddy dashboard:
+
+1. **Turn on SMTP Authentication** — Email & Office dashboard → *Manage* next to the mailbox → *Advanced Settings* →
+   **SMTP Authentication**. Without it GoDaddy answers every sign-in with `535`.
+2. **Use the mailbox password**, not the password for the GoDaddy account itself.
+3. Make sure the mailbox has room and the domain's SPF record still includes `secureserver.net` (it ships that way:
+   `v=spf1 include:secureserver.net -all`).
+
+### Finding out why mail is not arriving
+
+```bash
+npm run mail:check          # configuration + DNS + port + TLS + mailbox sign-in
+npm run mail:check -- --send   # …and send a real test message
+```
+
+The same checks are in **Admin → Email delivery → Run connection check**, with a plain-language fix attached to every
+failure (wrong password, SMTP authentication off, port blocked by the host, From address not allowed, and so on).
+If the test email arrives, live enquiries will too — both use exactly the same code path.
+
+Failed sends are **not discarded**: the enquiry stays in `server/data/outbox.json` and is retried every few minutes,
+and **Retry queued enquiries** in the same screen forces an immediate attempt. The submissions inbox shows an
+*Email not delivered* badge on any record whose email copy failed, with the reason on hover.
 
 The support address is used in the header utility bar, the footer inbox strip, the contact page, every service
 sidebar, the 404 page, policies and the Technology page — and it is editable from **Admin → Site settings → Company
@@ -218,8 +255,10 @@ Upload a new logo from **Admin → Site settings → Company profile** — no co
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_PASSWORD_HASH` | Portal credentials (`ADMIN_PASSWORD_HASH` wins) |
 | `SITE_URL` | Canonical URL used by `robots.txt`, `sitemap.xml` and canonical tags |
 | `CLOUDINARY_*` | Optional image storage; without it uploads are stored in `server/uploads` |
+| `MAIL_PROVIDER` | Email preset (`godaddy`, `gmail`, `zoho-in`, `microsoft365`…) — fills in host, port and encryption |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS` | Email delivery for every form submission |
 | `MAIL_FROM`, `MAIL_TO`, `MAIL_ACK` | From address, destination inboxes and optional sender acknowledgement |
+| `MAIL_DETECT`, `MAIL_VERIFY_ON_BOOT`, `SMTP_DEBUG` | Provider auto-detection, startup self-check and SMTP debug logging |
 | `NOTIFY_WEBHOOK_URL`, `NOTIFY_WEBHOOK_SECRET` | Optional secondary webhook (Slack/Zapier/Make) |
 
 SEO endpoints are mounted at the site root: `/robots.txt` and `/sitemap.xml`.

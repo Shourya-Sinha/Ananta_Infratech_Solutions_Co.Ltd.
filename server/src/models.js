@@ -49,7 +49,9 @@ const inquirySchema = new mongoose.Schema({
   documents: String,
   consent: Boolean,
   notes: [{ at: Date, text: String, by: String }],
-  ip: String
+  ip: String,
+  // Delivery report for the email copy (sent / failed, reason, queue state).
+  delivery: mongoose.Schema.Types.Mixed
 }, { timestamps: true })
 
 /** Contractor, supplier, vendor and worker registrations. */
@@ -73,10 +75,13 @@ const registrationSchema = new mongoose.Schema({
   employees: String,
   regions: [String],
   pastWork: String,
+  trade: String,
+  preferredLocation: String,
   message: String,
   consent: Boolean,
   notes: [{ at: Date, text: String, by: String }],
-  ip: String
+  ip: String,
+  delivery: mongoose.Schema.Types.Mixed
 }, { timestamps: true })
 
 /** Newsletter subscribers. */
