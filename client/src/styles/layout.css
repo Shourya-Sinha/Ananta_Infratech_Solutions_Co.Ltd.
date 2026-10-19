@@ -281,7 +281,9 @@
 .mobile-menu-nav { padding: 0.5rem var(--gutter) 1rem; }
 
 .mobile-menu-nav > button,
-.mobile-menu-nav > a {
+.mobile-menu-nav > a,
+.mobile-menu-nav > div > button,
+.mobile-menu-nav > div > a {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -298,10 +300,14 @@
 
 .mobile-menu-nav > button:hover,
 .mobile-menu-nav > a:hover,
-.mobile-menu-nav > button.is-open { color: var(--acid); padding-left: 8px; }
+.mobile-menu-nav > div > button:hover,
+.mobile-menu-nav > div > a:hover,
+.mobile-menu-nav > div > button.is-open { color: var(--acid); padding-left: 8px; }
 
 .mobile-menu-nav > button span:first-child,
-.mobile-menu-nav > a span:first-child {
+.mobile-menu-nav > a span:first-child,
+.mobile-menu-nav > div > button span:first-child,
+.mobile-menu-nav > div > a span:first-child {
   font: 500 10px var(--mono);
   letter-spacing: 0.1em;
   color: var(--muted-inverse);
@@ -310,7 +316,9 @@
 }
 
 .mobile-menu-nav > button span:nth-child(2),
-.mobile-menu-nav > a span:nth-child(2) { flex: 1; }
+.mobile-menu-nav > a span:nth-child(2),
+.mobile-menu-nav > div > button span:nth-child(2),
+.mobile-menu-nav > div > a span:nth-child(2) { flex: 1; }
 
 .mobile-submenu { padding: 0.35rem 0 0.9rem 1.4rem; display: grid; gap: 0.15rem; }
 .mobile-submenu a {
@@ -338,7 +346,7 @@
 
 /* ---------------------------------------------------------------- footer */
 
-.site-footer { background: var(--ink); color: var(--white); padding-top: clamp(3rem, 6vw, 6rem); }
+.site-footer { position: relative; overflow: hidden; background: var(--ink); color: var(--white); padding-top: clamp(3rem, 6vw, 6rem); }
 
 .footer-cta {
   display: flex;

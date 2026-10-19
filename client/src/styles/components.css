@@ -246,6 +246,34 @@
 
 .hero-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 
+/* Hero practice switch — construction and digital are equally first-class */
+.hero-practices { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; margin-top: 0.9rem; }
+.hero-practices a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border: 1px solid rgba(249, 248, 245, 0.28);
+  border-radius: 999px;
+  color: var(--white);
+  font-size: 11.6px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  background: rgba(9, 16, 20, 0.28);
+  backdrop-filter: blur(6px);
+  transition: border-color 0.25s, background 0.25s, color 0.25s;
+}
+.hero-practices a:hover { border-color: var(--acid); background: rgba(213, 223, 86, 0.12); color: var(--acid); }
+.hero-practices a svg { color: var(--acid); }
+.hero-practices > span { color: rgba(249, 248, 245, 0.45); font: 500 11px var(--mono); }
+
+@media (max-width: 620px) {
+  /* Stack the two practices instead of leaving a lone "+" on its own line. */
+  .hero-practices { display: grid; gap: 7px; justify-items: start; margin-top: 0.8rem; }
+  .hero-practices > span { display: none; }
+  .hero-practices a { padding: 6px 11px; font-size: 11px; }
+}
+
 .hero-dots { display: flex; align-items: center; gap: 0.5rem; }
 .hero-dots button {
   width: 34px;

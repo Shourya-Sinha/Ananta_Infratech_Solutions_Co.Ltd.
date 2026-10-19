@@ -8,7 +8,7 @@ import { img } from './images.js'
 export const home = {
   slides: [
     {
-      eyebrow: 'Integrated construction partner · Mumbai, India',
+      eyebrow: 'Construction + digital technology · Mumbai, India',
       title: 'We make ambitious places possible.',
       text: 'Ananta brings design intelligence, field discipline and accountable delivery to the places where people live, work and move.',
       image: img.hero,
@@ -40,7 +40,7 @@ export const home = {
       eyebrow: 'Digital products, built around people',
       title: 'Technology that moves your business forward.',
       text: 'From websites and custom CMS platforms to mobile apps, client chat and digital growth, we create useful technology shaped around real teams and customers.',
-      image: img.drawings,
+      image: img.digitalHero,
       video: '',
       caption: 'Web · Android · iOS · CMS · SEO · Cloud'
     }
@@ -75,11 +75,55 @@ export const home = {
     title: 'Construction, technology. One accountable partner.',
     text: 'We deliver the spaces, infrastructure and digital products people rely on—with practical teams, clear communication and one point of accountability.'
   },
+  domains: {
+    eyebrow: 'Two practices. One standard.',
+    title: 'We build the place. Then we build what runs inside it.',
+    text: 'Construction and software are different crafts with the same discipline: understand the problem properly, agree the plan, then deliver it without surprises. Switch between the two practices to see what that means in practice.',
+    construction: {
+      label: 'Construction & infrastructure',
+      icon: 'Building2',
+      headline: 'Physical work, delivered with field discipline.',
+      text: 'Preconstruction, civil and structural works, MEP, fit-out and infrastructure — self-delivered by teams who are on site, not on a dashboard.',
+      points: ['Preconstruction & value engineering', 'Civil, structural and MEP delivery', 'Fit-out, industrial and infrastructure', 'Safety, quality and handover evidence'],
+      stats: [{ value: '1.9M', label: 'sq. ft. delivered' }, { value: '4.2M', label: 'safe man-hours' }],
+      to: '/services',
+      label2: 'Explore construction services'
+    },
+    digital: {
+      label: 'Digital & IT solutions',
+      icon: 'Code2',
+      headline: 'Digital work, delivered like engineering.',
+      text: 'Websites, CMS platforms, custom software, Android and iOS apps, client chat, SEO and cloud — built to be used, measured and maintained.',
+      points: ['Websites, CMS and e-commerce', 'Android, iOS, React Native, Expo, Flutter', 'Custom chat, CRM and ERP systems', 'SEO, cloud, QA and managed support'],
+      stats: [{ value: '14', label: 'technology services' }, { value: '24h', label: 'enquiry response' }],
+      to: '/technology',
+      label2: 'Explore digital services'
+    }
+  },
   digitalSection: {
     eyebrow: 'Technology, made useful',
     title: 'Built for the real world. Designed for what’s next.',
     text: 'Alongside construction and infrastructure, Ananta delivers practical digital products—from custom CMS platforms and websites to Android and iOS apps, client chat and connected business systems.',
-    serviceSlugs: ['digital-products', 'web-development', 'mobile-app-development', 'client-chat-solutions', 'enterprise-it-solutions', 'content-management', 'seo-growth', 'ui-ux-design', 'cloud-devops', 'cybersecurity']
+    serviceSlugs: ['digital-products', 'web-development', 'mobile-app-development', 'client-chat-solutions', 'content-management', 'seo-growth', 'erp-crm-systems', 'managed-it-support'],
+    stats: [
+      { value: '14', label: 'digital services' },
+      { value: '48h', label: 'typical first prototype' },
+      { value: '99.9%', label: 'uptime target on managed systems' }
+    ],
+    chips: ['React & Next.js', 'React Native', 'Flutter', 'Node.js', 'CMS', 'SEO', 'Cloud', 'QA'],
+    chatTeaser: {
+      eyebrow: 'Custom chat, built in',
+      title: 'Every client conversation in one place.',
+      text: 'A chat layer that connects your website, app and team inbox — so questions stop getting lost between WhatsApp, email and someone’s memory.',
+      thread: [
+        { from: 'client', name: 'Client', text: 'Can we add a second floor to the Pune site?', time: '10:24' },
+        { from: 'team', name: 'Ananta', text: 'Yes — we can. Sending a feasibility note and cost impact by tomorrow.', time: '10:26' },
+        { from: 'client', name: 'Client', text: 'Perfect. Also need the CMS updated with the new brochure.', time: '10:27' },
+        { from: 'team', name: 'Ananta', text: 'Done. Published to the site and the app — here is the link.', time: '10:31' }
+      ]
+    },
+    engagementLabel: 'How we work together',
+    engagementNote: 'Every digital engagement is scoped in writing, with a named lead and a demo every two weeks.'
   },
   stats: [
     { value: '1.9M', label: 'sq. ft. delivered', detail: 'Across 60 completed projects since 2016.' },
@@ -1011,6 +1055,201 @@ export const register = {
   }
 }
 
+
+export const technology = {
+  eyebrow: 'Ananta Digital · Technology & IT',
+  title: 'Technology that earns its place.',
+  intro:
+    'We design and build the digital layer of modern businesses: websites, CMS platforms, custom software, Android and iOS apps, client chat, automation and the infrastructure that keeps them running. Same company, same accountability, same standard as our construction work.',
+  image: img.digitalHero,
+  secondaryImage: img.digitalCms,
+  badges: ['Custom software', 'Websites & CMS', 'Android · iOS', 'Chat & automation', 'Cloud & support'],
+  heroStats: [
+    { value: '14', label: 'technology services' },
+    { value: '02', label: 'build and support tracks' },
+    { value: '24h', label: 'enquiry response time' }
+  ],
+  proof: [
+    { value: '14', label: 'technology services under one team', detail: 'From a one-page website to a full ERP and a maintained cloud platform.' },
+    { value: '02', label: 'week demo cadence', detail: 'You see working software every sprint, not a status slide.' },
+    { value: '99.9%', label: 'uptime target on managed systems', detail: 'Monitored, backed up and patched on a schedule.' },
+    { value: '24h', label: 'response commitment', detail: 'Every enquiry is acknowledged and routed to a named lead within one working day.' }
+  ],
+  promise: {
+    eyebrow: 'How we work',
+    title: 'No black boxes. No disappearing acts.',
+    text: 'Most technology disappointment is not a coding problem — it is a communication problem with a technical costume on. We work in short cycles, show the work early and write down what changed and why.',
+    points: [
+      { title: 'You own what we build', text: 'Code, accounts, domains and credentials are handed over in your name. There is no hostage-taking at renewal time.' },
+      { title: 'A demo every two weeks', text: 'Working software on a link you can open, not a percentage-complete chart.' },
+      { title: 'Written scope, in plain language', text: 'What is included, what is not, what it costs and what could change it — agreed before the first line of code.' },
+      { title: 'Support after launch', text: 'Monitoring, backups, security updates and a named engineer on an optional monthly plan.' }
+    ]
+  },
+  servicesSection: {
+    eyebrow: 'Digital capabilities',
+    title: 'Fourteen services. One accountable team.',
+    text: 'Choose a single engagement or combine them into a complete digital platform. Every service below is also editable from the admin portal.'
+  },
+  capabilities: [
+    {
+      icon: 'LayoutPanelLeft', title: 'Websites & CMS platforms',
+      text: 'Fast, accessible websites with a content panel your team can actually operate — including this one.',
+      points: ['Corporate and brochure sites', 'Custom CMS and headless builds', 'E-commerce and catalogue sites', 'Editable pages, SEO fields and media library']
+    },
+    {
+      icon: 'Smartphone', title: 'Android, iOS & cross-platform apps',
+      text: 'Native-feeling mobile products built once and shipped to both stores with React Native, Expo or Flutter.',
+      points: ['React Native and Expo', 'Flutter', 'Kotlin and Swift where native is required', 'Store submission and release support']
+    },
+    {
+      icon: 'MessagesSquare', title: 'Customer chat & communication',
+      text: 'A conversation layer between your clients, your field teams and your office, with an audit trail.',
+      points: ['Website and in-app chat', 'Team inbox with assignment', 'File sharing and message history', 'WhatsApp and email notifications']
+    },
+    {
+      icon: 'Database', title: 'Custom ERP, CRM & operations systems',
+      text: 'Purpose-built systems for quotations, projects, inventory, billing, approvals and service delivery.',
+      points: ['Sales and CRM pipelines', 'Project and site tracking', 'Inventory, purchase and billing', 'Roles, approvals and reporting']
+    },
+    {
+      icon: 'TrendingUp', title: 'SEO & organic growth',
+      text: 'Technical health, useful content and measurable search performance — no mystery retainers.',
+      points: ['Technical audits and fixes', 'Content strategy and on-page work', 'Local and multi-location SEO', 'Measurement in GA4 and Search Console']
+    },
+    {
+      icon: 'PenTool', title: 'UI/UX & product design',
+      text: 'Research, wireframes, interface design and a design system that keeps the product coherent as it grows.',
+      points: ['User research and journey mapping', 'Interactive prototypes', 'Design systems and tokens', 'Accessibility to WCAG 2.2']
+    },
+    {
+      icon: 'CloudCog', title: 'Cloud, DevOps & integrations',
+      text: 'Reliable hosting, automated deployment and systems that talk to each other.',
+      points: ['Cloud architecture and migration', 'CI/CD and release automation', 'API and third-party integrations', 'Monitoring, backups and disaster recovery']
+    },
+    {
+      icon: 'ShieldCheck', title: 'Security, QA & managed support',
+      text: 'Practical security reviews, disciplined testing and someone accountable after go-live.',
+      points: ['Application security review', 'Functional and regression testing', 'Performance and compatibility testing', 'AMC, monitoring and patch management']
+    }
+  ],
+  cases: {
+    eyebrow: 'Digital work',
+    title: 'Software we have put into real operations.',
+    text: 'A sample of the systems behind the portfolio. Every one started as a messy process and ended as something a team uses every day.',
+    items: [
+      {
+        client: 'Northfield Foods',
+        sector: 'Manufacturing · Distribution',
+        title: 'A dealer portal that replaced fourteen spreadsheets',
+        problem: 'Orders arrived by phone and WhatsApp, stock was reconciled manually, and month-end took four people a week.',
+        solution: 'A custom ordering portal with live stock, credit limits, GST invoices and an approval chain, integrated with the plant’s dispatch sheet.',
+        stack: ['React', 'Node.js', 'MongoDB', 'Razorpay', 'WhatsApp alerts'],
+        result: [{ value: '14 → 1', label: 'systems replaced' }, { value: '3 days', label: 'saved at month-end' }],
+        image: img.digitalCms,
+        status: 'Live since 2025'
+      },
+      {
+        client: 'Ananta site operations',
+        sector: 'Construction · Field teams',
+        title: 'A site app that works with one bar of signal',
+        problem: 'Daily progress, labour and safety observations were photographed on phones and re-typed at head office the next morning.',
+        solution: 'An offline-first React Native app that queues records and syncs when a connection returns, feeding a live project dashboard.',
+        stack: ['React Native', 'Expo', 'SQLite', 'Node.js', 'Power BI'],
+        result: [{ value: '0', label: 're-typed reports' }, { value: '6 hrs', label: 'faster escalation' }],
+        image: img.digitalChat,
+        status: 'In production'
+      },
+      {
+        client: 'A Mumbai architecture practice',
+        sector: 'Professional services',
+        title: 'A website and CMS their studio actually updates',
+        problem: 'Every project page needed a developer, so the portfolio fell a year behind the work.',
+        solution: 'A custom CMS with project templates, image presets, SEO fields and a draft/publish workflow — the same system that runs this site.',
+        stack: ['React', 'Custom CMS', 'Image pipeline', 'Schema.org', 'GA4'],
+        result: [{ value: '100%', label: 'pages self-published' }, { value: '2.1×', label: 'organic enquiries' }],
+        image: img.digitalHero,
+        status: 'Live since 2024'
+      }
+    ]
+  },
+  stack: [
+    { group: 'Frontend', items: ['React', 'Next.js', 'Vite', 'Tailwind CSS', 'Framer Motion', 'TypeScript'] },
+    { group: 'Mobile', items: ['React Native', 'Expo', 'Flutter', 'Kotlin', 'Swift', 'Firebase'] },
+    { group: 'Backend', items: ['Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'REST APIs', 'Socket.IO'] },
+    { group: 'Content & commerce', items: ['Headless CMS', 'Strapi', 'Sanity', 'Shopify', 'WooCommerce', 'Razorpay'] },
+    { group: 'Cloud & quality', items: ['AWS', 'DigitalOcean', 'Docker', 'GitHub Actions', 'Playwright', 'Sentry'] }
+  ],
+  process: [
+    { number: '01', title: 'Discover', text: 'We understand the users, the business and the constraint that actually matters. You leave with a written brief, not a pitch deck.' },
+    { number: '02', title: 'Define', text: 'Scope, screens, data model and integration points agreed in plain language, with a fixed price and a delivery sequence.' },
+    { number: '03', title: 'Design', text: 'Wireframes to interactive prototypes. We test the flow before investing in the build.' },
+    { number: '04', title: 'Build & demo', text: 'Two-week sprints, working software on a live link, and a change log you can read.' },
+    { number: '05', title: 'Launch & support', text: 'Go-live checklist, analytics, training and an optional support plan with a named engineer.' }
+  ],
+  engagement: [
+    {
+      name: 'Fixed-scope project',
+      price: 'From ₹35,000',
+      text: 'A defined outcome — a website, an app MVP, a CMS or a store — scoped and priced before work begins.',
+      includes: ['Written scope and milestones', 'Fixed price', 'Two-week demos', '30 days of post-launch support'],
+      best: 'Best when the outcome is clear.'
+    },
+    {
+      name: 'Monthly product squad',
+      price: 'From ₹40,000 / month',
+      text: 'A small cross-functional team that keeps improving a product, month after month, without re-tendering each change.',
+      includes: ['Design + engineering capacity', 'Prioritised backlog', 'Weekly release cadence', 'Monthly reporting'],
+      best: 'Best when the product is live and evolving.'
+    },
+    {
+      name: 'Support & AMC',
+      price: 'From ₹8,000 / month',
+      text: 'Monitoring, backups, security updates and a named engineer for the systems you depend on.',
+      includes: ['Defined response times', 'Backups and restore drills', 'Patch management', 'Monthly health report'],
+      best: 'Best for anything already in production.'
+    },
+    {
+      name: 'Advisory & audit',
+      price: 'From ₹25,000',
+      text: 'A short, senior engagement to review code, architecture, SEO or security and tell you what to fix first.',
+      includes: ['Code and architecture review', 'Security and performance findings', 'Prioritised roadmap', 'Debrief with your team'],
+      best: 'Best before a rebuild or a big spend.'
+    }
+  ],
+  chatDemo: {
+    eyebrow: 'Chat, built for how work actually happens',
+    title: 'A conversation that ends in a delivered task.',
+    text: 'Most chat tools stop at messages. Our builds connect the conversation to the work — a query becomes a ticket, a ticket becomes a site visit, a site visit becomes an upload in the client portal. Try the demo.',
+    thread: [
+      { from: 'client', name: 'Meera · Client', text: 'The third-floor snag list is ready. Can your site team review it this week?', time: '09:41' },
+      { from: 'team', name: 'Ananta · Project desk', text: 'Received — 12 items. Ravi is on site Thursday and will close the first six.', time: '09:44' },
+      { from: 'system', name: 'System', text: 'Ticket #AN-2481 created · assigned to Ravi K. · due 24 Oct', time: '09:44' },
+      { from: 'client', name: 'Meera · Client', text: 'Perfect. Please also update the CMS with the revised handover pack.', time: '09:46' },
+      { from: 'team', name: 'Ananta · Project desk', text: 'Done — v2 is live on the portal and your team has access. I have emailed the link as well.', time: '09:52' }
+    ],
+    features: ['Website + app + email in one thread', 'Assignment, SLA and read receipts', 'Files, photos and site reports', 'WhatsApp notifications for field teams']
+  },
+  seoNote: {
+    title: 'This website is the demo.',
+    text: 'The page you are reading is a custom CMS: every heading, service, image and email address is editable, with draft, preview, publish and rollback. If you like how it works, we can build the same for you.'
+  },
+  faqs: [
+    { question: 'Do you work with businesses outside construction?', answer: 'Yes. The technology team works with any organisation that needs a website, product, platform or support. Construction is our home market, not a limit.' },
+    { question: 'How quickly can a website go live?', answer: 'A focused brochure or corporate site typically takes 2–4 weeks once content and approvals are ready. Larger CMS or e-commerce builds run 6–10 weeks.' },
+    { question: 'Who owns the code and accounts?', answer: 'You do. Domains, hosting, repositories and third-party accounts are registered in your name, and handover is part of every project.' },
+    { question: 'Can you maintain a site built by someone else?', answer: 'Usually. We audit the codebase first and tell you honestly whether maintaining it or rebuilding it is the better commercial decision.' },
+    { question: 'How do we start?', answer: 'Write to support@anantainfratechsolutions.com with a short description of what you need. You will get a reply within one working day and a 30-minute call with the person who would lead the work.' },
+    { question: 'Do you sign NDAs?', answer: 'Yes, and we can start under one before you share anything sensitive.' }
+  ],
+  cta: {
+    eyebrow: 'Start a conversation',
+    title: 'Tell us what you are trying to build.',
+    text: 'A website, an app, a chat system, a CMS or a support contract — write to support@anantainfratechsolutions.com and we will tell you honestly what it takes.',
+    image: img.digitalHero
+  }
+}
+
 export const nav = [
   {
     label: 'Company',
@@ -1030,17 +1269,39 @@ export const nav = [
   {
     label: 'Services',
     to: '/services',
-    blurb: 'Eight integrated disciplines covering the whole journey from feasibility to handover and beyond.',
+    blurb: 'Twenty-two disciplines across the built world and the digital one — delivered by one accountable team.',
     children: [
-      { label: 'All services', to: '/services', description: 'Eight disciplines, one delivery engine' },
-      { label: 'Preconstruction & advisory', to: '/services/preconstruction', description: 'Feasibility, estimating, value engineering' },
-      { label: 'Construction management', to: '/services/construction-management', description: 'Programme, cost and trade leadership' },
-      { label: 'Civil & structural works', to: '/services/civil-structural', description: 'Foundations, RCC frames, steel' },
-      { label: 'MEP & building systems', to: '/services/mep-systems', description: 'HVAC, electrical, plumbing, fire' },
-      { label: 'Interiors & fit-out', to: '/services/interiors-fitout', description: 'Workplace, hospitality, healthcare' },
-      { label: 'Industrial & EPC delivery', to: '/services/industrial-epc', description: 'Plants, warehouses, cold stores' },
-      { label: 'Infrastructure & civil engineering', to: '/services/infrastructure', description: 'Bridges, roads, water networks' },
-      { label: 'Refurbishment & upgrades', to: '/services/facility-upgrades', description: 'New performance from existing assets' }
+      { label: 'All services', to: '/services', description: 'Every capability in one place', group: 'Overview' },
+      { label: 'Preconstruction & advisory', to: '/services/preconstruction', description: 'Feasibility, estimating, value engineering', group: 'Construction · advisory' },
+      { label: 'Construction management', to: '/services/construction-management', description: 'Programme, cost and trade leadership', group: 'Construction · advisory' },
+      { label: 'Civil & structural works', to: '/services/civil-structural', description: 'Foundations, RCC frames, steel', group: 'Construction · structure' },
+      { label: 'MEP & building systems', to: '/services/mep-systems', description: 'HVAC, electrical, plumbing, fire', group: 'Construction · structure' },
+      { label: 'Interiors & fit-out', to: '/services/interiors-fitout', description: 'Workplace, hospitality, healthcare', group: 'Construction · delivery' },
+      { label: 'Industrial & EPC delivery', to: '/services/industrial-epc', description: 'Plants, warehouses, cold stores', group: 'Construction · delivery' },
+      { label: 'Infrastructure & civil engineering', to: '/services/infrastructure', description: 'Bridges, roads, water networks', group: 'Construction · delivery' },
+      { label: 'Refurbishment & upgrades', to: '/services/facility-upgrades', description: 'New performance from existing assets', group: 'Construction · delivery' },
+      { label: 'Digital products & custom software', to: '/services/digital-products', description: 'Product strategy to launch', group: 'Digital & IT' },
+      { label: 'Websites, CMS & e-commerce', to: '/services/web-development', description: 'Fast, accessible, editable sites', group: 'Digital & IT' },
+      { label: 'Android & iOS apps', to: '/services/mobile-app-development', description: 'React Native, Expo and Flutter', group: 'Digital & IT' },
+      { label: 'Client chat solutions', to: '/services/client-chat-solutions', description: 'Conversations connected to work', group: 'Digital & IT' },
+      { label: 'SEO & organic growth', to: '/services/seo-growth', description: 'Search visibility that compounds', group: 'Digital & IT' },
+      { label: 'All digital services', to: '/technology', description: 'Fourteen technology services', group: 'Digital & IT' }
+    ]
+  },
+  {
+    label: 'Technology',
+    to: '/technology',
+    blurb: 'Ananta Digital builds the software, apps and systems that sit inside a modern business.',
+    children: [
+      { label: 'Technology overview', to: '/technology', description: 'Our digital practice and how it works', group: 'Overview' },
+      { label: 'Digital products & software', to: '/services/digital-products', description: 'Custom platforms and portals', group: 'Build' },
+      { label: 'Websites, CMS & SEO', to: '/services/web-development', description: 'Sites your team can run', group: 'Build' },
+      { label: 'Android & iOS apps', to: '/services/mobile-app-development', description: 'React Native, Expo, Flutter', group: 'Build' },
+      { label: 'Client chat solutions', to: '/services/client-chat-solutions', description: 'A shared inbox for client work', group: 'Build' },
+      { label: 'ERP, CRM & automation', to: '/services/erp-crm-systems', description: 'One system of record', group: 'Systems' },
+      { label: 'Data & live dashboards', to: '/services/analytics-dashboards', description: 'Decisions from real numbers', group: 'Systems' },
+      { label: 'Cloud, QA & security', to: '/services/cloud-devops', description: 'Reliable foundations', group: 'Run & support' },
+      { label: 'Managed IT & AMC', to: '/services/managed-it-support', description: 'Monitoring, backups, support', group: 'Run & support' }
     ]
   },
   {
@@ -1098,6 +1359,17 @@ export const sitemap = [
     { label: 'Healthcare & life sciences', to: '/sectors/healthcare' },
     { label: 'Hospitality & leisure', to: '/sectors/hospitality' },
     { label: 'Infrastructure & public works', to: '/sectors/infrastructure' }
+  ] },
+  { group: 'Technology', links: [
+    { label: 'Technology overview', to: '/technology' },
+    { label: 'Digital products & custom software', to: '/services/digital-products' },
+    { label: 'Web development & e-commerce', to: '/services/web-development' },
+    { label: 'Android & iOS app development', to: '/services/mobile-app-development' },
+    { label: 'Client chat solutions', to: '/services/client-chat-solutions' },
+    { label: 'Content management & strategy', to: '/services/content-management' },
+    { label: 'SEO & organic growth', to: '/services/seo-growth' },
+    { label: 'ERP, CRM & business systems', to: '/services/erp-crm-systems' },
+    { label: 'Managed IT support & AMC', to: '/services/managed-it-support' }
   ] },
   { group: 'Work', links: [
     { label: 'Projects', to: '/projects' }, { label: 'Insights & perspectives', to: '/insights' },

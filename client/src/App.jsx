@@ -17,6 +17,7 @@ const Clients = lazy(() => import('./pages/Clients'))
 const Equipment = lazy(() => import('./pages/Equipment'))
 const Newsroom = lazy(() => import('./pages/Newsroom'))
 const Services = lazy(() => import('./pages/Services'))
+const Technology = lazy(() => import('./pages/Technology'))
 const ServiceDetail = lazy(() => import('./pages/ServiceDetail'))
 const Sectors = lazy(() => import('./pages/Sectors'))
 const SectorDetail = lazy(() => import('./pages/SectorDetail'))
@@ -87,6 +88,7 @@ function SiteFrame() {
             <Route path="/newsroom" element={<Newsroom />} />
 
             <Route path="/services" element={<Services />} />
+            <Route path="/technology" element={<Technology />} />
             <Route path="/services/:slug" element={<ServiceDetail />} />
             <Route path="/sectors" element={<Sectors />} />
             <Route path="/sectors/:slug" element={<SectorDetail />} />

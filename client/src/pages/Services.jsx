@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, Check } from 'lucide-react'
+import { ArrowUpRight, Check, Code2, Mail } from 'lucide-react'
 import { useContent } from '../lib/site'
+import { ServiceIcon } from '../components/Layout'
 import { Seo, breadcrumbSchema } from '../lib/seo'
 import {
   BadgeGrid, CtaSlab, Eyebrow, Marquee, PageHero, ProcessGrid, Reveal, SectionLead, StatStrip, TextLink
@@ -50,7 +51,10 @@ export default function Services() {
             <div className="services-list">
               {group.items.map((service) => (
                 <Reveal className="service-row" key={service.slug}>
-                  <div className="service-count">{service.number}</div>
+                  <div className="service-count">
+                    {service.icon ? <span className="service-row-icon"><ServiceIcon name={service.icon} size={15} /></span> : null}
+                    {service.number}
+                  </div>
                   <div>
                     <h2><Link to={`/services/${service.slug}`}>{service.title}</Link></h2>
                     <p>{service.summary}</p>
@@ -65,6 +69,21 @@ export default function Services() {
           </div>
         ) : null)}
       </section>
+
+      <div className="shell" style={{ paddingTop: 'clamp(1.5rem, 3vw, 2.4rem)' }}>
+        <div className="support-strip">
+          <div>
+            <span className="support-strip-icon"><Code2 size={18} /></span>
+            <div>
+              <b>{site.services.filter((item) => item.category === 'digital').length} digital services, one team.</b>
+              <p>Websites, CMS platforms, Android and iOS apps, custom chat, ERP/CRM, SEO, cloud and ongoing support — with written scope, two-week demos and a named lead.</p>
+            </div>
+          </div>
+          <a className="support-strip-mail" href="mailto:support@anantainfratechsolutions.com">
+            <Mail size={15} /> support@anantainfratechsolutions.com
+          </a>
+        </div>
+      </div>
 
       <Marquee text="CONSTRUCTION · INFRASTRUCTURE · SOFTWARE · WEB · MOBILE · DIGITAL GROWTH" />
 

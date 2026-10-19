@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   AlertTriangle, BarChart3, Check, ChevronRight, CircleDot, Code2, Database, Download,
-  ExternalLink, Eye, EyeOff, History, Image as ImageIcon, LayoutDashboard, Loader2, LogOut,
-  RotateCcw, Save, Search, ShieldCheck, Trash2, Upload, X
+  ExternalLink, Eye, EyeOff, History, Image as ImageIcon, LayoutDashboard, Loader2, LogOut, Mail,
+  MonitorPlay, RotateCcw, Save, Search, ShieldCheck, Trash2, Upload, X
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { adminGet, adminPost, adminPut, clone, formatBytes, formatDate, readToken, writeToken } from '../../lib/api'
-import { useSite } from '../../lib/site'
+import { useSite, writeLocalPreview } from '../../lib/site'
 import { useToast } from '../../components/Toast'
 import { adminSections, sectionsByGroup } from '../../lib/adminSchema'
 import SectionPanel, { ProblemList, ResetButton } from './SectionPanel'
 import Inbox from './Inbox'
+import LivePreview from './LivePreview'
+import EmailPanel from './EmailPanel'
 
 /* ============================================================== sign in */
 
@@ -148,7 +150,7 @@ function Dashboard({ stats, content, onNavigate }) {
             <div><dt>Last published</dt><dd>{content?.publishedAt ? `${formatDate(content.publishedAt, true)} by ${content.publishedBy || 'admin'}` : 'Never published'}</dd></div>
             <div><dt>Stored revisions</dt><dd>{content?.revisions?.length ?? 0} — restore any of them from the Revisions tab</dd></div>
             <div><dt>Content schema version</dt><dd>v{content?.contentVersion ?? '—'}</dd></div>
-            <div><dt>Storage backend</dt><dd>{content?.storage === 'mongodb' ? 'MongoDB' : 'Local JSON file'}{stats?.notification?.configured ? ' · notifications on' : ' · notifications not configured'}</dd></div>
+            <div><dt>Storage backend</dt><dd>{content?.storage === 'mongodb' ? 'MongoDB' : 'Local JSON file'}{stats?.notification?.email?.configured ? ' · email delivery on' : ' · email not configured'}</dd></div>
           </dl>
         </div>
         <div className="editor-subsection">
@@ -387,6 +389,10 @@ export default function AdminApp() {
   const [navQuery, setNavQuery] = useState('')
   const [lastSaved, setLastSaved] = useState('')
   const [counting, setCounting] = useState(false)
+  const [previewFocus, setPreviewFocus] = useState(false)
+  const [previewOn, setPreviewOn] = useState(() => {
+    try { return localStorage.getItem('ananta-preview-panel') !== 'off' } catch { return true }
+  })
 
   const uploadImage = useCallback(async (file) => {
     const body = new FormData()
@@ -472,8 +478,19 @@ export default function AdminApp() {
   const previewDraft = () => {
     if (!session?.token) { toast.error('Sign in first.'); return }
     togglePreview(true)
-    window.open('/', '_blank', 'noopener')
-    toast.success('Preview opened in a new tab. It shows your draft, not the live site.')
+    // Hand the *unsaved* document to the new tab so the preview matches the
+    // editor exactly, without writing anything to the server.
+    if (content) writeLocalPreview(content)
+    window.open('/?cmsPreview=1', '_blank', 'noopener')
+    toast.success('Preview opened in a new tab — it shows your current edits, not the live site.')
+  }
+
+  const togglePreviewPanel = () => {
+    setPreviewOn((current) => {
+      const next = !current
+      try { localStorage.setItem('ananta-preview-panel', next ? 'on' : 'off') } catch { /* ignore */ }
+      return next
+    })
   }
 
   /* Keyboard shortcut: ⌘/Ctrl + S saves the draft. */
@@ -504,6 +521,7 @@ export default function AdminApp() {
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'inbox', label: 'Submissions inbox', icon: Database, badge: meta?.hasDraft ? null : null },
         { id: 'media', label: 'Media library', icon: ImageIcon },
+        { id: 'email', label: 'Email delivery', icon: Mail },
         { id: 'revisions', label: 'Revisions', icon: History, badge: meta?.revisions?.length || null },
         { id: 'advanced', label: 'Advanced JSON', icon: Code2 }
       ]
@@ -515,6 +533,8 @@ export default function AdminApp() {
         .map((item) => ({ id: item.id, label: item.title, icon: fileIcon(item.group) }))
     }))
   ]
+
+  const isEditing = Boolean(content) && !['dashboard', 'inbox', 'media', 'email', 'revisions', 'advanced'].includes(tab)
 
   return (
     <div className="admin-shell">
@@ -568,7 +588,10 @@ export default function AdminApp() {
             {meta?.publishedAt ? <span className="field-hint">Live version published {formatDate(meta.publishedAt, true)} by {meta.publishedBy || 'admin'}</span> : null}
           </div>
           <div className="inbox-toolbar">
-            <button type="button" className="button button-sm button-ghost" onClick={previewDraft}><Eye size={14} /> Preview</button>
+            <button type="button" className={`button button-sm ${previewOn ? 'button-ghost' : 'button-ghost'}`} onClick={togglePreviewPanel} title="Show the website beside the editor">
+              <MonitorPlay size={14} /> {previewOn ? 'Hide preview' : 'Live preview'}
+            </button>
+            <button type="button" className="button button-sm button-ghost" onClick={previewDraft}><Eye size={14} /> Open preview</button>
             <button type="button" className="button button-sm button-ghost" disabled={saving} onClick={() => saveDraft()}><Save size={14} /> Save draft</button>
             <button type="button" className="button button-sm button-acid" disabled={saving} onClick={publish}>
               {saving ? <><Loader2 size={14} className="spin" /> Working…</> : <><Upload size={14} /> Publish</>}
@@ -578,47 +601,64 @@ export default function AdminApp() {
 
         <ProblemList problems={problems} />
 
-        <div className="admin-body">
-          {!content ? (
-            <div className="skeleton" style={{ height: 320 }} />
-          ) : tab === 'dashboard' ? (
-            <Dashboard stats={meta?.stats} content={meta} onNavigate={setTab} />
-          ) : tab === 'inbox' ? (
-            <Inbox />
-          ) : tab === 'media' ? (
-            <MediaPanel uploadImage={uploadImage} />
-          ) : tab === 'revisions' ? (
-            <RevisionsPanel />
-          ) : tab === 'advanced' ? (
-            <AdvancedPanel content={content} onChange={update} />
-          ) : (
-            <>
-              <SectionPanel
-                section={section}
-                content={content}
-                onChange={update}
-                uploadImage={uploadImage}
-                onJump={() => window.open('/', '_blank', 'noopener')}
-              />
-              <div className="editor-card">
-                <div className="editor-card-head">
-                  <div>
-                    <h2>Finish this section</h2>
-                    <p>Save to keep your work in the private draft, or publish to push it live. Unsaved changes are never transmitted.</p>
+        <div className={`admin-body ${previewOn && isEditing ? 'has-preview' : ''} ${previewOn && isEditing && previewFocus ? 'is-preview-focus' : ''}`}>
+          <div className="admin-body-main">
+            {!content ? (
+              <div className="skeleton" style={{ height: 320 }} />
+            ) : tab === 'dashboard' ? (
+              <Dashboard stats={meta?.stats} content={meta} onNavigate={setTab} />
+            ) : tab === 'inbox' ? (
+              <Inbox />
+            ) : tab === 'media' ? (
+              <MediaPanel uploadImage={uploadImage} />
+            ) : tab === 'email' ? (
+              <EmailPanel supportEmail={content?.company?.supportEmail || content?.company?.email} />
+            ) : tab === 'revisions' ? (
+              <RevisionsPanel />
+            ) : tab === 'advanced' ? (
+              <AdvancedPanel content={content} onChange={update} />
+            ) : (
+              <>
+                <SectionPanel
+                  section={section}
+                  content={content}
+                  onChange={update}
+                  uploadImage={uploadImage}
+                  onJump={() => window.open('/', '_blank', 'noopener')}
+                />
+                <div className="editor-card">
+                  <div className="editor-card-head">
+                    <div>
+                      <h2>Finish this section</h2>
+                      <p>Save keeps your work in the private draft. Publish pushes exactly what is on screen to the live site; the preview beside you already shows it.</p>
+                    </div>
                   </div>
+                  <div className="button-row">
+                    <button type="button" className="button button-sm button-acid" disabled={saving} onClick={() => saveDraft()}>
+                      {saving ? <Loader2 size={14} className="spin" /> : <Save size={14} />} Save draft{savedSuffix(lastSaved)}
+                    </button>
+                    <button type="button" className="button button-sm" disabled={saving} onClick={publish}><Upload size={14} /> Publish to the website</button>
+                    <ResetButton onReset={discard} />
+                    <a className="button button-sm button-ghost" href="/" target="_blank" rel="noreferrer"><ExternalLink size={14} /> View live site</a>
+                  </div>
+                  {meta?.hasDraft ? <p className="field-hint" style={{ marginTop: '0.8rem' }}><AlertTriangle size={13} /> There are unpublished draft changes. Visitors still see the last published version.</p> : null}
                 </div>
-                <div className="button-row">
-                  <button type="button" className="button button-sm button-acid" disabled={saving} onClick={() => saveDraft()}>
-                    {saving ? <Loader2 size={14} className="spin" /> : <Save size={14} />} Save draft{savedSuffix(lastSaved)}
-                  </button>
-                  <button type="button" className="button button-sm" disabled={saving} onClick={publish}><Upload size={14} /> Publish to the website</button>
-                  <ResetButton onReset={discard} />
-                  <a className="button button-sm button-ghost" href="/" target="_blank" rel="noreferrer"><ExternalLink size={14} /> View live site</a>
-                </div>
-                {meta?.hasDraft ? <p className="field-hint" style={{ marginTop: '0.8rem' }}><AlertTriangle size={13} /> There are unpublished draft changes. Visitors still see the last published version.</p> : null}
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
+
+          {previewOn && isEditing ? (
+            <LivePreview
+              content={content}
+              section={section}
+              dirty={dirty}
+              saving={saving}
+              onPublish={publish}
+              onClose={togglePreviewPanel}
+              focus={previewFocus}
+              onFocusChange={setPreviewFocus}
+            />
+          ) : null}
         </div>
       </main>
     </div>

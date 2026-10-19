@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, ArrowUpRight, Check } from 'lucide-react'
 import { useContent } from '../lib/site'
+import { ServiceIcon } from '../components/Layout'
 import { Seo, breadcrumbSchema } from '../lib/seo'
 import {
   Accordion, CtaSlab, Eyebrow, FactGrid, PageHero, ProjectCard, Reveal, SectionLead,
@@ -43,31 +44,36 @@ export default function ServiceDetail() {
           '@type': 'Service',
           name: service.title,
           description: service.summary,
-          provider: { '@type': 'GeneralContractor', name: site.company?.name },
+          provider: {
+            '@type': service.category === 'digital' ? ['Organization', 'ProfessionalService'] : 'GeneralContractor',
+            name: site.company?.name
+          },
           areaServed: 'India',
           hasOfferCatalog: { '@type': 'OfferCatalog', name: service.title, itemListElement: service.capabilities.map((item) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: item } })) }
         }}
       />
 
       <PageHero
-        eyebrow={`Service ${service.number}`}
+        eyebrow={<>{service.icon ? <ServiceIcon name={service.icon} size={13} className="hero-eyebrow-icon" /> : null} Service {service.number}</>}
         title={service.title}
         intro={service.tagline}
         image={service.image}
         trail={[{ label: 'Services', to: '/services' }, { label: service.short, to: `/services/${service.slug}` }]}
         actions={<>
           <Link className="button button-acid" to="/contact">Discuss this service <ArrowUpRight size={16} /></Link>
-          <Link className="button button-light" to="/projects">See related work</Link>
+          <Link className="button button-light" to={service.category === 'digital' ? '/technology' : '/projects'}>
+            {service.category === 'digital' ? 'The digital practice' : 'See related work'}
+          </Link>
         </>}
       >
         <div style={{ marginTop: '1.6rem' }}>
           <FactGrid
             dark
             facts={service.category === 'digital' ? [
-              { label: 'Capability', value: service.short },
-              { label: 'Approach', value: 'Discovery, design, build and support' },
-              { label: 'Platforms', value: 'Web · Android · iOS · Cloud' },
-              { label: 'Engagement', value: 'Project delivery or ongoing partnership' }
+              { label: 'Starts at', value: service.startingAt || 'Scoped per project' },
+              { label: 'Timeline', value: service.timeline || '2 – 12 weeks' },
+              { label: 'Engagement', value: service.engagement || 'Project or retainer' },
+              { label: 'Platforms', value: 'Web · Android · iOS · Cloud' }
             ] : [
               { label: 'Discipline', value: service.short },
               { label: 'Delivery', value: 'In-house teams + vetted specialists' },
@@ -114,6 +120,15 @@ export default function ServiceDetail() {
               </div>
             </div>
 
+            {service.stack?.length ? (
+              <div style={{ marginTop: 'clamp(2rem, 4vw, 3rem)' }}>
+                <SectionLead eyebrow="Tools & technology" title="Built with a stack we can support." />
+                <div className="pill-list">
+                  {service.stack.map((item) => <span className="tag" key={item}>{item}</span>)}
+                </div>
+              </div>
+            ) : null}
+
             {service.stats?.length ? (
               <div style={{ marginTop: 'clamp(2rem, 4vw, 3rem)' }}>
                 <StatStrip stats={service.stats} />
@@ -142,6 +157,7 @@ export default function ServiceDetail() {
                 Our {service.short.toLowerCase()} lead is available for a 30-minute technical conversation before you commit to anything.
               </p>
               <Link className="button button-sm" to="/contact">Start a conversation <ArrowUpRight size={14} /></Link>
+              <a className="text-button" href={`mailto:${site.company?.technologyEmail || site.company?.supportEmail || site.company?.email}?subject=${encodeURIComponent(`${service.title} enquiry`)}`}>Email this team <ArrowUpRight size={13} /></a>
               <Link className="text-button" to="/downloads">Request the capability pack</Link>
             </div>
 

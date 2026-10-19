@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowDown, ArrowUpRight, MoveDown, Pause, Play } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, Building2, Code2, Mail, MoveDown, Pause, Play } from 'lucide-react'
 import { useContent } from '../lib/site'
 import { Seo, organisationSchema } from '../lib/seo'
 import {
@@ -9,6 +9,7 @@ import {
   Reveal, SectorCard, SectionLead, ServiceTile, StatStrip, TestimonialCard, TextLink, TickerBar
 } from '../components/Blocks'
 import { Slider } from '../components/Blocks'
+import { ChatPreview, Counter, DigitalGrid, DomainSwitch, StackMarquee } from '../components/Digital'
 
 /* ---------------------------------------------------------------- hero */
 
@@ -51,6 +52,14 @@ function HeroSlider({ slides = [], stats = [] }) {
           <span className="hero-scroll-hint">Scroll to explore <MoveDown size={14} /></span>
         </div>
 
+        {/* Two practices, stated before the first headline. A visitor should
+            never have to scroll to discover that this is also a software team. */}
+        <nav className="hero-practices" aria-label="Choose a practice">
+          <Link to="/services"><Building2 size={13} /> Construction &amp; infrastructure</Link>
+          <span aria-hidden="true">+</span>
+          <Link to="/technology"><Code2 size={13} /> Digital &amp; IT solutions</Link>
+        </nav>
+
         <div className="hero-copy">
           <motion.p className="hero-eyebrow" key={`eyebrow-${index}`} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             {slide.caption}
@@ -65,7 +74,7 @@ function HeroSlider({ slides = [], stats = [] }) {
             {slide.text}
           </motion.p>
           <div className="hero-actions">
-            <Link to={digitalSlide ? '/services' : '/projects'} className="button button-acid">{digitalSlide ? 'Explore digital services' : 'Explore our work'} <ArrowUpRight size={17} /></Link>
+            <Link to={digitalSlide ? '/technology' : '/projects'} className="button button-acid">{digitalSlide ? 'Explore digital services' : 'Explore our work'} <ArrowUpRight size={17} /></Link>
             <Link to="/contact" className="button button-light">Start a conversation</Link>
           </div>
         </div>
@@ -171,6 +180,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Two practices: the bridge between construction and technology */}
+      <DomainSwitch block={home.domains} />
+
       {/* Services */}
       <section className="shell work-section">
         <SectionLead
@@ -193,25 +205,49 @@ export default function Home() {
       </section>
 
       {/* Digital solutions */}
-      <section className="digital-showcase section-tight">
+      <section className="digital-showcase" id="digital">
         <div className="shell">
           <SectionLead
             number="03 — 06"
             eyebrow={home.digitalSection?.eyebrow || 'Technology, made useful'}
             title={home.digitalSection?.title || <>Built for the real world.<br /><em>Designed for what’s next.</em></>}
             copy={home.digitalSection?.text || 'Alongside construction and infrastructure, Ananta delivers practical digital products—from custom CMS platforms and websites to Android and iOS apps, client chat and connected business systems.'}
-            action={<TextLink to="/services">Explore digital services</TextLink>}
+            action={<TextLink to="/technology">Explore Ananta Digital</TextLink>}
           />
-          <div className="digital-showcase-grid">
-            {services.filter((service) => (home.digitalSection?.serviceSlugs || ['digital-products', 'web-development', 'mobile-app-development', 'client-chat-solutions', 'enterprise-it-solutions', 'content-management', 'seo-growth', 'ui-ux-design', 'cloud-devops', 'cybersecurity']).includes(service.slug)).map((service, index) => (
-              <Reveal className="digital-card" key={service.slug} delay={index * 0.06}>
-                <span className="digital-card-index">0{index + 1} / DIGITAL</span>
-                <h3>{service.short}</h3>
-                <p>{service.summary}</p>
-                <Link to={`/services/${service.slug}`} aria-label={`Explore ${service.title}`}>Explore <ArrowUpRight size={15} /></Link>
-              </Reveal>
+
+          <div className="dx-showcase-stats">
+            {(home.digitalSection?.stats || []).map((stat) => (
+              <div key={stat.label}>
+                <strong><Counter value={stat.value} /></strong>
+                <span>{stat.label}</span>
+              </div>
             ))}
           </div>
+
+          <DigitalGrid
+            services={services.filter((service) => (home.digitalSection?.serviceSlugs || ['digital-products', 'web-development', 'mobile-app-development', 'client-chat-solutions', 'content-management', 'seo-growth', 'erp-crm-systems', 'managed-it-support']).includes(service.slug))}
+          />
+
+          <div className="button-row" style={{ marginTop: '1.8rem' }}>
+            <Link className="button button-acid" to="/technology">All {services.filter((service) => service.category === 'digital').length} digital services <ArrowUpRight size={16} /></Link>
+            <a className="button button-light" href={`mailto:${(site.company?.supportEmail || site.company?.email || 'support@anantainfratechsolutions.com')}?subject=Digital%20project%20enquiry`}>
+              Email support@anantainfratechsolutions.com
+            </a>
+          </div>
+        </div>
+
+        <StackMarquee items={home.digitalSection?.chips || ['React', 'React Native', 'Flutter', 'Node.js', 'CMS', 'SEO', 'Cloud', 'QA']} />
+
+        <div className="shell" style={{ position: 'relative', zIndex: 1 }}>
+          <ChatPreview
+            compact
+            eyebrow={home.digitalSection?.chatTeaser?.eyebrow}
+            title={home.digitalSection?.chatTeaser?.title}
+            text={home.digitalSection?.chatTeaser?.text}
+            thread={home.digitalSection?.chatTeaser?.thread}
+            features={['Website, app and email in one thread', 'Client portal with files and approvals', 'WhatsApp alerts for field teams']}
+          />
+          <p className="dx-engage-note">{home.digitalSection?.engagementNote}</p>
         </div>
       </section>
 
@@ -346,6 +382,19 @@ export default function Home() {
             <Reveal key={insight.slug} delay={index * 0.07}><InsightCard insight={insight} /></Reveal>
           ))}
         </div>
+      </section>
+
+      <section className="shell support-strip">
+        <div>
+          <span className="support-strip-icon"><Mail size={18} /></span>
+          <div>
+            <b>Any question, one inbox.</b>
+            <p>Construction, digital, careers, tenders or a general query — write to us and it is routed to the right team the same day.</p>
+          </div>
+        </div>
+        <a className="support-strip-mail" href={`mailto:${site.company?.supportEmail || site.company?.email || 'support@anantainfratechsolutions.com'}`}>
+          {site.company?.supportEmail || site.company?.email || 'support@anantainfratechsolutions.com'} <ArrowUpRight size={16} />
+        </a>
       </section>
 
       <CtaSlab

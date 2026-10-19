@@ -67,9 +67,19 @@ router.post('/contact', rateLimit({ key: 'contact', max: 6 }), async (req, res, 
     if (problems.length) return res.status(400).json({ message: `Please provide ${problems.join(', ')}.` })
 
     const saved = await repo.addInquiry(record)
-    notify({ type: 'contact-enquiry', reference: record.reference, name: record.name, email: record.email, department: record.department })
+    // Deliver to the support inbox before replying, so the visitor is only told
+    // the message is "with our team" once it actually is (or once it is safely
+    // stored in the inbox when email is not configured).
+    const delivery = await notify({
+      type: 'contact-enquiry', reference: saved.reference, name: record.name, email: record.email,
+      phone: record.phone, company: record.company, department: record.department, city: record.city,
+      message: record.message, source: record.source, at: saved.createdAt
+    })
+    if (delivery?.delivered) await repo.updateInquiry(saved.id || saved.reference, { delivery })
     res.status(201).json({
-      message: 'Thank you. Your enquiry is with our team and you will hear from us within one working day.',
+      message: delivery?.email?.sent
+        ? 'Thank you. Your enquiry has reached our team inbox and you will hear from us within one working day.'
+        : 'Thank you. Your enquiry is with our team and you will hear from us within one working day.',
       reference: saved.reference
     })
   } catch (error) { next(error) }
@@ -107,7 +117,12 @@ router.post('/careers', rateLimit({ key: 'careers', max: 6 }), async (req, res, 
     if (problems.length) return res.status(400).json({ message: `Please provide ${problems.join(', ')}.` })
 
     const saved = await repo.addInquiry(record)
-    notify({ type: 'job-application', reference: record.reference, role: record.role, name: record.name, email: record.email })
+    const delivery = await notify({
+      type: 'job-application', reference: saved.reference, role: record.role, name: record.name,
+      email: record.email, phone: record.phone, experience: record.experience, city: record.city,
+      message: record.message, source: record.source, at: saved.createdAt
+    })
+    if (delivery?.delivered) await repo.updateInquiry(saved.id || saved.reference, { delivery })
     res.status(201).json({
       message: `Application received for ${record.role}. Our recruitment team reviews every application within five working days.`,
       reference: saved.reference
@@ -179,13 +194,19 @@ router.post('/register', rateLimit({ key: 'register', max: 6 }), async (req, res
     if (problems.length) return res.status(400).json({ message: `Please provide ${problems.join(', ')}.` })
 
     const saved = await repo.addRegistration(record)
-    notify({
-      type: type === 'contractor' ? 'contractor-registration' : 'worker-registration',
+    const delivery = await notify({
+      type: type === 'contractor' ? 'registration-contractor' : 'registration-worker',
       reference: saved.reference,
       company: saved.company || null,
       name: saved.name,
-      trades: saved.trades
+      email: saved.email,
+      phone: saved.phone,
+      trades: saved.trades,
+      city: saved.city,
+      message: saved.message,
+      at: saved.createdAt
     })
+    if (delivery?.delivered) await repo.updateRegistration(saved.id || saved.reference, { delivery })
     res.status(201).json({
       message: type === 'contractor'
         ? `Thank you. Your company is on our contractor interest list — reference ${saved.reference}. Our procurement team will contact you as registration opens.`
@@ -217,7 +238,12 @@ router.post('/tenders/enquiry', rateLimit({ key: 'tender', max: 6 }), async (req
       return res.status(400).json({ message: 'Please provide your name, a valid email address and a short note about your enquiry.' })
     }
     const saved = await repo.addInquiry(record)
-    notify({ type: 'tender-enquiry', reference: saved.reference, company: record.company, package: record.interest })
+    const delivery = await notify({
+      type: 'contact-enquiry', reference: saved.reference, company: record.company, name: record.name,
+      email: record.email, phone: record.phone, interest: record.interest, message: record.message,
+      messageType: 'Tender enquiry', at: saved.createdAt
+    })
+    if (delivery?.delivered) await repo.updateInquiry(saved.id || saved.reference, { delivery })
     res.status(201).json({ message: 'Your tender enquiry has reached our procurement team. We respond to all enquiries in writing.', reference: saved.reference })
   } catch (error) { next(error) }
 })
@@ -241,7 +267,12 @@ router.post('/downloads/request', rateLimit({ key: 'download', max: 8 }), async 
       return res.status(400).json({ message: 'Please provide your name, a valid email address and at least one document to send.' })
     }
     const saved = await repo.addInquiry(record)
-    notify({ type: 'document-request', reference: saved.reference, email: record.email, documents: record.documents })
+    const delivery = await notify({
+      type: 'contact-enquiry', reference: saved.reference, name: record.name, company: record.company,
+      email: record.email, phone: record.phone, interest: `Document request: ${record.documents}`,
+      message: record.message, at: saved.createdAt
+    })
+    if (delivery?.delivered) await repo.updateInquiry(saved.id || saved.reference, { delivery })
     res.status(201).json({ message: 'Thank you. The documents you selected are on their way to your inbox.', reference: saved.reference })
   } catch (error) { next(error) }
 })
@@ -252,7 +283,8 @@ router.post('/subscribe', rateLimit({ key: 'subscribe', max: 5 }), async (req, r
   try {
     const email = text(req.body?.email, 160).toLowerCase()
     if (!isEmail(email)) return res.status(400).json({ message: 'Please enter a valid email address.' })
-    await repo.addSubscriber({ email, name: text(req.body?.name, 120), source: text(req.body?.source, 80) || 'website' })
+    const saved = await repo.addSubscriber({ email, name: text(req.body?.name, 120), source: text(req.body?.source, 80) || 'website' })
+    await notify({ type: 'newsletter', reference: 'NEWSLETTER', email, name: saved?.name || '', source: saved?.source || 'website', at: new Date().toISOString() })
     res.status(201).json({ message: 'You are subscribed. Look out for our next quarterly brief.' })
   } catch (error) { next(error) }
 })

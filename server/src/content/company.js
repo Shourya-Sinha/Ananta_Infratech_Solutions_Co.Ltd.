@@ -44,6 +44,8 @@ export const company = {
   phoneAlt: '+91 98200 42016',
   whatsapp: '919820042016',
   email: 'support@anantainfratechsolutions.com',
+  technologyEmail: 'support@anantainfratechsolutions.com',
+  supportEmail: 'support@anantainfratechsolutions.com',
   careersEmail: 'support@anantainfratechsolutions.com',
   tendersEmail: 'support@anantainfratechsolutions.com',
   vendorEmail: 'support@anantainfratechsolutions.com',
@@ -134,6 +136,7 @@ export const contact = {
     { id: 'careers', label: 'Careers & recruitment', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2020', note: 'Engineering, planning, HSE, survey and site leadership roles.' },
     { id: 'tenders', label: 'Tenders & procurement', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2031', note: 'Tender invitations, RFP clarifications and prequalification.' },
     { id: 'vendors', label: 'Vendor & subcontractor onboarding', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2044', note: 'Contractor, supplier and specialist trade registration.' },
+    { id: 'technology', label: 'Digital & IT services', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2016', note: 'Websites, CMS, apps, custom chat, ERP/CRM, SEO and IT support.' },
     { id: 'media', label: 'Media & communications', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2016', note: 'Press, brand assets and speaking engagements.' },
     { id: 'accounts', label: 'Accounts & compliance', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2050', note: 'Invoices, GST documentation and vendor payments.' }
   ]
@@ -145,13 +148,16 @@ export const footer = {
   cta: {
     eyebrow: 'Ready when you are',
     title: 'Let’s make a lasting difference.',
-    linkLabel: 'Contact Ananta'
+    linkLabel: 'Contact Ananta',
+    linkTo: '/contact'
   },
+  /* These are overrides. Empty means "use the Company profile", so editing the
+     phone or inbox once updates the whole site instead of two places. */
   contact: {
     label: 'Contact',
-    email: 'support@anantainfratechsolutions.com',
-    phone: '+91 22 4968 2016',
-    address: 'Juhu, Mumbai, Maharashtra, India'
+    email: '',
+    phone: '',
+    address: ''
   },
   columns: [
     {
@@ -169,6 +175,10 @@ export const footer = {
       title: 'What we do',
       links: [
         { label: 'All services', to: '/services' },
+        { label: 'Digital & IT solutions', to: '/technology' },
+        { label: 'Websites, CMS & SEO', to: '/services/web-development' },
+        { label: 'Android & iOS apps', to: '/services/mobile-app-development' },
+        { label: 'Client chat solutions', to: '/services/client-chat-solutions' },
         { label: 'Sectors we serve', to: '/sectors' },
         { label: 'Our projects', to: '/projects' },
         { label: 'Plant & equipment', to: '/equipment' },
@@ -196,6 +206,9 @@ export const footer = {
     { label: 'Whistleblower policy', to: '/policy/whistleblower' },
     { label: 'Sitemap', to: '/sitemap' }
   ],
+  inboxEyebrow: 'Any question — construction, technology, careers or procurement',
+  supportNote: 'One inbox, routed internally',
+  copyright: 'All rights reserved.',
   newsletter: {
     title: 'Project notes & industry perspectives',
     text: 'A short quarterly brief on what we are building, learning and testing. No noise.',

@@ -4,6 +4,41 @@ import { readToken } from './api'
 const SiteContext = createContext(null)
 
 /**
+ * Live-preview handoff between the admin portal and the public site.
+ *
+ * The editor writes the *unsaved* content document into localStorage and, when
+ * the site is open in an iframe beside it, posts the same document over
+ * postMessage. Nothing touches the server, so a preview can never leak into the
+ * published site — and edits appear without saving a draft first.
+ */
+export const PREVIEW_KEY = 'ananta-cms-preview'
+const PREVIEW_MAX_AGE = 6 * 60 * 60 * 1000
+
+function readLocalPreview() {
+  try {
+    const raw = localStorage.getItem(PREVIEW_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    if (!parsed?.content || !parsed?.at) return null
+    if (Date.now() - parsed.at > PREVIEW_MAX_AGE) return null
+    return parsed.content
+  } catch { return null }
+}
+
+export function writeLocalPreview(content) {
+  try { localStorage.setItem(PREVIEW_KEY, JSON.stringify({ content, at: Date.now() })) } catch { /* ignore */ }
+}
+
+export function clearLocalPreview() {
+  try { localStorage.removeItem(PREVIEW_KEY) } catch { /* ignore */ }
+}
+
+const wantsLocalPreview = () => {
+  if (typeof window === 'undefined') return false
+  try { return new URLSearchParams(window.location.search).get('cmsPreview') === '1' } catch { return false }
+}
+
+/**
  * Loads the whole website content document once and shares it through context.
  *
  * `preview` switches every page to the admin working draft, which is what powers
@@ -11,12 +46,28 @@ const SiteContext = createContext(null)
  * sessionStorage so a reload keeps you in preview.
  */
 export function SiteProvider({ children, initialSite = null }) {
-  const [site, setSite] = useState(initialSite)
-  const [loading, setLoading] = useState(!initialSite)
+  const [localPreview] = useState(() => (!initialSite && wantsLocalPreview() ? readLocalPreview() : null))
+  const [site, setSite] = useState(initialSite || (localPreview ? { ...localPreview, __preview: true, __hasDraft: true } : null))
+  const [loading, setLoading] = useState(!initialSite && !localPreview)
   const [error, setError] = useState(null)
   const [preview, setPreview] = useState(() => {
+    if (localPreview) return true
     try { return sessionStorage.getItem('ananta-preview') === '1' } catch { return false }
   })
+
+  /* Unsaved edits streamed from the admin editor beside the preview. */
+  useEffect(() => {
+    const onMessage = (event) => {
+      if (event.origin !== window.location.origin) return
+      const data = event.data
+      if (!data || data.type !== 'ananta:preview' || !data.content) return
+      setSite({ ...data.content, __preview: true, __hasDraft: Boolean(data.dirty) })
+      setPreview(true)
+      setLoading(false)
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [])
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -56,12 +107,13 @@ export function SiteProvider({ children, initialSite = null }) {
 
   // `initialSite` lets tests and server rendering mount the tree with content
   // already resolved instead of waiting for the network round-trip.
-  useEffect(() => { if (!initialSite) load() }, [load, initialSite])
+  useEffect(() => { if (!initialSite && !localPreview) load() }, [load, initialSite, localPreview])
 
   const togglePreview = useCallback((next) => {
     setPreview((current) => {
       const value = typeof next === 'boolean' ? next : !current
       try { sessionStorage.setItem('ananta-preview', value ? '1' : '0') } catch { /* ignore */ }
+      if (!value) clearLocalPreview()
       return value
     })
   }, [])

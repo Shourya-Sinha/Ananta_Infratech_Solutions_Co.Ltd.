@@ -17,7 +17,7 @@ export const servicesIntro = {
   ]
 }
 
-export const services = [
+const baseServices = [
   {
     slug: 'preconstruction',
     number: '01',
@@ -349,7 +349,7 @@ export const services = [
 ,
   {
     slug: 'digital-products', number: '09', category: 'digital', title: 'Digital products & custom software', short: 'Digital products',
-    tagline: 'From product strategy to launch, we design and build custom software that makes complex work feel simple.', summary: 'From product strategy to launch, we design and build custom software that makes complex work feel simple.', image: img.drawings,
+    tagline: 'From product strategy to launch, we design and build custom software that makes complex work feel simple.', summary: 'From product strategy to launch, we design and build custom software that makes complex work feel simple.', image: img.digitalHero,
     description: [
       'From product strategy to launch, we design and build custom software that makes complex work feel simple.',
       'We work collaboratively from discovery through delivery, making scope, timelines and trade-offs clear. The solution is shaped around your users and business rather than forcing your process into an off-the-shelf template.',
@@ -367,7 +367,7 @@ export const services = [
   },
   {
     slug: 'web-development', number: '10', category: 'digital', title: 'Web development & e-commerce', short: 'Web development',
-    tagline: 'Fast, accessible websites and web applications engineered around your customers, content and business goals.', summary: 'Fast, accessible websites and web applications engineered around your customers, content and business goals.', image: img.drawings,
+    tagline: 'Fast, accessible websites and web applications engineered around your customers, content and business goals.', summary: 'Fast, accessible websites and web applications engineered around your customers, content and business goals.', image: img.digitalCms,
     description: [
       'Fast, accessible websites and web applications engineered around your customers, content and business goals.',
       'We work collaboratively from discovery through delivery, making scope, timelines and trade-offs clear. The solution is shaped around your users and business rather than forcing your process into an off-the-shelf template.',
@@ -385,7 +385,7 @@ export const services = [
   },
   {
     slug: 'mobile-app-development', number: '11', category: 'digital', title: 'Android & iOS app development', short: 'Mobile apps',
-    tagline: 'Native-feeling mobile experiences for Android and iOS, built with React Native or Expo and Flutter to fit the product.', summary: 'Native-feeling mobile experiences for Android and iOS, built with React Native or Expo and Flutter to fit the product.', image: img.drawings,
+    tagline: 'Native-feeling mobile experiences for Android and iOS, built with React Native or Expo and Flutter to fit the product.', summary: 'Native-feeling mobile experiences for Android and iOS, built with React Native or Expo and Flutter to fit the product.', image: img.digitalChat,
     description: [
       'Native-feeling mobile experiences for Android and iOS, built with React Native or Expo and Flutter to fit the product.',
       'We work collaboratively from discovery through delivery, making scope, timelines and trade-offs clear. The solution is shaped around your users and business rather than forcing your process into an off-the-shelf template.',
@@ -403,7 +403,7 @@ export const services = [
   },
   {
     slug: 'client-chat-solutions', number: '12', category: 'digital', title: 'Messaging & client communication', short: 'Chat solutions',
-    tagline: 'Secure, purpose-built chat experiences that connect your customers, teams and support operations.', summary: 'Secure, purpose-built chat experiences that connect your customers, teams and support operations.', image: img.drawings,
+    tagline: 'Secure, purpose-built chat experiences that connect your customers, teams and support operations.', summary: 'Secure, purpose-built chat experiences that connect your customers, teams and support operations.', image: img.digitalChat,
     description: [
       'Secure, purpose-built chat experiences that connect your customers, teams and support operations.',
       'We work collaboratively from discovery through delivery, making scope, timelines and trade-offs clear. The solution is shaped around your users and business rather than forcing your process into an off-the-shelf template.',
@@ -421,7 +421,7 @@ export const services = [
   },
   {
     slug: 'enterprise-it-solutions', number: '13', category: 'digital', title: 'IT consulting & digital transformation', short: 'IT solutions',
-    tagline: 'Practical technology consulting and dependable implementation for organisations ready to modernise how they work.', summary: 'Practical technology consulting and dependable implementation for organisations ready to modernise how they work.', image: img.drawings,
+    tagline: 'Practical technology consulting and dependable implementation for organisations ready to modernise how they work.', summary: 'Practical technology consulting and dependable implementation for organisations ready to modernise how they work.', image: img.digitalCms,
     description: [
       'Practical technology consulting and dependable implementation for organisations ready to modernise how they work.',
       'We work collaboratively from discovery through delivery, making scope, timelines and trade-offs clear. The solution is shaped around your users and business rather than forcing your process into an off-the-shelf template.',
@@ -438,7 +438,7 @@ export const services = [
     ], sectors: []
   },
   {
-    slug: 'content-management', number: '14', category: 'digital', title: 'Content management & strategy', short: 'Content & CMS', tagline: 'Organise your content, empower your team and keep every digital touchpoint accurate, useful and on-brand.', summary: 'Organise your content, empower your team and keep every digital touchpoint accurate, useful and on-brand.', image: img.drawings,
+    slug: 'content-management', number: '14', category: 'digital', title: 'Content management & strategy', short: 'Content & CMS', tagline: 'Organise your content, empower your team and keep every digital touchpoint accurate, useful and on-brand.', summary: 'Organise your content, empower your team and keep every digital touchpoint accurate, useful and on-brand.', image: img.digitalCms,
     description: [
       'Organise your content, empower your team and keep every digital touchpoint accurate, useful and on-brand.',
       'Our approach is collaborative and measurable: we agree on the audience, constraints and desired outcome first, then shape a practical plan with clear priorities and ownership.',
@@ -457,7 +457,7 @@ export const services = [
     ], sectors: []
   },
   {
-    slug: 'seo-growth', number: '15', category: 'digital', title: 'SEO & organic growth', short: 'SEO & growth', tagline: 'Improve discoverability with a sustainable search strategy grounded in technical health, useful content and measurable progress.', summary: 'Improve discoverability with a sustainable search strategy grounded in technical health, useful content and measurable progress.', image: img.drawings,
+    slug: 'seo-growth', number: '15', category: 'digital', title: 'SEO & organic growth', short: 'SEO & growth', tagline: 'Improve discoverability with a sustainable search strategy grounded in technical health, useful content and measurable progress.', summary: 'Improve discoverability with a sustainable search strategy grounded in technical health, useful content and measurable progress.', image: img.digitalCms,
     description: [
       'Improve discoverability with a sustainable search strategy grounded in technical health, useful content and measurable progress.',
       'Our approach is collaborative and measurable: we agree on the audience, constraints and desired outcome first, then shape a practical plan with clear priorities and ownership.',
@@ -476,7 +476,7 @@ export const services = [
     ], sectors: []
   },
   {
-    slug: 'ui-ux-design', number: '16', category: 'digital', title: 'UI/UX & product design', short: 'UI/UX design', tagline: 'Turn customer needs into clear, accessible digital experiences through research, interface design and iterative prototyping.', summary: 'Turn customer needs into clear, accessible digital experiences through research, interface design and iterative prototyping.', image: img.drawings,
+    slug: 'ui-ux-design', number: '16', category: 'digital', title: 'UI/UX & product design', short: 'UI/UX design', tagline: 'Turn customer needs into clear, accessible digital experiences through research, interface design and iterative prototyping.', summary: 'Turn customer needs into clear, accessible digital experiences through research, interface design and iterative prototyping.', image: img.digitalHero,
     description: [
       'Turn customer needs into clear, accessible digital experiences through research, interface design and iterative prototyping.',
       'Our approach is collaborative and measurable: we agree on the audience, constraints and desired outcome first, then shape a practical plan with clear priorities and ownership.',
@@ -495,7 +495,7 @@ export const services = [
     ], sectors: []
   },
   {
-    slug: 'cloud-devops', number: '17', category: 'digital', title: 'Cloud, DevOps & integrations', short: 'Cloud & DevOps', tagline: 'Build a reliable foundation for your digital products with thoughtful cloud architecture, automation and system integrations.', summary: 'Build a reliable foundation for your digital products with thoughtful cloud architecture, automation and system integrations.', image: img.drawings,
+    slug: 'cloud-devops', number: '17', category: 'digital', title: 'Cloud, DevOps & integrations', short: 'Cloud & DevOps', tagline: 'Build a reliable foundation for your digital products with thoughtful cloud architecture, automation and system integrations.', summary: 'Build a reliable foundation for your digital products with thoughtful cloud architecture, automation and system integrations.', image: img.digitalHero,
     description: [
       'Build a reliable foundation for your digital products with thoughtful cloud architecture, automation and system integrations.',
       'Our approach is collaborative and measurable: we agree on the audience, constraints and desired outcome first, then shape a practical plan with clear priorities and ownership.',
@@ -514,7 +514,7 @@ export const services = [
     ], sectors: []
   },
   {
-    slug: 'cybersecurity', number: '18', category: 'digital', title: 'Security & quality assurance', short: 'Security & QA', tagline: 'Reduce avoidable risk with practical application security reviews, testing and quality assurance built into delivery.', summary: 'Reduce avoidable risk with practical application security reviews, testing and quality assurance built into delivery.', image: img.drawings,
+    slug: 'cybersecurity', number: '18', category: 'digital', title: 'Security & quality assurance', short: 'Security & QA', tagline: 'Reduce avoidable risk with practical application security reviews, testing and quality assurance built into delivery.', summary: 'Reduce avoidable risk with practical application security reviews, testing and quality assurance built into delivery.', image: img.digitalCms,
     description: [
       'Reduce avoidable risk with practical application security reviews, testing and quality assurance built into delivery.',
       'Our approach is collaborative and measurable: we agree on the audience, constraints and desired outcome first, then shape a practical plan with clear priorities and ownership.',
@@ -533,6 +533,349 @@ export const services = [
     ], sectors: []
   }
 ]
+
+/* ==========================================================================
+   Digital & IT service profiles
+   --------------------------------------------------------------------------
+   The services above are the single source of truth for the site. Everything
+   in this block is *additive*: it gives each service a presentation profile
+   (icon, stack, engagement model, starting point) and appends the additional
+   technology services the company offers. Nothing already published is
+   rewritten, and every value remains editable from the admin portal.
+   ========================================================================== */
+
+const CONSTRUCTION_PROFILES = {
+  'preconstruction': { icon: 'Compass', tags: ['Feasibility', 'Cost planning', 'Value engineering'], stack: [], startingAt: 'Advisory or full appointment', timeline: '2 – 8 weeks', engagement: 'Advisory, CM or GC' },
+  'construction-management': { icon: 'HardHat', tags: ['Programme control', 'Procurement', 'Reporting'], stack: [], startingAt: 'Fee or GMP appointment', timeline: 'Project duration', engagement: 'CM, GC or EPC' },
+  'civil-structural': { icon: 'Building2', tags: ['RCC', 'Structural steel', 'Enabling works'], stack: [], startingAt: 'Package or turnkey', timeline: 'Per programme', engagement: 'Subcontract or EPC' },
+  'mep-systems': { icon: 'Wrench', tags: ['HVAC', 'Electrical', 'Fire & ELV'], stack: [], startingAt: 'Design review or install', timeline: 'Per programme', engagement: 'Package or design-build' },
+  'interiors-fitout': { icon: 'Sofa', tags: ['Workplace', 'Retail', 'Healthcare'], stack: [], startingAt: 'Fit-out package', timeline: '8 – 24 weeks', engagement: 'Turnkey fit-out' },
+  'industrial-epc': { icon: 'Factory', tags: ['Plants', 'Warehouses', 'Cold stores'], stack: [], startingAt: 'Turnkey EPC', timeline: '9 – 24 months', engagement: 'EPC / design-build' },
+  'infrastructure': { icon: 'Route', tags: ['Bridges', 'Roads', 'Water networks'], stack: [], startingAt: 'Package appointment', timeline: 'Per programme', engagement: 'EPC or CM' },
+  'facility-upgrades': { icon: 'RefreshCw', tags: ['Retrofit', 'Live environments', 'Upgrades'], stack: [], startingAt: 'Survey and proposal', timeline: '4 – 20 weeks', engagement: 'Cost-plus or lump sum' }
+}
+
+const DIGITAL_PROFILES = {
+  'digital-products': {
+    icon: 'Boxes',
+    family: 'Build',
+    tags: ['Product strategy', 'Custom software', 'Portals & dashboards'],
+    stack: ['React', 'Node.js', 'PostgreSQL', 'MongoDB', 'REST & GraphQL', 'Docker'],
+    startingAt: 'From ₹1,50,000',
+    timeline: '6 – 16 weeks',
+    engagement: 'Fixed-scope project or monthly squad',
+    highlight: 'A working product, not a prototype'
+  },
+  'web-development': {
+    icon: 'Globe',
+    family: 'Build',
+    tags: ['Corporate websites', 'Web apps', 'E-commerce'],
+    stack: ['React', 'Next.js', 'Vite', 'Tailwind', 'Node.js', 'Payment gateways'],
+    startingAt: 'From ₹35,000',
+    timeline: '2 – 8 weeks',
+    engagement: 'Fixed-scope project or care plan',
+    highlight: 'Fast, accessible and search-ready'
+  },
+  'mobile-app-development': {
+    icon: 'Smartphone',
+    family: 'Build',
+    tags: ['Android', 'iOS', 'React Native', 'Expo', 'Flutter'],
+    stack: ['React Native', 'Expo', 'Flutter', 'Kotlin', 'Swift', 'Firebase'],
+    startingAt: 'From ₹75,000',
+    timeline: '4 – 12 weeks',
+    engagement: 'MVP sprint or full product build',
+    highlight: 'One codebase, both stores'
+  },
+  'client-chat-solutions': {
+    icon: 'MessagesSquare',
+    family: 'Build',
+    tags: ['Client chat', 'Support inbox', 'WhatsApp & web'],
+    stack: ['WebSockets', 'Socket.IO', 'React', 'Node.js', 'Push notifications', 'File storage'],
+    startingAt: 'From ₹60,000',
+    timeline: '3 – 8 weeks',
+    engagement: 'Custom build or monthly licence',
+    highlight: 'Every conversation in one place'
+  },
+  'enterprise-it-solutions': {
+    icon: 'Network',
+    family: 'Systems',
+    tags: ['IT strategy', 'Automation', 'Systems integration'],
+    stack: ['ERP/CRM APIs', 'N8N / Zoho / Google Workspace', 'REST', 'SAML SSO', 'Cloud'],
+    startingAt: 'From a paid discovery',
+    timeline: '4 – 20 weeks',
+    engagement: 'Consulting engagement or retainer',
+    highlight: 'Practical modernisation, no rip-and-replace'
+  },
+  'content-management': {
+    icon: 'LayoutPanelLeft',
+    family: 'Build',
+    tags: ['CMS build', 'Content model', 'Editorial workflow'],
+    stack: ['Headless CMS', 'Sanity / Strapi / Payload', 'Markdown', 'Media library', 'RBAC'],
+    startingAt: 'From ₹45,000',
+    timeline: '2 – 6 weeks',
+    engagement: 'Build + training or managed content',
+    highlight: 'Your team publishes without a developer'
+  },
+  'seo-growth': {
+    icon: 'TrendingUp',
+    family: 'Growth',
+    tags: ['Technical SEO', 'Content strategy', 'Local SEO'],
+    stack: ['Search Console', 'GA4', 'Schema.org', 'Core Web Vitals', 'Keyword research'],
+    startingAt: 'From ₹18,000 / month',
+    timeline: 'Ongoing, reviewed monthly',
+    engagement: 'Monthly retainer',
+    highlight: 'Measured in rankings, traffic and enquiries'
+  },
+  'ui-ux-design': {
+    icon: 'PenTool',
+    family: 'Build',
+    tags: ['Research', 'Prototyping', 'Design systems'],
+    stack: ['Figma', 'Design tokens', 'Usability testing', 'Accessibility (WCAG 2.2)'],
+    startingAt: 'From ₹40,000',
+    timeline: '2 – 6 weeks',
+    engagement: 'Project or embedded design partner',
+    highlight: 'Interfaces people understand at first use'
+  },
+  'cloud-devops': {
+    icon: 'CloudCog',
+    family: 'Support',
+    tags: ['Cloud architecture', 'CI/CD', 'Integrations'],
+    stack: ['AWS', 'DigitalOcean', 'Docker', 'GitHub Actions', 'Nginx', 'Monitoring'],
+    startingAt: 'From ₹30,000',
+    timeline: '1 – 5 weeks',
+    engagement: 'Setup project or monthly operations',
+    highlight: 'Deploys you can trust at 2am'
+  },
+  'cybersecurity': {
+    icon: 'ShieldCheck',
+    family: 'Support',
+    tags: ['Security review', 'QA & testing', 'Release readiness'],
+    stack: ['OWASP Top 10', 'Penetration checklist', 'Playwright', 'Jest', 'Load testing'],
+    startingAt: 'From ₹25,000',
+    timeline: '1 – 4 weeks',
+    engagement: 'One-off audit or release gate',
+    highlight: 'Fewer surprises after launch'
+  }
+}
+
+const extraDigitalServices = [
+  {
+    slug: 'erp-crm-systems',
+    number: '19',
+    category: 'digital',
+    title: 'Custom ERP, CRM & business systems',
+    short: 'ERP & CRM',
+    icon: 'Database',
+    family: 'Systems',
+    tagline: 'Run the whole business on one system that fits the way you actually work.',
+    summary: 'Custom ERP, CRM, inventory, billing and workflow systems that replace spreadsheets with a single, reliable source of truth.',
+    image: img.digitalCms,
+    tags: ['ERP', 'CRM', 'Inventory', 'Billing', 'Approvals'],
+    stack: ['Node.js', 'React', 'PostgreSQL', 'MongoDB', 'REST APIs', 'Role-based access'],
+    startingAt: 'From ₹1,20,000',
+    timeline: '6 – 16 weeks',
+    engagement: 'Phased build with training and support',
+    highlight: 'One source of truth for every team',
+    description: [
+      'Most growing companies run on a patchwork of spreadsheets, WhatsApp groups and three systems that do not talk to each other. The cost is invisible until an order is missed or a number cannot be reconciled.',
+      'We map your actual process first — sales, purchase, stores, billing, approvals, site or service delivery — then build a system around it, with roles and permissions that match your organisation rather than forcing you into a rigid template.',
+      'Rollout is deliberately staged. Your team starts with the module that saves the most time, then we extend once the habits are in place. We train admins in person and stay on for support after go-live.'
+    ],
+    capabilities: [
+      'Sales, enquiry and CRM pipelines',
+      'Quotation, invoicing and GST-ready billing',
+      'Inventory, stores and purchase workflows',
+      'Project, site and service job tracking',
+      'Approval chains and role-based permissions',
+      'Reports, dashboards and exports',
+      'Integration with Tally, Zoho, Google Workspace and payment gateways',
+      'Data migration from spreadsheets or a legacy system'
+    ],
+    deliverables: [
+      { title: 'Process map', text: 'A documented view of how work flows today, with the gaps and duplication made explicit.' },
+      { title: 'Working system', text: 'Deployed modules with your real data, user roles and sign-in.' },
+      { title: 'Training', text: 'Role-by-role walkthroughs, recorded, plus a short written manual.' },
+      { title: 'Support', text: 'A 90-day hypercare window and an optional annual support plan.' }
+    ],
+    stats: [
+      { value: '90', label: 'days of post-launch hypercare included' },
+      { value: '1', label: 'system of record instead of spreadsheets' }
+    ],
+    faqs: [
+      { question: 'Can it replace Tally?', answer: 'For most mid-sized businesses we integrate with Tally rather than replace it: Tally remains the statutory books, while the custom system owns operations, CRM and project tracking.' },
+      { question: 'What if our process changes?', answer: 'The system is yours and the code is documented. We can extend modules, and your team can manage day-to-day configuration from the admin panel.' }
+    ],
+    sectors: ['commercial', 'industrial', 'residential'],
+    relatedProjects: []
+  },
+  {
+    slug: 'managed-it-support',
+    number: '20',
+    category: 'digital',
+    title: 'Managed IT support & AMC',
+    short: 'Managed IT',
+    icon: 'Headphones',
+    family: 'Support',
+    tagline: 'A dependable technology team on call, without hiring a department.',
+    summary: 'Managed support, annual maintenance contracts and monitoring for websites, applications, email, devices and cloud infrastructure.',
+    image: img.digitalCms,
+    tags: ['AMC', 'Helpdesk', 'Monitoring', 'Backups'],
+    stack: ['Uptime monitoring', 'Automated backups', 'Patch management', 'Ticketing', 'Remote desktop', 'Security updates'],
+    startingAt: 'From ₹8,000 / month',
+    timeline: 'Monthly, cancel with notice',
+    engagement: 'AMC or managed support retainer',
+    highlight: 'Someone answers when something breaks',
+    description: [
+      'Launch day is not the end of the work. Websites need updates, certificates expire, backups need testing and someone has to answer when a key screen stops working on a Monday morning.',
+      'Our support desk covers the systems we build and, where we can, the systems you already run. Every client gets a named engineer, a response-time commitment and a visible ticket trail.',
+      'We monitor uptime, disk, certificates and backups, apply security patches on a schedule and keep a written record of every change so nothing is fixed invisibly.'
+    ],
+    capabilities: [
+      'Website and application maintenance',
+      'Annual maintenance contracts with defined SLAs',
+      'Uptime, SSL and performance monitoring',
+      'Automated, tested backups and restore drills',
+      'Email, DNS and domain management',
+      'Device, network and office IT support',
+      'Security patching and dependency upgrades',
+      'Monthly health report and improvement plan'
+    ],
+    deliverables: [
+      { title: 'Support agreement', text: 'Response times, coverage hours and escalation contacts agreed in writing.' },
+      { title: 'Monitoring dashboard', text: 'Live status of uptime, backups, certificates and errors.' },
+      { title: 'Monthly report', text: 'What broke, what was fixed, what we recommend next — in plain language.' },
+      { title: 'Change log', text: 'A permanent record of every deployment and configuration change.' }
+    ],
+    stats: [
+      { value: '4h', label: 'target first response on business days' },
+      { value: '99.9%', label: 'uptime target on managed hosting' }
+    ],
+    faqs: [
+      { question: 'Do you support systems you did not build?', answer: 'Usually yes. We start with a short audit of the codebase or infrastructure and tell you honestly whether it is practical to take on.' },
+      { question: 'What is covered by an AMC?', answer: 'Defined preventive maintenance, security updates, backup checks and a monthly allowance of support hours. New feature work is quoted separately so costs stay transparent.' }
+    ],
+    sectors: [],
+    relatedProjects: []
+  },
+  {
+    slug: 'analytics-dashboards',
+    number: '21',
+    category: 'digital',
+    title: 'Data, BI & live dashboards',
+    short: 'Data & BI',
+    icon: 'BarChart3',
+    family: 'Systems',
+    tagline: 'See what is actually happening in your business, today.',
+    summary: 'Data pipelines, reporting and live dashboards that turn scattered operational data into decisions your team can act on.',
+    image: img.digitalCms,
+    tags: ['Dashboards', 'Reporting', 'Data pipelines', 'KPIs'],
+    stack: ['SQL', 'Python', 'Power BI / Metabase', 'GA4', 'Looker Studio', 'Scheduled reports'],
+    startingAt: 'From ₹50,000',
+    timeline: '3 – 10 weeks',
+    engagement: 'Build or monthly analytics partner',
+    highlight: 'Numbers that arrive before the meeting',
+    description: [
+      'Most teams are not short of data — they are short of a reliable answer. Figures live in three systems, two spreadsheets and someone\'s inbox, and by the time they reach a review they are already a week old.',
+      'We connect the sources that matter, define each metric once, and publish dashboards that show the same number to everybody. Site progress, sales pipeline, collections, project profitability, support load — whatever your operating rhythm actually needs.',
+      'Where useful we automate the reporting itself: a scheduled summary to email or WhatsApp before the Monday meeting, with the exceptions highlighted rather than a wall of charts.'
+    ],
+    capabilities: [
+      'KPI definition and metric dictionaries',
+      'Data extraction from ERP, CRM, sheets and apps',
+      'Automated ETL pipelines and scheduled refresh',
+      'Live operations and management dashboards',
+      'Project, cost and profitability reporting',
+      'Marketing and funnel analytics with GA4',
+      'Exception alerts to email or WhatsApp',
+      'Role-based access and data governance'
+    ],
+    deliverables: [
+      { title: 'Metric dictionary', text: 'Every KPI defined once, with owner, source and calculation logic.' },
+      { title: 'Dashboards', text: 'Live views for leadership and operations, built for the screens your team uses.' },
+      { title: 'Pipeline', text: 'Documented, monitored data flows that refresh without manual exports.' },
+      { title: 'Handover', text: 'Training, documentation and an optional managed analytics retainer.' }
+    ],
+    stats: [
+      { value: '1', label: 'agreed definition for every reported metric' },
+      { value: 'Daily', label: 'refresh cadence on live operations dashboards' }
+    ],
+    faqs: [
+      { question: 'Do we need a data warehouse first?', answer: 'Not necessarily. We start with your existing sources and introduce a warehouse only when volume or complexity genuinely requires one.' },
+      { question: 'Can the dashboards be shared with clients?', answer: 'Yes. Client-facing views can be scoped and branded separately, with access limited to their own project data.' }
+    ],
+    sectors: [],
+    relatedProjects: []
+  },
+  {
+    slug: 'ecommerce-stores',
+    number: '22',
+    category: 'digital',
+    title: 'E-commerce & online stores',
+    short: 'E-commerce',
+    icon: 'ShoppingBag',
+    family: 'Build',
+    tagline: 'A storefront that sells, and a back office that keeps up.',
+    summary: 'Online stores, catalogues, payment and logistics integrations built to grow from a first product range to a national operation.',
+    image: img.digitalCms,
+    tags: ['Storefronts', 'Payments', 'Logistics', 'Catalogue'],
+    stack: ['Next.js / Shopify / WooCommerce', 'Razorpay', 'Shiprocket', 'Inventory sync', 'GA4 e-commerce'],
+    startingAt: 'From ₹65,000',
+    timeline: '4 – 10 weeks',
+    engagement: 'Fixed-scope launch or growth retainer',
+    highlight: 'Fast checkout, fewer abandoned carts',
+    description: [
+      'An online store is judged in seconds: does it load, can I find the product, does the cart work on my phone, and do I trust the checkout. We design and engineer for those four questions before anything decorative.',
+      'Where a platform already fits, we build on it. Where the business needs custom pricing, bulk orders, dealer logins or a catalogue tied to a live ERP, we build exactly that instead of bending a template past its limits.',
+      'Launch is followed by measurement: funnel tracking, abandoned-cart recovery, search performance and a monthly improvement list rather than a redesign every two years.'
+    ],
+    capabilities: [
+      'Storefront design and build',
+      'Product catalogue and variant management',
+      'Payment gateway integration (Razorpay, Stripe, UPI)',
+      'Shipping, pincode and logistics integrations',
+      'Dealer, B2B and bulk-order pricing',
+      'Inventory and ERP synchronisation',
+      'SEO, analytics and conversion tracking',
+      'Abandoned-cart and retention automations'
+    ],
+    deliverables: [
+      { title: 'Launch-ready store', text: 'Tested storefront with payments, shipping, taxes and order notifications working end to end.' },
+      { title: 'Operations setup', text: 'Catalogue structure, order workflow and fulfilment instructions for your team.' },
+      { title: 'Analytics', text: 'GA4 e-commerce tracking, Search Console and a simple weekly sales dashboard.' },
+      { title: 'Growth backlog', text: 'Prioritised improvements based on real launch data, not guesswork.' }
+    ],
+    stats: [
+      { value: '<2s', label: 'target load time on mobile product pages' },
+      { value: '100%', label: 'of orders visible in one admin view' }
+    ],
+    faqs: [
+      { question: 'Shopify or a custom build?', answer: 'Shopify when speed to market matters and the catalogue is standard. Custom when pricing, approval flows or ERP integration would otherwise force painful workarounds.' },
+      { question: 'Can you migrate an existing store?', answer: 'Yes, including products, customers, orders and SEO redirects so rankings are preserved.' }
+    ],
+    sectors: [],
+    relatedProjects: []
+  }
+]
+
+/** Every service with its presentation profile applied. */
+export const services = [...baseServices, ...extraDigitalServices].map((service) => {
+  const profile = service.category === 'digital'
+    ? (DIGITAL_PROFILES[service.slug] || {})
+    : (CONSTRUCTION_PROFILES[service.slug] || {})
+  return {
+    category: service.category || 'construction',
+    tags: service.tags || profile.tags || [],
+    stack: service.stack || profile.stack || [],
+    icon: service.icon || profile.icon || 'Layers',
+    family: service.family || profile.family || '',
+    startingAt: service.startingAt || profile.startingAt || '',
+    timeline: service.timeline || profile.timeline || '',
+    engagement: service.engagement || profile.engagement || '',
+    highlight: service.highlight || profile.highlight || '',
+    ...service
+  }
+})
+
 
 export const sectorsIntro = {
   eyebrow: 'Sectors',

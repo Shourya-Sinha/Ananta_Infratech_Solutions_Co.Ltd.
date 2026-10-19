@@ -167,7 +167,10 @@
   position: relative;
 }
 .service-row:hover { padding-left: 0.9rem; background: rgba(213, 223, 86, 0.07); }
-.service-count { font: 500 11.4px var(--mono); letter-spacing: 0.1em; color: var(--muted); padding-top: 0.4rem; }
+.service-count { display: grid; justify-items: start; gap: 7px; font: 500 11.4px var(--mono); letter-spacing: 0.1em; color: var(--muted); padding-top: 0.4rem; }
+.service-row-icon { display: grid; place-content: center; width: 30px; height: 30px; border: 1px solid var(--line-strong, var(--line)); border-radius: 50%; color: var(--ink); background: var(--white); transition: background 0.3s, color 0.3s, border-color 0.3s; }
+.service-row:hover .service-row-icon { background: var(--ink); border-color: var(--ink); color: var(--acid); }
+.hero-eyebrow-icon { vertical-align: -2px; margin-right: 6px; }
 .service-row h2 { font-size: clamp(1.3rem, 2.2vw, 2rem); margin-bottom: 0.6rem; }
 .service-row h2 a::after { content: ''; position: absolute; inset: 0; }
 .service-row p { font-size: 14px; color: var(--ink-2); margin: 0; max-width: 48ch; }
