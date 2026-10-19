@@ -42,6 +42,11 @@ export const img = {
   project5: '/assets/sector-hospitality.jpg',
   project6: '/assets/hero-site-2.jpg',
 
+  /* --- digital & technology --- */
+  digitalHero: '/assets/digital-hero.jpg',
+  digitalCms: '/assets/digital-work-cms.jpg',
+  digitalChat: '/assets/digital-work-chat.jpg',
+
   /* --- editorial supporting imagery --- */
   site: '/assets/hero-site.jpg',
   drawings: '/assets/ananta-signature-structure.jpg',

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 import { repo } from '../lib/store.js'
 import { clone, normaliseContent, validateContent, sanitise, toCsv, CONTENT_VERSION } from '../lib/content.js'
 import { imageUpload, storeImage, cloudinaryStatus, MAX_UPLOAD_BYTES } from '../uploads.js'
-import { notify, notificationStatus } from '../lib/notify.js'
+import { notify, notificationStatus, mailStatus, sendTestEmail } from '../lib/notify.js'
 import { getPublished } from './site.js'
 import { EXPORT_COLUMNS } from './submissions.js'
 import { defaultSite } from '../seed.js'
@@ -47,6 +47,43 @@ router.put('/admin/content/draft', async (req, res, next) => {
 })
 
 /** Publishes either the supplied content or the current draft. */
+/**
+ * Keeps menu labels in step with the Services editor.
+ *
+ * The Services menu stores its own labels so they can be written for a menu
+ * rather than a page. That is worth keeping — but when nobody has customised a
+ * label (it still matches the old service name) and the service is renamed or
+ * re-slugged, the menu should follow instead of going stale.
+ */
+function syncMenuLabels(previous, nextContent) {
+  if (!Array.isArray(previous?.services) || !Array.isArray(nextContent?.nav)) return nextContent
+  const bySlug = new Map(previous.services.map((service) => [service.slug, service]))
+  const fresh = new Map((nextContent.services || []).map((service) => [service.slug, service]))
+
+  nextContent.nav = nextContent.nav.map((group) => {
+    if (group.label !== 'Services' || !Array.isArray(group.children)) return group
+    return {
+      ...group,
+      children: group.children.map((child) => {
+        const match = String(child.to || '').match(/^\/services\/([a-z0-9-]+)$/)
+        if (!match) return child
+        const old = bySlug.get(match[1])
+        const current = fresh.get(match[1])
+        if (!old || !current) return child
+
+        // Only services that were actually renamed can touch the menu, and
+        // only labels still matching the previous name. A menu label written
+        // for the menu (e.g. “Websites, CMS & e-commerce”) is never overwritten.
+        if (old.short === current.short && old.title === current.title) return child
+        if (child.label === old.short) return { ...child, label: current.short || current.title || child.label }
+        if (child.label === old.title) return { ...child, label: current.title || current.short || child.label }
+        return child
+      })
+    }
+  })
+  return nextContent
+}
+
 router.post('/admin/content/publish', async (req, res, next) => {
   try {
     const state = await repo.readState()
@@ -56,6 +93,7 @@ router.post('/admin/content/publish', async (req, res, next) => {
     if (problems.length) return res.status(400).json({ message: problems[0], problems })
 
     const content = normaliseContent(sanitise(source))
+    if (state.published) syncMenuLabels(state.published, content)
     const revision = {
       id: crypto.randomBytes(6).toString('hex'),
       at: new Date().toISOString(),
@@ -308,12 +346,19 @@ router.get('/admin/stats', async (_req, res, next) => {
   } catch (error) { next(error) }
 })
 
-/** Sends a test payload to the configured notification webhook. */
-router.post('/admin/notify/test', async (_req, res, next) => {
+/** Sends a test email (and webhook, if configured) so the inbox can be verified. */
+router.post('/admin/notify/test', async (req, res, next) => {
   try {
-    const result = await notify({ type: 'test', name: 'Ananta admin', message: 'Notification webhook test from the admin portal.' })
-    res.json({ ...result, status: notificationStatus() })
+    const recipient = String(req.body?.email || '').trim()
+    const email = await sendTestEmail(recipient || undefined)
+    const webhook = await notify({ type: 'test', name: 'Ananta admin', email: recipient || null, message: 'Notification webhook test from the admin portal.' })
+    res.json({ email, webhook: webhook.webhook, mail: mailStatus(), status: notificationStatus() })
   } catch (error) { next(error) }
+})
+
+/** Health of the outbound email channel, shown in the admin dashboard. */
+router.get('/admin/notify/status', (_req, res) => {
+  res.json({ mail: mailStatus(), status: notificationStatus() })
 })
 
 function countBy(rows) {

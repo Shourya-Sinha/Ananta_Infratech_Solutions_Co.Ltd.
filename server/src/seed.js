@@ -15,7 +15,7 @@ import { projectsIntro, projects } from './content/projects.js'
 import { leadershipIntro, leadership, teamIntro, teamStats, departments, clients, testimonials, awards, certifications, csr } from './content/people.js'
 import {
   home, about, sustainability, hse, equipment, insights, newsroom, tenders,
-  downloads, faq, careers, jobs, register, nav, sitemap
+  downloads, faq, careers, jobs, register, technology, nav, sitemap
 } from './content/pages.js'
 
 export const defaultSite = {
@@ -32,6 +32,7 @@ export const defaultSite = {
 
   home,
   about,
+  technology,
   leadershipIntro,
   leadership,
   teamIntro,

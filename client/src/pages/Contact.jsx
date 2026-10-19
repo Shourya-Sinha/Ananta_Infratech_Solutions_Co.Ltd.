@@ -59,6 +59,19 @@ export default function Contact() {
         </>}
       />
 
+      <section className="shell" style={{ paddingTop: 'clamp(2rem, 4vw, 3rem)' }}>
+        <a className="support-strip" href={`mailto:${company.supportEmail || company.email}`} style={{ textDecoration: 'none' }}>
+          <div>
+            <span className="support-strip-icon"><Mail size={18} /></span>
+            <div>
+              <b>One inbox for every question.</b>
+              <p>{site.footer?.supportNote || 'Construction, digital, careers, tenders or a general query — write once and we route it to the right team the same working day.'}</p>
+            </div>
+          </div>
+          <span className="support-strip-mail">{company.supportEmail || company.email} <ArrowUpRight size={16} /></span>
+        </a>
+      </section>
+
       <section className="shell contact-grid">
         <Reveal>
           <Eyebrow>01 — 03 Visit or call</Eyebrow>

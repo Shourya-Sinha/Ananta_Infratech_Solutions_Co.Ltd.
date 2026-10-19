@@ -1,6 +1,6 @@
 import { defaultSite } from '../seed.js'
 
-export const CONTENT_VERSION = 3
+export const CONTENT_VERSION = 6
 
 const LEGACY_LOGOS = ['/assets/dlogo-removebg.png', '/assets/logo.png', '/assets/logo.jpeg', '/assets/logo.jpg', 'dlogo-removebg.png', '']
 const PRIMARY_LOGO = defaultSite.company.logo
@@ -67,7 +67,197 @@ export function normaliseContent(content) {
     Object.assign(migrated, updateBrandContacts(migrated))
   }
 
+
+  // ------------------------------------------------------------------ v6
+  // The footer used to carry its own phone, email and address, copied from the
+  // company profile. That meant editing the phone in one place left a stale
+  // number in the other. Footer contact fields are now optional overrides and
+  // the company profile is the single source, so the whole site updates at once.
+  if (previousVersion < 6) {
+    if (migrated.footer?.contact) {
+      const contact = migrated.footer.contact
+      const legacy = {
+        email: 'support@anantainfratechsolutions.com',
+        phone: '+91 22 4968 2016',
+        address: 'Juhu, Mumbai, Maharashtra, India'
+      }
+      migrated.footer.contact = {
+        ...contact,
+        email: contact.email === legacy.email ? '' : contact.email,
+        phone: contact.phone === legacy.phone ? '' : contact.phone,
+        address: contact.address === legacy.address ? '' : contact.address
+      }
+    }
+    if (migrated.footer?.supportNote === 'For any query — construction, technology, careers or procurement — write to support@anantainfratechsolutions.com and the team will route it internally.') {
+      migrated.footer.supportNote = defaultSite.footer.supportNote
+    }
+  }
+
+  // ---------------------------------------------------------------- v4: digital
+  // Adds the technology practice, the additional digital services and the
+  // navigation entries that lead to them. Existing copy is never overwritten:
+  // only missing services, groups and links are appended.
+  if (previousVersion < 4) {
+    const savedServices = Array.isArray(migrated.services) ? migrated.services : []
+    const presentSlugs = new Set(savedServices.map((service) => service.slug))
+    migrated.services = [
+      ...savedServices.map((service) => {
+        // Give previously saved digital services the new presentation fields
+        // (icon, stack, starting price) only where the CMS has no value yet.
+        const fresh = defaultSite.services.find((item) => item.slug === service.slug)
+        if (!fresh) return service
+        const enriched = { ...service }
+        for (const key of ['icon', 'tags', 'stack', 'startingAt', 'timeline', 'engagement', 'highlight', 'category', 'family']) {
+          if (enriched[key] === undefined || enriched[key] === null || enriched[key] === '') enriched[key] = clone(fresh[key])
+        }
+        return enriched
+      }),
+      ...defaultSite.services.filter((service) => !presentSlugs.has(service.slug))
+    ]
+
+    if (Array.isArray(migrated.nav)) {
+      const navLabels = new Set(migrated.nav.map((group) => group.label))
+      if (!navLabels.has('Technology')) {
+        const techNav = clone(defaultSite.nav.find((group) => group.label === 'Technology'))
+        const servicesIndex = migrated.nav.findIndex((group) => group.label === 'Services')
+        migrated.nav = servicesIndex >= 0
+          ? [...migrated.nav.slice(0, servicesIndex + 1), techNav, ...migrated.nav.slice(servicesIndex + 1)]
+          : [...migrated.nav, techNav]
+      }
+      migrated.nav = migrated.nav.map((group) => {
+        if (group.label !== 'Services' || !Array.isArray(group.children)) return group
+        const fresh = defaultSite.nav.find((item) => item.label === 'Services')
+        const keys = new Set(group.children.map((item) => `${item.to}|${item.label}`))
+        const additions = (fresh?.children || []).filter((item) => !keys.has(`${item.to}|${item.label}`))
+        return {
+          ...group,
+          blurb: group.blurb || fresh?.blurb,
+          children: [
+            ...group.children.map((child) => {
+              const match = (fresh?.children || []).find((item) => item.to === child.to)
+              return match && !child.group ? { ...child, group: match.group } : child
+            }),
+            ...additions
+          ]
+        }
+      })
+    }
+
+    if (Array.isArray(migrated.sitemap) && !migrated.sitemap.some((group) => group.group === 'Technology')) {
+      const techGroup = clone(defaultSite.sitemap.find((group) => group.group === 'Technology'))
+      const workIndex = migrated.sitemap.findIndex((group) => group.group === 'Work')
+      migrated.sitemap = workIndex >= 0
+        ? [...migrated.sitemap.slice(0, workIndex), techGroup, ...migrated.sitemap.slice(workIndex)]
+        : [...migrated.sitemap, techGroup]
+    }
+
+    if (migrated.home?.digitalSection) {
+      if (Array.isArray(migrated.home.digitalSection.serviceSlugs)) {
+        const fresh = new Set(defaultSite.home.digitalSection.serviceSlugs)
+        migrated.home.digitalSection.serviceSlugs = [
+          ...migrated.home.digitalSection.serviceSlugs,
+          ...[...fresh].filter((slug) => !migrated.home.digitalSection.serviceSlugs.includes(slug))
+        ]
+      }
+      for (const key of ['stats', 'chips', 'chatTeaser', 'engagementLabel', 'engagementNote']) {
+        if (migrated.home.digitalSection[key] === undefined) migrated.home.digitalSection[key] = clone(defaultSite.home.digitalSection[key])
+      }
+    }
+    if (migrated.home && !migrated.home.domains) migrated.home.domains = clone(defaultSite.home.domains)
+
+    if (migrated.contact && Array.isArray(migrated.contact.departments) && !migrated.contact.departments.some((item) => item.id === 'technology')) {
+      const tech = clone(defaultSite.contact.departments.find((item) => item.id === 'technology'))
+      const mediaIndex = migrated.contact.departments.findIndex((item) => item.id === 'media')
+      migrated.contact.departments = mediaIndex >= 0
+        ? [...migrated.contact.departments.slice(0, mediaIndex), tech, ...migrated.contact.departments.slice(mediaIndex)]
+        : [...migrated.contact.departments, tech]
+    }
+
+    if (migrated.company && !migrated.company.supportEmail) migrated.company.supportEmail = defaultSite.company.supportEmail
+    if (migrated.company && !migrated.company.technologyEmail) migrated.company.technologyEmail = defaultSite.company.technologyEmail
+    if (migrated.footer && !migrated.footer.supportNote) migrated.footer.supportNote = defaultSite.footer.supportNote
+
+    if (migrated.footer?.columns?.length) {
+      migrated.footer.columns = migrated.footer.columns.map((column) => {
+        if (!Array.isArray(column.links) || !/what we do/i.test(column.title || '')) return column
+        const keys = new Set(column.links.map((link) => link.to))
+        const techLinks = [
+          { label: 'Digital & IT solutions', to: '/technology' },
+          { label: 'Websites, CMS & SEO', to: '/services/web-development' },
+          { label: 'Android & iOS apps', to: '/services/mobile-app-development' },
+          { label: 'Client chat solutions', to: '/services/client-chat-solutions' }
+        ].filter((link) => !keys.has(link.to))
+        const allIndex = column.links.findIndex((link) => link.to === '/services')
+        const links = [...column.links]
+        links.splice(allIndex >= 0 ? allIndex + 1 : 0, 0, ...techLinks)
+        return { ...column, links }
+      })
+    }
+  }
+
+  // ------------------------------------------------------------------ v5
+  // The Services mega menu grew beyond three columns, so the construction
+  // links are now split into advisory / structure / delivery, and the digital
+  // hero slide finally points at digital artwork instead of a site photo.
+  // Both changes are applied only to values that still hold the old defaults.
+  if (previousVersion < 5) {
+    if (Array.isArray(migrated.nav)) {
+      const freshServices = defaultSite.nav.find((group) => group.label === 'Services')
+      const freshGroups = new Map((freshServices?.children || []).map((item) => [item.to, item.group]))
+      const oldLabels = new Set(['Construction & infrastructure'])
+      migrated.nav = migrated.nav.map((group) => {
+        if (group.label !== 'Services' || !Array.isArray(group.children)) return group
+        return {
+          ...group,
+          children: group.children.map((child) => {
+            const nextGroup = freshGroups.get(child.to)
+            if (!nextGroup || !oldLabels.has(child.group)) return child
+            return { ...child, group: nextGroup }
+          })
+        }
+      })
+    }
+
+    if (Array.isArray(migrated.home?.slides)) {
+      const freshSlide = defaultSite.home.slides.find((slide) => /digital products/i.test(slide.eyebrow || ''))
+      const legacyImages = new Set(['/assets/ananta-signature-structure.jpg', '/assets/hero-site.jpg'])
+      migrated.home.slides = migrated.home.slides.map((slide) => {
+        if (!/digital products/i.test(slide.eyebrow || '')) return slide
+        if (!legacyImages.has(slide.image)) return slide
+        return { ...slide, image: freshSlide?.image || slide.image, alt: freshSlide?.alt || slide.alt }
+      })
+    }
+
+    if (migrated.technology && !migrated.technology.cases) {
+      migrated.technology.cases = clone(defaultSite.technology.cases)
+    }
+
+  }
+
   const next = mergeWithDefaults(migrated)
+  // Repair: digital services inherited construction photography when they were
+  // first added. Only that exact legacy artwork is replaced — an image chosen in
+  // the CMS is left alone — so this runs on every load rather than once.
+  const legacyDigitalImages = new Set(['/assets/ananta-signature-structure.jpg', '/assets/drawings.jpg'])
+  if (Array.isArray(next.services)) {
+    next.services = next.services.map((service) => {
+      const fresh = defaultSite.services.find((item) => item.slug === service.slug)
+      if (!fresh || fresh.category !== 'digital') return service
+      if (!legacyDigitalImages.has(service.image)) return service
+      return { ...service, image: fresh.image }
+    })
+  }
+
+  // The opening slide used to introduce Ananta as a construction company only.
+  // The site now leads with both practices; the sentence is replaced only while
+  // it still holds that original default, so an admin rewrite always wins.
+  if (Array.isArray(next.home?.slides) && next.home.slides[0]?.eyebrow === 'Integrated construction partner · Mumbai, India') {
+    next.home.slides = [
+      { ...next.home.slides[0], eyebrow: defaultSite.home.slides[0].eyebrow },
+      ...next.home.slides.slice(1)
+    ]
+  }
+
   const stale = (value) => typeof value !== 'string' || LEGACY_LOGOS.includes(value.trim())
   next.company = next.company || {}
   if (stale(next.company.logo)) next.company.logo = PRIMARY_LOGO

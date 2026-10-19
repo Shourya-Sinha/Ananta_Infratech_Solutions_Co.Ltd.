@@ -31,6 +31,7 @@ import Clients from '../src/pages/Clients'
 import Equipment from '../src/pages/Equipment'
 import Newsroom from '../src/pages/Newsroom'
 import Services from '../src/pages/Services'
+import Technology from '../src/pages/Technology'
 import ServiceDetail from '../src/pages/ServiceDetail'
 import Sectors from '../src/pages/Sectors'
 import SectorDetail from '../src/pages/SectorDetail'
@@ -50,9 +51,12 @@ import Policy from '../src/pages/Policy'
 import Contact from '../src/pages/Contact'
 import NotFound from '../src/pages/NotFound'
 
+import App from '../src/App'
 import AdminApp from '../src/pages/admin/AdminApp'
 import SectionPanel from '../src/pages/admin/SectionPanel'
 import Inbox from '../src/pages/admin/Inbox'
+import LivePreview from '../src/pages/admin/LivePreview'
+import EmailPanel from '../src/pages/admin/EmailPanel'
 import { adminSections } from '../src/lib/adminSchema'
 
 const API = process.env.API_URL || 'http://localhost:5050'
@@ -76,7 +80,7 @@ const routes = [
   ['/', '/', Home], ['/about', '/about', About], ['/leadership', '/leadership', Leadership],
   ['/hse', '/hse', HSE], ['/sustainability', '/sustainability', Sustainability], ['/awards', '/awards', Awards],
   ['/clients', '/clients', Clients], ['/equipment', '/equipment', Equipment], ['/newsroom', '/newsroom', Newsroom],
-  ['/services', '/services', Services], ['/sectors', '/sectors', Sectors], ['/projects', '/projects', Projects],
+  ['/services', '/services', Services], ['/technology', '/technology', Technology], ['/sectors', '/sectors', Sectors], ['/projects', '/projects', Projects],
   ['/insights', '/insights', Insights], ['/careers', '/careers', Careers], ['/register', '/register', Register],
   ['/tenders', '/tenders', Tenders], ['/downloads', '/downloads', Downloads], ['/faq', '/faq', Faq],
   ['/track', '/track', Track], ['/sitemap', '/sitemap', SitemapPage], ['/contact', '/contact', Contact],
@@ -151,9 +155,29 @@ for (const section of adminSections) {
   }
 }
 
+// The full site frame: fixed header, hover-zone mega menu, command palette,
+// footer with the support inbox, cookie notice and every global provider.
+for (const route of ['/', '/technology', '/contact', '/services/client-chat-solutions']) {
+  checked += 1
+  try {
+    const html = renderToString(
+      <MemoryRouter initialEntries={[route]}>
+        <App initialSite={site} />
+      </MemoryRouter>
+    )
+    if (!html || !html.includes('site-header') || !html.includes('site-footer') || html.length < 12000) {
+      failures.push(`site frame ${route} — header/footer missing or output too small (${html.length} bytes)`)
+    }
+  } catch (error) {
+    failures.push(`site frame ${route} — ${error.message}`)
+  }
+}
+
 for (const [label, node] of [
   ['admin sign-in', <MemoryRouter initialEntries={['/admin']}><SiteProvider initialSite={site}><ToastProvider><ErrorBoundary><AdminApp /></ErrorBoundary></ToastProvider></SiteProvider></MemoryRouter>],
-  ['admin submissions inbox', <SiteProvider initialSite={site}><ToastProvider><Inbox /></ToastProvider></SiteProvider>]
+  ['admin submissions inbox', <SiteProvider initialSite={site}><ToastProvider><Inbox /></ToastProvider></SiteProvider>],
+  ['admin live preview', <LivePreview content={site} section={adminSections.find((item) => item.id === 'technology')} dirty onChange={() => {}} onPublish={() => {}} onClose={() => {}} />],
+  ['admin email delivery', <ToastProvider><EmailPanel supportEmail={site.company.supportEmail} /></ToastProvider>]
 ]) {
   checked += 1
   try {

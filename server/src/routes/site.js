@@ -34,6 +34,10 @@ router.get('/site', async (req, res, next) => {
         const claims = jwt.verify(tokenFrom(req), JWT_SECRET())
         if (claims?.role === 'admin') {
           const state = await repo.readState()
+          // Draft content is private to the signed-in editor. It must never be
+          // held by a shared cache or a CDN.
+          res.set('Cache-Control', 'private, no-store')
+          res.set('Vary', 'Authorization')
           return res.json({
             ...(state.draft ? normaliseContent(state.draft) : await getPublished()),
             __preview: true,
@@ -45,7 +49,11 @@ router.get('/site', async (req, res, next) => {
         // An invalid or expired token simply falls through to the published site.
       }
     }
-    res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
+    // Publishing must be visible immediately. The response is still cheap to
+    // serve because Express sets an ETag, so repeat visits revalidate (304)
+    // instead of re-downloading the whole document; but they always ask first
+    // rather than serving a five-minute-old copy after a publish.
+    res.set('Cache-Control', 'no-cache, must-revalidate')
     res.json(await getPublished())
   } catch (error) { next(error) }
 })
@@ -90,7 +98,7 @@ seoRouter.get('/sitemap.xml', async (req, res, next) => {
       { loc: '/hse', priority: '0.8' }, { loc: '/sustainability', priority: '0.7' },
       { loc: '/awards', priority: '0.6' }, { loc: '/clients', priority: '0.7' },
       { loc: '/equipment', priority: '0.6' }, { loc: '/newsroom', priority: '0.6' },
-      { loc: '/services', priority: '0.9' }, { loc: '/sectors', priority: '0.9' },
+      { loc: '/services', priority: '0.9' }, { loc: '/technology', priority: '0.95' }, { loc: '/sectors', priority: '0.9' },
       { loc: '/projects', priority: '0.9' }, { loc: '/insights', priority: '0.8' },
       { loc: '/careers', priority: '0.9' }, { loc: '/register', priority: '0.9' },
       { loc: '/tenders', priority: '0.7' }, { loc: '/downloads', priority: '0.6' },

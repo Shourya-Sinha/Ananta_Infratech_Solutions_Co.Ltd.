@@ -87,25 +87,36 @@ export function Seo({ title, description, image, type = 'website', jsonLd, noInd
 /** Organisation schema used on the home page and contact page. */
 export function organisationSchema(site) {
   const c = site.company || {}
+  const office = (site.offices || [])[0] || {}
+  const addressText = office.address || c.address || 'Juhu Tara Road, Juhu, Mumbai, Maharashtra 400049, India'
+  const pin = (addressText.match(/\b(\d{6})\b/) || [])[1] || '400049'
+  const region = (addressText.match(/(Maharashtra|Uttar Pradesh|Gujarat|Karnataka|Telangana|Delhi)/) || [])[1] || 'Maharashtra'
+
   return {
     '@context': 'https://schema.org',
-    '@type': 'GeneralContractor',
+    /* Two practices, one entity — the schema says so as plainly as the website does. */
+    '@type': ['GeneralContractor', 'ProfessionalService'],
     name: c.name,
     legalName: c.legalName,
     description: site.meta?.description,
     url: site.meta?.siteUrl,
-    email: c.email,
+    email: c.supportEmail || c.email,
     telephone: c.phone,
     foundingDate: c.founded,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Juhu Tara Road, Juhu',
-      addressLocality: 'Mumbai',
-      addressRegion: 'Maharashtra',
-      postalCode: '400049',
+      streetAddress: addressText,
+      addressLocality: office.city || 'Mumbai',
+      addressRegion: region,
+      postalCode: pin,
       addressCountry: 'IN'
     },
     areaServed: ['Maharashtra', 'Delhi NCR', 'Gujarat', 'Karnataka', 'Telangana'],
+    knowsAbout: [
+      'Construction management', 'Civil and structural engineering', 'MEP systems',
+      'Interior fit-out', 'Industrial EPC', 'Web development', 'Content management systems',
+      'Android and iOS applications', 'Custom software', 'Cloud and DevOps', 'SEO'
+    ],
     sameAs: [c.linkedin, c.instagram, c.facebook, c.youtube].filter(Boolean)
   }
 }
