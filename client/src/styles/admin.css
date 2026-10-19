@@ -280,6 +280,28 @@
 .editor-message.is-error { background: rgba(168, 56, 44, 0.08); border-color: rgba(168, 56, 44, 0.3); color: var(--danger); }
 .editor-message.is-ok { background: rgba(47, 122, 79, 0.09); border-color: rgba(47, 122, 79, 0.3); color: var(--success); }
 
+/* ------------------------------------------- email channel health & queue */
+
+.mail-alerts { display: grid; gap: 0.6rem; margin-bottom: 1.2rem; }
+.mail-alerts .editor-message { display: grid; grid-template-columns: 18px 1fr; gap: 0.6rem; align-items: start; }
+
+.mail-steps { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 1rem; padding: 0; list-style: none; }
+.mail-step { display: grid; grid-template-columns: 18px 1fr; gap: 0.6rem; padding: 0.7rem 0.8rem; background: var(--white); align-items: start; }
+.mail-step > svg { margin-top: 2px; color: var(--muted); flex: none; }
+.mail-step.is-pass > svg { color: var(--success); }
+.mail-step.is-fail > svg { color: var(--danger); }
+.mail-step.is-warn > svg { color: var(--warning); }
+.mail-step b { font-size: 12.8px; font-weight: 600; }
+.mail-step p { margin: 2px 0 0; font-size: 12.2px; color: var(--ink-2); line-height: 1.5; }
+.mail-step .mail-step-hint { color: var(--muted); }
+
+.mail-queue { display: grid; gap: 0.4rem; margin: 0.9rem 0 0; padding: 0; list-style: none; }
+.mail-queue li { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-size: 12.4px; padding: 0.5rem 0.7rem; background: var(--sand-2); border: 1px solid var(--line); }
+.mail-queue li span { color: var(--muted); font-size: 11.6px; }
+
+.inbox-delivery { display: inline-flex; align-items: center; gap: 4px; }
+.inbox-delivery.is-bad { border-color: rgba(168, 56, 44, 0.4); color: var(--danger); background: rgba(168, 56, 44, 0.07); }
+
 .editor-tabs { display: flex; gap: 0.3rem; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
 .editor-tabs button { padding: 0.55rem 0.8rem; font-size: 12.2px; font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent; }
 .editor-tabs button.active { color: var(--ink); border-bottom-color: var(--ink); }

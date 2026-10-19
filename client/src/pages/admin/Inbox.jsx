@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
-  ArrowUpRight, Briefcase, Building2, Download, FileText, HardHat, Inbox as InboxIcon,
-  Mail, MessageSquare, RefreshCw, Send, UserPlus
+  AlertTriangle, ArrowUpRight, Briefcase, Building2, Download, FileText, HardHat,
+  Inbox as InboxIcon, Mail, MessageSquare, RefreshCw, Send, UserPlus
 } from 'lucide-react'
 import { adminGet, adminPatch, formatDate, STATUS_OPTIONS, statusTone } from '../../lib/api'
 import { useToast } from '../../components/Toast'
@@ -56,6 +56,20 @@ function RecordCard({ record, onPatch, onOpen, busyId }) {
             </span>
           ) : <span className="tag">{prettyKind(record.kind)}</span>}
           {record.reference ? <span className="tag tag-mono">{record.reference}</span> : null}
+          {record.delivery?.email ? (
+            record.delivery.email.sent ? (
+              <span className="tag inbox-delivery" title={record.delivery.email.messageId ? `Message id ${record.delivery.email.messageId}` : 'The email copy was accepted by the mail server'}>
+                <Mail size={11} /> Emailed
+              </span>
+            ) : (
+              <span
+                className="tag inbox-delivery is-bad"
+                title={[record.delivery.email.reason, record.delivery.email.hint].filter(Boolean).join(' — ')}
+              >
+                <AlertTriangle size={11} /> Email not delivered{record.delivery.email.queued ? ' · queued for retry' : ''}
+              </span>
+            )
+          ) : null}
         </div>
         <span className="inbox-date">{formatDate(record.createdAt, true)}</span>
       </header>

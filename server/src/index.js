@@ -10,6 +10,8 @@ import authRoutes, { protect } from './routes/auth.js'
 import adminRoutes from './routes/admin.js'
 import submissionRoutes from './routes/submissions.js'
 import { useMongo, useLocal, storageKind } from './lib/store.js'
+import { detectMailProvider, mailStatus, deliverPayload, diagnoseMail } from './lib/notify.js'
+import { startOutboxWorker } from './lib/outbox.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
@@ -98,6 +100,33 @@ async function connectDatabase() {
   try { await getPublished() } catch (error) { console.warn('Could not prepare initial content:', error.message) }
 }
 
+async function reportMailConfiguration() {
+  // If only a mailbox address and password were supplied, work out the mail
+  // host from the domain's MX records (GoDaddy, Titan, Google, Microsoft…).
+  await Promise.race([
+    detectMailProvider(),
+    new Promise((resolve) => setTimeout(resolve, 3500))
+  ])
+
+  const status = mailStatus()
+  if (status.configured) {
+    console.log(`✔ Email delivery: ${status.user} via ${status.host}:${status.port}${status.secure ? ' (SSL)' : ' (STARTTLS)'} → ${status.to.join(', ')}`)
+    for (const warning of status.warnings || []) console.warn(`  ⚠ ${warning.message}`)
+    if (/^(true|1|yes|on)$/i.test(String(process.env.MAIL_VERIFY_ON_BOOT || 'true'))) {
+      void diagnoseMail()
+        .then((report) => {
+          if (report.ok) console.log('✔ Email self-check passed — the mailbox accepted the sign-in.')
+          else console.warn(`⚠ Email self-check failed: ${report.summary}`)
+        })
+        .catch((error) => console.warn('⚠ Email self-check could not run:', error.message))
+    }
+  } else {
+    console.warn('⚠ Email delivery is NOT configured — website enquiries will be stored in the admin inbox only.')
+    for (const problem of status.problems || []) console.warn(`  • ${problem.message}${problem.hint ? ` ${problem.hint}` : ''}`)
+  }
+  return status
+}
+
 async function boot() {
   await fs.mkdir(path.join(__dirname, '../data'), { recursive: true })
   await fs.mkdir(path.join(__dirname, '../uploads'), { recursive: true })
@@ -111,10 +140,15 @@ async function boot() {
   // `connectDatabase` settles.
   void connectDatabase().finally(markDatabaseReady)
 
+  // Failed emails (wrong password, host blocking port 465, temporary outage)
+  // wait in server/data/outbox.json and are retried every few minutes.
+  startOutboxWorker({ deliver: deliverPayload })
+
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`▲ Ananta API listening on http://0.0.0.0:${PORT}`)
     console.log(`  • Storage: ${storageKind()}`)
     console.log(`  • Admin portal: /admin`)
+    void reportMailConfiguration()
   })
 }
 

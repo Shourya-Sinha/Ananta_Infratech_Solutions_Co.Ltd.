@@ -75,7 +75,7 @@ router.post('/contact', rateLimit({ key: 'contact', max: 6 }), async (req, res, 
       phone: record.phone, company: record.company, department: record.department, city: record.city,
       message: record.message, source: record.source, at: saved.createdAt
     })
-    if (delivery?.delivered) await repo.updateInquiry(saved.id || saved.reference, { delivery })
+    await repo.updateInquiry(saved.id || saved.reference, { delivery })
     res.status(201).json({
       message: delivery?.email?.sent
         ? 'Thank you. Your enquiry has reached our team inbox and you will hear from us within one working day.'
@@ -122,7 +122,7 @@ router.post('/careers', rateLimit({ key: 'careers', max: 6 }), async (req, res, 
       email: record.email, phone: record.phone, experience: record.experience, city: record.city,
       message: record.message, source: record.source, at: saved.createdAt
     })
-    if (delivery?.delivered) await repo.updateInquiry(saved.id || saved.reference, { delivery })
+    await repo.updateInquiry(saved.id || saved.reference, { delivery })
     res.status(201).json({
       message: `Application received for ${record.role}. Our recruitment team reviews every application within five working days.`,
       reference: saved.reference
@@ -206,7 +206,7 @@ router.post('/register', rateLimit({ key: 'register', max: 6 }), async (req, res
       message: saved.message,
       at: saved.createdAt
     })
-    if (delivery?.delivered) await repo.updateRegistration(saved.id || saved.reference, { delivery })
+    await repo.updateRegistration(saved.id || saved.reference, { delivery })
     res.status(201).json({
       message: type === 'contractor'
         ? `Thank you. Your company is on our contractor interest list — reference ${saved.reference}. Our procurement team will contact you as registration opens.`
@@ -243,7 +243,7 @@ router.post('/tenders/enquiry', rateLimit({ key: 'tender', max: 6 }), async (req
       email: record.email, phone: record.phone, interest: record.interest, message: record.message,
       messageType: 'Tender enquiry', at: saved.createdAt
     })
-    if (delivery?.delivered) await repo.updateInquiry(saved.id || saved.reference, { delivery })
+    await repo.updateInquiry(saved.id || saved.reference, { delivery })
     res.status(201).json({ message: 'Your tender enquiry has reached our procurement team. We respond to all enquiries in writing.', reference: saved.reference })
   } catch (error) { next(error) }
 })
@@ -272,7 +272,7 @@ router.post('/downloads/request', rateLimit({ key: 'download', max: 8 }), async 
       email: record.email, phone: record.phone, interest: `Document request: ${record.documents}`,
       message: record.message, at: saved.createdAt
     })
-    if (delivery?.delivered) await repo.updateInquiry(saved.id || saved.reference, { delivery })
+    await repo.updateInquiry(saved.id || saved.reference, { delivery })
     res.status(201).json({ message: 'Thank you. The documents you selected are on their way to your inbox.', reference: saved.reference })
   } catch (error) { next(error) }
 })

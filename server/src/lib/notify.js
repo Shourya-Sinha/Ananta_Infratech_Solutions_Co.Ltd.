@@ -3,15 +3,16 @@
  *
  * Every submission (contact enquiry, job application, contractor/worker
  * registration, newsletter signup) is stored in the CMS inbox first — nothing
- * is ever lost if email is unavailable. On top of that, this module can deliver
- * a real email to the company inbox and an optional acknowledgement to the
- * person who wrote in.
+ * is ever lost if email is unavailable. On top of that, this module delivers a
+ * real email to the company inbox and an optional acknowledgement to the person
+ * who wrote in.
  *
- * Email is configured entirely through environment variables, so no provider
- * is hard-coded:
+ * Email is configured entirely through environment variables, so no provider is
+ * hard-coded (see mail-config.js for the provider presets and validation):
  *
- *   SMTP_HOST       smtp host, e.g. smtp.zoho.in / smtp.gmail.com
- *   SMTP_PORT       465 (secure) or 587 (STARTTLS)
+ *   MAIL_PROVIDER   optional preset: godaddy, titan, microsoft365, gmail, zoho…
+ *   SMTP_HOST       smtp host, e.g. smtpout.secureserver.net / smtp.gmail.com
+ *   SMTP_PORT       465 (SSL) or 587 (STARTTLS)
  *   SMTP_SECURE     true for port 465
  *   SMTP_USER       mailbox login, usually support@anantainfratechsolutions.com
  *   SMTP_PASS       mailbox password or app password
@@ -20,52 +21,48 @@
  *   MAIL_REPLY_TO   optional override for reply-to
  *   MAIL_ACK        "true" to send the submitter a confirmation email
  *
- * If SMTP is not configured the webhook (NOTIFY_WEBHOOK_URL) is still used, and
- * submissions remain visible in the admin portal.
+ * When a send fails the reason is reported back, attached to the stored
+ * submission and — for temporary failures — queued in outbox.js for retry, so a
+ * broken mailbox can never fail silently again.
  */
 import nodemailer from 'nodemailer'
+import crypto from 'node:crypto'
+import net from 'node:net'
+import tls from 'node:tls'
+import dns from 'node:dns/promises'
+import {
+  mailConfig,
+  publicMailConfig,
+  explainSmtpError,
+  detectMailProvider,
+  DEFAULT_INBOX
+} from './mail-config.js'
+import { enqueue, outboxSummary } from './outbox.js'
 
 const env = (key) => (process.env[key] || '').trim()
-const DEFAULT_INBOX = 'support@anantainfratechsolutions.com'
 
 let transporter = null
 let transporterKey = ''
 
-function mailConfig() {
-  const host = env('SMTP_HOST')
-  const user = env('SMTP_USER')
-  const pass = env('SMTP_PASS')
-  const port = Number(env('SMTP_PORT') || (env('SMTP_SECURE') === 'true' ? 465 : 587))
-  const secure = env('SMTP_SECURE') ? env('SMTP_SECURE') === 'true' : port === 465
-  const to = (env('MAIL_TO') || DEFAULT_INBOX).split(',').map((item) => item.trim()).filter(Boolean)
-  return {
-    host,
-    user,
-    pass,
-    port,
-    secure,
-    service: env('MAIL_SERVICE') || '',
-    from: env('MAIL_FROM') || `Ananta Infratech Solutions <${user || DEFAULT_INBOX}>`,
-    replyTo: env('MAIL_REPLY_TO') || '',
-    to,
-    ack: env('MAIL_ACK') === 'true',
-    configured: Boolean((host || env('MAIL_SERVICE')) && user && pass)
-  }
-}
+export { DEFAULT_INBOX }
+
+/* ------------------------------------------------------------- status ---- */
 
 export function mailStatus() {
   const config = mailConfig()
+  const status = publicMailConfig()
+  const first = config.problems[0]
   return {
+    ...status,
     configured: config.configured,
-    host: config.host || config.service || null,
-    port: config.configured ? config.port : null,
-    secure: config.secure,
-    from: config.configured ? config.from : null,
-    to: config.to,
     acknowledgements: config.ack,
     reason: config.configured
       ? null
-      : 'Set SMTP_HOST, SMTP_USER and SMTP_PASS (see .env.example) to deliver form submissions to the inbox.'
+      : first
+        ? `${first.message} ${first.hint || ''}`.trim()
+        : 'Set MAIL_PROVIDER (or SMTP_HOST), SMTP_USER and SMTP_PASS to deliver form submissions to the inbox.',
+    problems: config.problems,
+    warnings: config.warnings
   }
 }
 
@@ -84,23 +81,45 @@ function safeHost(url) {
   try { return new URL(url).host } catch { return 'configured' }
 }
 
+/* --------------------------------------------------------- transport ---- */
+
 function getTransporter() {
   const config = mailConfig()
   if (!config.configured) return null
-  const key = `${config.host}|${config.port}|${config.user}|${config.secure}`
+  const key = `${config.host}|${config.port}|${config.user}|${config.secure}|${config.service}|${crypto.createHash('sha1').update(config.pass).digest('hex').slice(0, 8)}`
   if (transporter && transporterKey === key) return transporter
-  transporter = nodemailer.createTransport({
-    ...(config.service ? { service: config.service } : { host: config.host, port: config.port, secure: config.secure }),
+  if (transporter?.close) { try { transporter.close() } catch { /* already closed */ } }
+
+  const shared = {
     auth: { user: config.user, pass: config.pass },
     pool: true,
     maxConnections: 2,
+    maxMessages: 50,
     connectionTimeout: 12_000,
     greetingTimeout: 12_000,
-    socketTimeout: 20_000
-  })
+    socketTimeout: 20_000,
+    logger: config.debug ? console : false,
+    debug: config.debug,
+    tls: { rejectUnauthorized: !config.allowInvalidCert, ...(net.isIP(config.host) ? {} : { servername: config.host }) }
+  }
+
+  transporter = nodemailer.createTransport(
+    config.service
+      ? { service: config.service, ...shared }
+      : { host: config.host, port: config.port, secure: config.secure, ...shared }
+  )
   transporterKey = key
   return transporter
 }
+
+/** Drops the cached connection so a corrected .env takes effect after restart. */
+export function resetTransport() {
+  if (transporter?.close) { try { transporter.close() } catch { /* ignore */ } }
+  transporter = null
+  transporterKey = ''
+}
+
+/* ----------------------------------------------------------- templates ---- */
 
 const escapeHtml = (value) => String(value ?? '')
   .replace(/&/g, '&amp;')
@@ -117,6 +136,8 @@ const SUBJECTS = {
   test: () => 'Ananta website — email delivery test'
 }
 
+const subjectFor = (payload) => SUBJECTS[payload.type]?.(payload) || 'New website submission'
+
 function rows(payload) {
   const labels = {
     type: 'Type', reference: 'Reference', name: 'Name', email: 'Email', phone: 'Phone',
@@ -130,7 +151,7 @@ function rows(payload) {
 }
 
 export function renderEmail(payload, { heading } = {}) {
-  const title = heading || SUBJECTS[payload.type]?.(payload) || 'New website submission'
+  const title = heading || subjectFor(payload)
   const details = rows(payload)
   const accent = '#c9d94a'
   return `<!doctype html>
@@ -197,26 +218,89 @@ export function renderAcknowledgement(payload) {
 </body></html>`
 }
 
-/** Sends one email through the configured SMTP transport. */
+/* --------------------------------------------------------------- send ---- */
+
+/**
+ * Sends one email through the configured SMTP transport.
+ * Returns `{ sent, ... }` — never throws. Failures carry a structured
+ * explanation (`code`, `message`, `hint`, `retryable`) for the admin screen.
+ */
 export async function sendMail({ subject, html, text, to, replyTo, attachments }) {
   const config = mailConfig()
-  if (!config.configured) return { sent: false, reason: 'smtp-not-configured' }
+  if (!config.configured) {
+    const explanation = config.problems[0] || { code: 'smtp-not-configured', message: 'Email is not configured.', hint: 'Set MAIL_PROVIDER (or SMTP_HOST), SMTP_USER and SMTP_PASS.' }
+    return {
+      sent: false,
+      reason: `${explanation.message} ${explanation.hint || ''}`.trim(),
+      code: explanation.code || 'smtp-not-configured',
+      // Keep it in the queue: once the mailbox is configured, these are sent.
+      retryable: true,
+      configured: false,
+      at: new Date().toISOString()
+    }
+  }
+
   const transport = getTransporter()
+  const recipients = Array.isArray(to) ? to.join(', ') : (to || config.to.join(', '))
   try {
     const info = await transport.sendMail({
       from: config.from,
-      to: to || config.to,
+      to: recipients,
       replyTo: replyTo || config.replyTo || undefined,
       subject,
       text: text || undefined,
       html,
       attachments
     })
-    return { sent: true, messageId: info.messageId, accepted: info.accepted }
+
+    const accepted = Array.isArray(info.accepted) ? info.accepted : []
+    const rejected = Array.isArray(info.rejected) ? info.rejected : []
+    if (!accepted.length && rejected.length) {
+      const error = Object.assign(new Error(`The server rejected every recipient (${rejected.join(', ')}).`), { code: 'EENVELOPE', responseCode: 550 })
+      const explanation = explainSmtpError(error, config)
+      console.warn(`Email rejected for ${recipients}: ${explanation.message}`)
+      return { sent: false, reason: explanation.message, ...explanation, rejected, at: new Date().toISOString() }
+    }
+
+    console.log(`Email sent to ${recipients} (${info.messageId || 'no id'})`)
+    return {
+      sent: true,
+      messageId: info.messageId,
+      accepted,
+      rejected,
+      response: info.response,
+      to: recipients,
+      subject,
+      at: new Date().toISOString()
+    }
   } catch (error) {
-    console.warn('Email delivery failed:', error.message)
-    return { sent: false, reason: error.message }
+    const explanation = explainSmtpError(error, config)
+    console.warn(`Email delivery failed: ${explanation.code} ${explanation.message}`)
+    if (config.debug) console.warn(error)
+    return {
+      sent: false,
+      reason: explanation.message,
+      ...explanation,
+      to: recipients,
+      subject,
+      at: new Date().toISOString()
+    }
   }
+}
+
+/**
+ * Emails one submission to the company inbox. Used both by `notify()` and by
+ * the outbox retry worker.
+ */
+export async function deliverPayload(payload) {
+  const config = mailConfig()
+  const subject = `[Website] ${subjectFor(payload)}`
+  const result = await sendMail({
+    subject,
+    html: renderEmail(payload),
+    replyTo: payload.email && /.+@.+\..+/.test(payload.email) ? payload.email : undefined
+  })
+  return { ...result, subject, configured: config.configured }
 }
 
 /**
@@ -226,23 +310,26 @@ export async function sendMail({ subject, html, text, to, replyTo, attachments }
  */
 export async function notify(payload) {
   const config = mailConfig()
-  const subject = SUBJECTS[payload.type]?.(payload) || 'New website submission'
+  const subject = `[Website] ${subjectFor(payload)}`
   const report = { at: new Date().toISOString(), email: { sent: false, reason: 'smtp-not-configured' }, acknowledgement: null, webhook: null }
 
-  if (config.configured) {
-    report.email = await sendMail({
-      subject: `[Website] ${subject}`,
-      html: renderEmail(payload),
-      replyTo: payload.email && /.+@.+\..+/.test(payload.email) ? payload.email : undefined
-    })
+  const email = await deliverPayload(payload)
+  report.email = email
 
-    if (config.ack && payload.email && /.+@.+\..+/.test(payload.email) && ['contact-enquiry', 'job-application', 'registration-contractor', 'registration-worker'].includes(payload.type)) {
-      report.acknowledgement = await sendMail({
-        to: payload.email,
-        subject: 'We have your message — Ananta Infratech Solutions',
-        html: renderAcknowledgement(payload)
-      })
-    }
+  if (config.ack && payload.email && /.+@.+\..+/.test(payload.email) && ['contact-enquiry', 'job-application', 'registration-contractor', 'registration-worker'].includes(payload.type)) {
+    report.acknowledgement = await sendMail({
+      to: payload.email,
+      subject: 'We have your message — Ananta Infratech Solutions',
+      html: renderAcknowledgement(payload)
+    })
+  }
+
+  // Keep a temporary or configuration failure so it can be retried once the
+  // mailbox is fixed — this is what stops enquiries vanishing silently.
+  if (!email.sent && payload.type !== 'test') {
+    const entry = await enqueue({ payload, subject, reason: email.reason })
+    report.email.queued = Boolean(entry)
+    report.email.queuedAt = entry?.createdAt || null
   }
 
   const url = env('NOTIFY_WEBHOOK_URL')
@@ -264,27 +351,180 @@ export async function notify(payload) {
   }
 
   report.delivered = Boolean(report.email.sent || report.webhook?.sent)
+  report.stored = true
   return report
+}
+
+/* --------------------------------------------------------- diagnostics ---- */
+
+const step = (id, label, status, detail, hint) => ({ id, label, status, detail: detail || null, hint: hint || null })
+
+function withTimeout(promise, ms, message) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(Object.assign(new Error(message || 'Timed out'), { code: 'ETIMEDOUT' })), ms))
+  ])
+}
+
+function checkTcp(host, port, timeoutMs = 8000) {
+  return new Promise((resolve) => {
+    let settled = false
+    const socket = net.createConnection({ host, port })
+    const finish = (result) => {
+      if (settled) return
+      settled = true
+      try { socket.destroy() } catch { /* ignore */ }
+      resolve(result)
+    }
+    socket.setTimeout(timeoutMs)
+    socket.once('connect', () => finish({ ok: true, detail: `Connected to ${host}:${port}.` }))
+    socket.once('timeout', () => finish({ ok: false, code: 'ETIMEDOUT', detail: `No response from ${host}:${port} within ${Math.round(timeoutMs / 1000)}s.` }))
+    socket.once('error', (error) => finish({ ok: false, code: error.code, detail: error.message }))
+  })
+}
+
+function checkTls(host, port, rejectUnauthorized, timeoutMs = 8000) {
+  return new Promise((resolve) => {
+    let settled = false
+    let socket
+    const finish = (result) => {
+      if (settled) return
+      settled = true
+      try { socket?.destroy() } catch { /* ignore */ }
+      resolve(result)
+    }
+    try {
+      socket = tls.connect({ host, port, servername: net.isIP(host) ? undefined : host, rejectUnauthorized }, () => {
+        finish({ ok: true, detail: `TLS established with ${host}:${port}.` })
+      })
+    } catch (error) {
+      finish({ ok: false, code: error.code, detail: error.message })
+      return
+    }
+    socket.setTimeout(timeoutMs)
+    socket.once('timeout', () => finish({ ok: false, code: 'ETIMEDOUT', detail: `TLS handshake timed out after ${Math.round(timeoutMs / 1000)}s.` }))
+    socket.once('error', (error) => finish({ ok: false, code: error.code, detail: error.message }))
+  })
+}
+
+/**
+ * Runs the same checks a mail client would: configuration, DNS, TCP, TLS,
+ * authentication and sender identity. Every failure carries the specific fix.
+ */
+export async function diagnoseMail({ sendTest = false, recipient } = {}) {
+  const config = mailConfig()
+  const steps = []
+
+  if (!config.configured) {
+    steps.push(step('config', 'Configuration', 'fail', config.problems.map((problem) => problem.message).join(' '), config.problems[0]?.hint))
+    return { ok: false, checkedAt: new Date().toISOString(), steps, config: publicMailConfig(), summary: 'Email is not fully configured yet.' }
+  }
+
+  steps.push(step('config', 'Configuration', 'pass', `${config.providerLabel || 'SMTP'} · ${config.user} → ${config.to.join(', ')}`))
+  for (const warning of config.warnings) {
+    steps.push(step(`warning:${warning.code}`, 'Configuration warning', 'warn', warning.message, warning.hint))
+  }
+
+  // DNS
+  let lookups = []
+  try {
+    lookups = await withTimeout(dns.lookup(config.host, { all: true }), 5000, 'DNS lookup timed out')
+    steps.push(step('dns', 'DNS lookup', 'pass', `${config.host} → ${lookups.map((row) => row.address).join(', ')}`))
+  } catch (error) {
+    const explanation = explainSmtpError(Object.assign(error, { code: error.code || 'EDNS' }), config)
+    steps.push(step('dns', 'DNS lookup', 'fail', explanation.message, explanation.hint))
+    return { ok: false, checkedAt: new Date().toISOString(), steps, config: publicMailConfig(), summary: explanation.message }
+  }
+
+  // TCP
+  const tcp = await checkTcp(config.host, config.port)
+  if (!tcp.ok) {
+    const explanation = explainSmtpError(Object.assign(new Error(tcp.detail), { code: tcp.code }), config)
+    steps.push(step('tcp', `TCP connection to port ${config.port}`, 'fail', explanation.message, explanation.hint))
+    return { ok: false, checkedAt: new Date().toISOString(), steps, config: publicMailConfig(), summary: explanation.message }
+  }
+  steps.push(step('tcp', `TCP connection to port ${config.port}`, 'pass', tcp.detail))
+
+  // TLS (implicit for 465)
+  if (config.secure) {
+    const secure = await checkTls(config.host, config.port, !config.allowInvalidCert)
+    if (!secure.ok) {
+      const explanation = explainSmtpError(Object.assign(new Error(secure.detail), { code: secure.code === 'ETIMEDOUT' ? 'ETIMEDOUT' : 'ETLS' }), config)
+      steps.push(step('tls', 'TLS encryption', 'fail', explanation.message, explanation.hint))
+      return { ok: false, checkedAt: new Date().toISOString(), steps, config: publicMailConfig(), summary: explanation.message }
+    }
+    steps.push(step('tls', 'TLS encryption', 'pass', secure.detail))
+  } else {
+    steps.push(step('tls', 'TLS encryption', 'skip', `STARTTLS will be negotiated after the greeting on port ${config.port}.`))
+  }
+
+  // Authentication
+  const transport = getTransporter()
+  try {
+    await withTimeout(transport.verify(), 25_000, 'The mail server did not answer the sign-in within 25 seconds')
+    steps.push(step('auth', 'Mailbox sign-in', 'pass', `${config.user} authenticated successfully.`))
+  } catch (error) {
+    const explanation = explainSmtpError(error, config)
+    steps.push(step('auth', 'Mailbox sign-in', 'fail', explanation.message, explanation.hint))
+    return { ok: false, checkedAt: new Date().toISOString(), steps, config: publicMailConfig(), summary: `${explanation.message} ${explanation.hint || ''}`.trim() }
+  }
+
+  // Sender identity
+  if (config.fromAddress && config.user && config.fromAddress.toLowerCase() !== config.user.toLowerCase()) {
+    steps.push(step('sender', 'Sender address', 'warn', `Sending as ${config.fromAddress} while signed in as ${config.user}.`, 'Most providers only allow the authenticated address (or a verified alias) as the From address. Change MAIL_FROM if the message is rejected.'))
+  } else {
+    steps.push(step('sender', 'Sender address', 'pass', config.from))
+  }
+
+  let delivery = null
+  if (sendTest) {
+    delivery = await sendMail({
+      to: recipient || config.to,
+      subject: '[Website] Email delivery test — Ananta Infratech Solutions',
+      html: renderEmail({
+        type: 'test',
+        reference: 'TEST',
+        name: 'Ananta admin',
+        at: new Date().toLocaleString('en-IN')
+      }, { heading: 'Email delivery test' }),
+      text: 'If you are reading this, form submissions from the website will reach this inbox.'
+    })
+    steps.push(delivery.sent
+      ? step('delivery', 'Test message', 'pass', `Accepted by the mail server for ${delivery.to} (${delivery.messageId || 'no message id'}). If it is not in the inbox within a minute, check the spam folder and any GoDaddy quarantine.`)
+      : step('delivery', 'Test message', 'fail', delivery.reason, delivery.hint))
+  }
+
+  const failed = steps.find((entry) => entry.status === 'fail')
+  return {
+    ok: !failed && (!delivery || delivery.sent),
+    checkedAt: new Date().toISOString(),
+    steps,
+    delivery,
+    config: publicMailConfig(),
+    summary: failed ? `${failed.detail || failed.label}` : 'The mail channel is working — the server accepted the sign-in.'
+  }
 }
 
 /** Used by the admin "send a test email" button. */
 export async function sendTestEmail(recipient) {
-  const config = mailConfig()
-  const status = mailStatus()
-  if (!config.configured) return { sent: false, reason: status.reason, status }
-  const result = await sendMail({
-    to: recipient || config.to,
-    subject: '[Website] Email delivery test — Ananta Infratech Solutions',
-    html: renderEmail({
-      type: 'test',
-      reference: 'TEST',
-      name: 'Ananta admin',
-      message: 'If you are reading this, form submissions from the website will now reach this inbox.',
-      at: new Date().toLocaleString('en-IN')
-    }, { heading: 'Email delivery test' })
-  })
-  return { ...result, status }
+  const report = await diagnoseMail({ sendTest: true, recipient })
+  return {
+    sent: Boolean(report.delivery?.sent),
+    reason: report.delivery?.reason || (report.ok ? null : report.summary),
+    hint: report.delivery?.hint || null,
+    messageId: report.delivery?.messageId,
+    diagnostics: report,
+    status: mailStatus()
+  }
 }
+
+/** Backs the admin "retry queued enquiries" button. */
+export async function mailQueueStatus() {
+  return outboxSummary()
+}
+
+/** Re-exported so the server can warm the provider cache before it listens. */
+export { detectMailProvider }
 
 /**
  * Very small in-memory rate limiter, keyed by IP and route family.
