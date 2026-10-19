@@ -36,7 +36,8 @@ const absolute = (url, base) => {
  * and optional JSON-LD structured data.
  */
 export function Seo({ title, description, image, type = 'website', jsonLd, noIndex = false, path }) {
-  const { site } = useContent()
+  // const { site } = useContent()
+  const site = useContent()
   const location = useLocation()
 
   useEffect(() => {
