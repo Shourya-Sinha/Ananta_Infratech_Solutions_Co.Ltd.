@@ -78,7 +78,7 @@ export function normaliseContent(content) {
       const contact = migrated.footer.contact
       const legacy = {
         email: 'support@anantainfratechsolutions.com',
-        phone: '+91 22 4968 2016',
+        phone: '+91 92 7962 4789',
         address: 'Juhu, Mumbai, Maharashtra, India'
       }
       migrated.footer.contact = {

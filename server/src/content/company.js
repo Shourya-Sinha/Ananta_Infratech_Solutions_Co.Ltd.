@@ -40,7 +40,7 @@ export const company = {
   employees: '480+',
   address: 'Sanctuary Co-operative Housing Society, Juhu, Mumbai, Maharashtra 400049, India',
   addressLines: ['Ananta Infratech Solutions', 'Juhu, Mumbai', 'Maharashtra 400049, India'],
-  phone: '+91 22 4968 2016',
+  phone: '+91 92 7962 4789',
   phoneAlt: '+91 98200 42016',
   whatsapp: '919820042016',
   email: 'support@anantainfratechsolutions.com',
@@ -81,7 +81,7 @@ export const offices = [
     type: 'Head office',
     address: 'Ananta House, Juhu Tara Road, Juhu, Mumbai, Maharashtra 400049',
     city: 'Mumbai',
-    phone: '+91 22 4968 2016',
+    phone: '+91 92 7962 4789',
     email: 'support@anantainfratechsolutions.com',
     hours: 'Mon – Sat · 09:30 – 18:30 IST',
     mapUrl: 'https://www.google.com/maps?q=Juhu,Mumbai&output=embed',
@@ -132,12 +132,12 @@ export const contact = {
   responseNote: 'Every enquiry is acknowledged within 24 working hours and routed to a named project lead.',
   mapUrl: 'https://www.google.com/maps?q=Juhu,Mumbai&output=embed',
   departments: [
-    { id: 'new-business', label: 'New business & proposals', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2016', note: 'New projects, joint ventures and developer partnerships.' },
+    { id: 'new-business', label: 'New business & proposals', email: 'support@anantainfratechsolutions.com', phone: '+91 92 7962 4789', note: 'New projects, joint ventures and developer partnerships.' },
     { id: 'careers', label: 'Careers & recruitment', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2020', note: 'Engineering, planning, HSE, survey and site leadership roles.' },
     { id: 'tenders', label: 'Tenders & procurement', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2031', note: 'Tender invitations, RFP clarifications and prequalification.' },
     { id: 'vendors', label: 'Vendor & subcontractor onboarding', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2044', note: 'Contractor, supplier and specialist trade registration.' },
-    { id: 'technology', label: 'Digital & IT services', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2016', note: 'Websites, CMS, apps, custom chat, ERP/CRM, SEO and IT support.' },
-    { id: 'media', label: 'Media & communications', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2016', note: 'Press, brand assets and speaking engagements.' },
+    { id: 'technology', label: 'Digital & IT services', email: 'support@anantainfratechsolutions.com', phone: '+91 92 7962 4789', note: 'Websites, CMS, apps, custom chat, ERP/CRM, SEO and IT support.' },
+    { id: 'media', label: 'Media & communications', email: 'support@anantainfratechsolutions.com', phone: '+91 92 7962 4789', note: 'Press, brand assets and speaking engagements.' },
     { id: 'accounts', label: 'Accounts & compliance', email: 'support@anantainfratechsolutions.com', phone: '+91 22 4968 2050', note: 'Invoices, GST documentation and vendor payments.' }
   ]
 }

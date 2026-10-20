@@ -204,7 +204,7 @@ export function renderAcknowledgement(payload) {
             and someone will respond within one working day${payload.reference ? ` — your reference is <b>${escapeHtml(payload.reference)}</b>` : ''}.
           </p>
           <p style="margin:0 0 14px">
-            If your enquiry is urgent, call <a href="tel:+912249682016" style="color:#141d23">+91 22 4968 2016</a>
+            If your enquiry is urgent, call <a href="tel:+912249682016" style="color:#141d23">+91 92 7962 4789</a>
             or reply to this email. For anything else, our inbox is
             <a href="mailto:${DEFAULT_INBOX}" style="color:#141d23">${DEFAULT_INBOX}</a>.
           </p>
